@@ -1,0 +1,54 @@
+[tool.poetry]
+name = "spinalmodes"
+version = "0.1.0"
+description = "Spinal counter-curvature and Information-Elasticity Coupling (IEC) model for biomechanical analysis"
+authors = ["Dr. Sayuj Krishnan <sayuj@example.com>"]
+readme = "README.md"
+packages = [{include = "spinalmodes", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.24.0"
+scipy = "^1.11.0"
+matplotlib = "^3.7.0"
+typer = "^0.9.0"
+pydantic = "^2.0.0"
+pandas = "^2.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+black = "^23.7.0"
+ruff = "^0.0.285"
+mypy = "^1.5.0"
+mkdocs = "^1.5.0"
+mkdocs-material = "^9.2.0"
+
+[tool.poetry.scripts]
+spinalmodes = "spinalmodes.cli:app"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+check_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
