@@ -1,10 +1,14 @@
 # Biological Counter-Curvature and Information-Elasticity Coupling in Spinal Development
 
-**Authors:** Dr. Sayuj Krishnan et al.
+**Authors:** Dr. Sayuj Krishnan
 
-**Affiliations:** [To be added]
+**Affiliations:** [Your institution]
 
-**Corresponding Author:** [To be added]
+**Corresponding Author:** Dr. Sayuj Krishnan (sayuj@example.com)
+
+**Status:** Draft manuscript - computational results use simplified solvers and require validation
+
+> **Computational Note:** The numerical implementations in this manuscript use simplified beam solvers for proof-of-concept. Quantitative results should be validated with rigorous finite element or Cosserat rod solvers before publication.
 
 ---
 

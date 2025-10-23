@@ -2,7 +2,9 @@
 
 **Project:** Spinal Modes - Information-Elasticity Coupling Model  
 **Implementation Date:** October 23, 2025  
-**Status:** ✅ **COMPLETE - ALL DELIVERABLES READY**
+**Status:** ⚠️ **PROTOTYPE - FOUNDATION COMPLETE, VALIDATION NEEDED**
+
+> **Important:** This is a working research prototype. Core framework is implemented but numerical solvers are simplified and outputs need generation. See `ACTUAL_STATUS.md` for honest assessment.
 
 ---
 

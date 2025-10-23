@@ -1,9 +1,13 @@
 # Spinal Modes: Counter-Curvature & IEC Model
 
-[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)]()
+[![Status](https://img.shields.io/badge/status-prototype-yellow.svg)]()
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-A research codebase for studying biological counter-curvature and Information→Elasticity Coupling (IEC) in spinal biomechanics, integrating developmental genetics (HOX/PAX), ciliary origins, and scoliosis as symmetry-breaking.
+**⚠️ STATUS: Research Prototype - Under Active Development**
+
+A research framework for studying biological counter-curvature and Information→Elasticity Coupling (IEC) in spinal biomechanics, integrating developmental genetics (HOX/PAX), ciliary origins, and scoliosis as symmetry-breaking.
+
+> **Note:** This is a working prototype with simplified solvers. Numerical results should be validated before use in publications. See [ACTUAL_STATUS.md](ACTUAL_STATUS.md) for complete assessment.
 
 ## Overview
 
