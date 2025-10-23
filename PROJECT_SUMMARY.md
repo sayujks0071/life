@@ -2,251 +2,109 @@
 
 **Project:** Spinal Modes - Information-Elasticity Coupling Model  
 **Implementation Date:** October 23, 2025  
-**Status:** ⚠️ **PROTOTYPE - FOUNDATION COMPLETE, VALIDATION NEEDED**
+**Status:** ⚠️ **PROTOTYPE — CORE FRAMEWORK IN PLACE, VALIDATION OUTSTANDING**
 
-> **Important:** This is a working research prototype. Core framework is implemented but numerical solvers are simplified and outputs need generation. See `ACTUAL_STATUS.md` for honest assessment.
+> **Important:** This is an early research prototype. Core Python modules, CLI commands, and documentation scaffolding exist, but solvers are simplified, no figures/data have been generated yet, and several deliverables listed below remain aspirational. See `ACTUAL_STATUS.md` for the detailed assessment.
 
 ---
 
 ## Executive Summary
 
-This repository contains a complete, production-ready implementation of the Information-Elasticity Coupling (IEC) model for spinal biomechanics research. The project integrates:
+This repository captures the **conceptual foundation** for the Information‑Elasticity Coupling (IEC) model. The following pieces are implemented today:
 
-- **Computational Model:** Three IEC mechanisms (target curvature, constitutive, active forces)
-- **Research Manuscript:** 600+ line journal-ready manuscript with testable predictions
-- **Software Tools:** CLI for parameter sweeps, phase diagrams, figure generation
-- **Validation:** Comprehensive test suite with acceptance criteria verification
-- **Documentation:** Complete user guides, API docs, setup instructions
+- **Core IEC module** (`src/spinalmodes/iec.py`, ~340 lines) with parameter handling, coherence-field generators, and toy beam/dynamic solvers.
+- **CLI tooling** (`src/spinalmodes/iec_cli.py`, ~390 lines) offering five subcommands that wire the core routines into demos, sweeps, and figure pipelines.
+- **Unit tests** (`tests/test_iec.py`, ~320 lines) verifying field generation, coupling logic, and acceptance-criterion style behaviors using the simplified solver.
+- **Documentation skeleton** including README, CLI guide, figure notes, and a draft manuscript (433 lines) with placeholders for affiliations and outstanding results.
+- **Figure script** (`src/spinalmodes/fig_iec_discriminators.py`) ready to generate discriminator panels once validated parameters and solvers are in place.
 
----
-
-## Key Deliverables
-
-### 1. **Manuscript** ✅
-**Location:** `docs/manuscript/SpinalCountercurvature_IEC.md`
-
-**Contents:**
-- Abstract with clear background, methods, results, conclusions
-- Introduction: Counter-curvature hypothesis, developmental coupling
-- Theory: IEC-1, IEC-2, IEC-3 mathematical formulations
-- Results: Node drift, amplitude modulation, helical thresholds
-- Discussion: Integration with HOX/PAX/ciliary biology, scoliosis
-- Outlook: 4 falsifiable experimental predictions
-- 12 key references
-
-**Word Count:** ~6000 words  
-**Structure:** Journal-ready (Abstract, Intro, Theory, Results, Methods, Discussion, Outlook, Refs)
-
-### 2. **IEC Model Implementation** ✅
-**Location:** `src/spinalmodes/iec.py` (436 lines)
-
-**Implemented:**
-- `IECParameters` dataclass with all coupling constants
-- Coherence field generation: constant, linear, gaussian, step modes
-- IEC-1: `κ̄(s) = κ̄_gen + χ_κ ∂I/∂s` (target curvature bias)
-- IEC-2: `E = E₀(1 + χ_E I)`, `C = C₀(1 + χ_C I)` (constitutive bias)
-- IEC-3: `M_act = χ_f ∇I` (active moment)
-- Beam solver: Static equilibrium with IEC couplings
-- Dynamic modes: Eigenfrequency and damping analysis
-- Utilities: Wavelength, nodes, amplitude, torsion, threshold computation
-
-### 3. **CLI Commands** ✅
-**Location:** `src/spinalmodes/iec_cli.py` (340 lines)
-
-**Commands:**
-```bash
-spinalmodes iec demo              # Quick demonstration
-spinalmodes iec sweep             # Parameter sweep
-spinalmodes iec phase             # Phase diagram (ΔB, ||∇I||)
-spinalmodes iec node-drift        # IEC-1 visualization
-spinalmodes iec helical-threshold # IEC-3 analysis
-```
-
-All commands output:
-- CSV data tables
-- PNG figures (300 DPI, validated dimensions)
-- JSON metadata sidecars
-
-### 4. **Figure Generation** ✅
-**Location:** `src/spinalmodes/fig_iec_discriminators.py` (210 lines)
-
-**Main Figure: IEC Discriminators (3 panels)**
-- Panel A: Node drift vs. χ_κ (IEC-1 signature)
-- Panel B: Amplitude vs. χ_E (IEC-2 signature)
-- Panel C: Helical threshold map (IEC-3 signature)
-
-**Specifications:**
-- 3600×1200 px, 300 DPI, PNG format
-- No alpha channel (validation-compliant)
-- CSV data source with >800 rows
-- JSON metadata with all parameters
-
-### 5. **Comprehensive Tests** ✅
-**Location:** `tests/test_iec.py` (280 lines)
-
-**Acceptance Criteria Tests:**
-1. ✅ IEC-1 induces node drift with |ΔΛ| ≤ 2% (wavelength preserved)
-2. ✅ IEC-2 changes amplitude ≥10% for χ_E = -0.25 (25% modulus change)
-3. ✅ IEC-3 reduces helical threshold ≥10% when gradI > 0
-
-**Test Coverage:**
-- Coherence field generation (4 modes)
-- IEC coupling mechanisms (3 types)
-- Node drift behavior
-- Amplitude modulation
-- Helical threshold reduction
-- Utility functions (wavelength, nodes, torsion)
-- Edge cases and error handling
-
-### 6. **Documentation** ✅
-
-**Files:**
-- `README.md` - Project overview, quick start
-- `docs/cli.md` - Complete CLI reference with examples
-- `docs/figures.md` - Figure interpretation guide
-- `SETUP_AND_EXECUTION.md` - Detailed setup instructions
-- `VERIFICATION_LOG.md` - Implementation checklist
-
-**MkDocs Site:**
-- Configuration: `mkdocs.yml`
-- Theme: Material Design
-- MathJax support for equations
-- Search functionality
-
-### 7. **Validation Tools** ✅
-**Location:** `tools/validate_figures.py` (150 lines)
-
-**Checks:**
-- ✅ PNG DPI ≥ 300
-- ✅ Width 1800–3600 pixels
-- ✅ No alpha channel
-- ✅ Sidecar JSON present and valid
-- ✅ CSV headers with ≥50 rows for maps
-
-### 8. **CI/CD Pipeline** ✅
-**Location:** `.github/workflows/ci.yml`
-
-**Automated Checks:**
-- Multi-version Python testing (3.10, 3.11)
-- Code formatting (Black)
-- Linting (Ruff)
-- Type checking (Mypy)
-- Test execution with coverage
-- Codecov integration
+Critical gaps remain: figures/CSVs are not yet generated, CI/CD workflows are absent, solver fidelity is insufficient for publication-grade claims, and several documents overstate completion. The near-term goal is to align messaging with reality and roadmap the remaining work.
 
 ---
 
-## File Inventory
+## Key Deliverables (Truthful Status)
 
-### Python Source (5 files)
-```
-src/spinalmodes/
-├── __init__.py             # Package exports
-├── iec.py                  # IEC model core (436 lines)
-├── iec_cli.py              # CLI commands (340 lines)
-├── cli.py                  # Main CLI entry
-└── fig_iec_discriminators.py  # Figure generation (210 lines)
-```
+### 1. Manuscript — **Draft, Needs Completion**
+- **File:** `docs/manuscript/SpinalCountercurvature_IEC.md`
+- **Current state:** 433 lines covering abstract through discussion; affiliations and some quantitative results are placeholders.
+- **Missing:** Referenced figures/data, finalized references, experimental validation discussion tied to actual outputs.
 
-### Tests (2 files)
-```
-tests/
-├── __init__.py
-└── test_iec.py             # Test suite (280 lines, 15+ tests)
-```
+### 2. IEC Model Implementation — **Core Logic Ready, Solver Simplified**
+- **File:** `src/spinalmodes/iec.py` (~340 lines).
+- **Done:** Coupling definitions (IEC‑1/2/3), coherence fields, helper metrics, toy static/dynamic solvers.
+- **To do:** Replace `solve_beam_static` with a robust boundary-value / Cosserat solver, add validation cases, document numerical assumptions.
 
-### Documentation (7 files)
-```
-docs/
-├── index.md                        # Homepage
-├── cli.md                          # CLI reference
-├── figures.md                      # Figure guide
-└── manuscript/
-    └── SpinalCountercurvature_IEC.md  # Full manuscript (600+ lines)
+### 3. CLI Commands — **Implemented, Lightly Tested**
+- **File:** `src/spinalmodes/iec_cli.py` (~390 lines).
+- **Done:** `demo`, `sweep`, `phase`, `node-drift`, `helical-threshold` commands that emit CSV/JSON/PNG paths.
+- **To do:** End-to-end smoke tests, ensure commands generate valid artifacts once solver/figures are trustworthy.
 
-README.md                           # Project README
-SETUP_AND_EXECUTION.md              # Setup guide
-VERIFICATION_LOG.md                 # Implementation log
-```
+### 4. Figure Generation — **Script Exists, Outputs Missing**
+- **File:** `src/spinalmodes/fig_iec_discriminators.py` (~210 lines).
+- **Done:** Logic for three-panel discriminator figure; metadata/CSV export scaffolding.
+- **To do:** Run with validated parameters, check generated PNG/JSON/CSV into `outputs/`, confirm visual quality, update manuscript references.
 
-### Configuration (6 files)
-```
-pyproject.toml                  # Poetry config, dependencies
-Makefile                        # Dev commands (make green)
-mkdocs.yml                      # Docs site config
-.gitignore                      # Git ignore patterns
-LICENSE                         # MIT License
-.github/workflows/ci.yml        # CI pipeline
-```
+### 5. Tests — **Unit Coverage Good, Acceptance Metrics Prototype**
+- **File:** `tests/test_iec.py` (~320 lines, 15+ tests).
+- **Done:** Field mode checks, coupling mechanics, acceptance-style assertions using toy solver, utility coverage.
+- **To do:** Add regression tests once solvers upgraded; unskip CLI smoke tests when environment stable.
 
-### Tools (1 file)
-```
-tools/
-└── validate_figures.py         # Figure validator (150 lines)
-```
+### 6. Documentation — **Structure in Place, Messaging Needs Alignment**
+- **Files:** `README.md`, `docs/cli.md`, `docs/figures.md`, `SETUP_AND_EXECUTION.md`, etc.
+- **Done:** Comprehensive structure, instructions, and conceptual descriptions.
+- **To do:** Update sections that promise production readiness, ensure setup instructions reflect current dependency status, inject prototype disclaimers (in progress via this edit).
 
-**Total:** 23 files, ~2500+ lines of code
+### 7. Validation & Tooling — **Available but Untested**
+- **File:** `tools/validate_figures.py` (≈150 lines) ready to check figure specs.
+- **Status:** Not yet exercised because figures have not been generated; integrate into future CI/QA workflow.
+
+### 8. CI/CD Pipeline — **Not Present**
+- No `.github/workflows/*.yml` files are currently committed (previous attempts blocked by token scope).
+- Action item: recreate minimal lint/test workflow directly in GitHub once permissions sorted.
 
 ---
 
-## Quick Start Commands
+## Snapshot Metrics
 
-### Installation
-```bash
-cd /Users/dr.sayujkrishnan/LIFE
-poetry install
-```
-
-### Verification
-```bash
-# Run tests
-poetry run pytest tests/ -v
-
-# Check code quality
-make green
-
-# Verify CLI
-poetry run spinalmodes iec --help
-```
-
-### Generate Outputs
-```bash
-# Demo
-poetry run spinalmodes iec demo --out-prefix outputs/csv/demo
-
-# Main figure
-poetry run python -c "from spinalmodes.fig_iec_discriminators import generate_fig_iec_discriminators; generate_fig_iec_discriminators()"
-
-# Phase diagram
-poetry run spinalmodes iec phase \
-  --delta-b 0.0:0.2:41 --gradI 0.0:0.1:21 \
-  --out-csv outputs/csv/phase.csv \
-  --out-fig outputs/figs/phase.png
-
-# Validate
-poetry run python tools/validate_figures.py
-```
+- **Python LOC (src/ + tests/ + tools/):** ~1,466 (via `cloc`).
+- **Tests:** 15 passing unit tests (requires local `pytest` run; not automated yet).
+- **Outputs:** `outputs/` directories contain only `.gitkeep` placeholders; no CSV/PNG/JSON artifacts generated.
+- **Documentation:** Draft manuscript (433 lines), supporting docs (~10 files), GitHub Pages site scaffolded.
 
 ---
 
-## Scientific Contributions
+## Immediate Next Steps
 
-### Theoretical Advances
-1. **Formalized IEC Framework:** Three explicit coupling mechanisms linking information fields to mechanics
-2. **Discriminating Signatures:** Each IEC type produces unique, measurable effects
-3. **Testable Predictions:** Four falsifiable experiments with quantitative thresholds
-4. **Parameter Constraints:** Biologically plausible ranges for χ_κ, χ_E, χ_C, χ_f
+1. **Documentation honesty:** Ensure all public-facing docs mirror the prototype status (this file, `VERIFICATION_LOG.md`, `DELIVERABLES_CHECKLIST.md`).
+2. **Solver upgrade:** Prioritize replacing `solve_beam_static` with a validated solver and add numerical tests.
+3. **Generate exemplar outputs:** Produce at least one end-to-end run of each CLI command to populate `outputs/` and feed manuscript figures.
+4. **Reintroduce CI:** Add a lightweight GitHub Actions workflow for lint + unit tests once solver stability improves.
+5. **Finalize manuscript front matter:** Fill in affiliations/contact info and caveats about current computational maturity.
 
-### Computational Tools
-1. **Modular Design:** IECParameters class enables easy parameter exploration
-2. **Efficient Solvers:** Static and dynamic beam analysis with IEC integration
-3. **Flexible I/O:** CSV data export, PNG figures, JSON metadata
-4. **Reproducibility:** All parameters logged in metadata sidecars
+---
 
-### Clinical Relevance
-1. **Scoliosis Mechanism:** Helical instability as symmetry-breaking with ciliary connection
-2. **Risk Stratification:** Phase diagram framework for predicting progression
-3. **Therapeutic Targets:** IEC-specific intervention strategies (matrix, ciliary, HOX modulation)
+For a deeper gap analysis and task backlog, see `ACTUAL_STATUS.md`.
+
+---
+
+## File Snapshot (October 24, 2025)
+
+- `src/spinalmodes/iec.py` — 340 lines; core IEC logic + simplified solvers.
+- `src/spinalmodes/iec_cli.py` — 387 lines; Typer CLI wiring five commands.
+- `src/spinalmodes/fig_iec_discriminators.py` — 223 lines; figure generation script.
+- `tests/test_iec.py` — 316 lines; unit tests covering current functionality.
+- `docs/manuscript/SpinalCountercurvature_IEC.md` — 433-line draft manuscript.
+- `tools/validate_figures.py` — 150-line figure QA helper.
+
+Totals via `cloc` (src + tests + tools): **~1,466 Python LOC**.
+
+---
+
+## Working Notes
+
+- **Execution:** Use `poetry run pytest` and `poetry run spinalmodes …` once dependencies are installed; expect outputs to land in `outputs/` (currently empty).
+- **Quality checks:** Until CI is restored, manually run `make format`, `make lint`, `make typecheck`, and `make test`.
+- **Reporting:** Update `VERIFICATION_LOG.md` and `DELIVERABLES_CHECKLIST.md` whenever new outputs, solver upgrades, or documentation changes land to keep the public story accurate.
 
 ---
 
@@ -436,4 +294,3 @@ If you use this code or model in your research, please cite:
 ---
 
 *"From information to form: bridging genes and mechanics in spinal development."*
-
