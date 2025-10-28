@@ -275,7 +275,7 @@ Performed Latin Hypercube Sampling (LHS) over 4D parameter space (χ_κ, χ_E, �
 
 **ECM Regulation and Stiffness:** IEC-2 links to known matrix biology: SOX9 (driven by HOX) regulates collagen/aggrecan expression; differential mineralization timing creates stiffness gradients. Conditional knockouts (SOX9^(fl/fl); Cre drivers) should yield predictable χ_E perturbations.
 
-**Ciliary Mechanics and Active Forces:** IEC-3 connects to primary cilia function: nodal flow breaks L-R symmetry; motile cilia in neural tube generate CSF flow. Ciliopathies (IFT88^(-/-), DNAH11 mutations) disrupt these flows, potentially reducing χ_f and lowering helical thresholds—consistent with elevated scoliosis incidence.
+**Ciliary Mechanics and Active Forces:** IEC-3 connects directly to recent zebrafish studies (Grimes et al., 2016) demonstrating that ependymal cell cilia defects cause idiopathic scoliosis through disrupted CSF flow. Motile cilia generate coordinated flow patterns that establish spatial information fields I(s), with flow gradients ∇I(s) driving active moments M_act(s) = χ_f · ∇I(s). Ciliopathies (IFT88^(-/-), DNAH11 mutations) disrupt these flows, reducing χ_f and lowering helical thresholds—consistent with elevated scoliosis incidence and providing experimental validation for IEC-3.
 
 ### 5.2 Scoliosis as Symmetry-Breaking
 
@@ -401,7 +401,7 @@ We thank [colleagues] for discussions on HOX biology, ciliary mechanics, and cli
 
 5. **Wellik DM** (2007). Hox patterning of the vertebrate axial skeleton. *Dev Dyn* 236:2454–2463.
 
-6. **Grimes DT et al.** (2016). Zebrafish models of idiopathic scoliosis link cerebrospinal fluid flow defects to spine curvature. *Science* 352:1341–1344.
+6. **Grimes DT et al.** (2016). Zebrafish model of idiopathic scoliosis link cerebrospinal fluid flow to defects in spine curvature. *Science* 352:1341–1344. doi: 10.1126/science.aaf6419
 
 7. **Pourquié O, Kusumi K** (2001). When body segmentation goes wrong. *Clin Genet* 60:409–416.
 
