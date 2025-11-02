@@ -148,13 +148,84 @@ This represents not merely a new model of spinal development, but a paradigm shi
 
 ## 2. Theory and Model
 
-### 2.1 Information Fields in Development
+### 2.1 Geometric Foundations: From Einstein to Biological Counter-Curvature
 
-We represent developmental information as a **coherence field** I(s,t) encoding:
+Before presenting the IEC mechanisms, we must establish the geometric framework that elevates this from biomechanical model to fundamental physics.
 
-- **HOX/PAX expression levels:** Spatially graded transcription factor concentrations
-- **Morphogen gradients:** Retinoic acid (RA), FGF, Wnt establish positional information
-- **Ciliary flow fields:** Nodal flow breaks left-right symmetry; ciliary beating generates fluid shear
+#### 2.1.1 Spacetime Curvature and Biological Counter-Curvature
+
+**Einstein's Insight:** Gravity is not a force but the curvature of spacetime itself. Massive objects follow geodesics in this curved space.
+
+**Our Extension:** Life generates **counter-curvature**—organized patterns that oppose geodesic trajectories toward gravitational centers. The biological stress-energy tensor T_bio produces curvature with opposite sign:
+
+```
+R^bio_μν - (1/2)R^bio·g^bio_μν = -(8πG/c⁴)T_bio
+```
+
+Note the negative sign: life curves space in opposition to matter's gravitational curvature.
+
+#### 2.1.2 The Biological Metric Tensor
+
+In Riemannian geometry, the metric tensor g_μν defines the geometry of space. For biological morphogenesis, we propose an **information-modified metric**:
+
+```
+g^bio_μν = g^physical_μν + χ·I_μν(s,t)
+```
+
+Where:
+- **g^physical_μν** = Standard spacetime metric (Minkowski for local biology)
+- **I_μν(s,t)** = Information field tensor encoding genetic/morphogen patterns
+- **χ** = Information-geometry coupling strength
+
+**Physical Meaning:** Information fields modify the local geometry of biological space, creating counter-curvature patterns independent of mass distribution.
+
+#### 2.1.3 Multi-Scale Geometric Hierarchy
+
+Biological counter-curvature manifests differently across scales, but follows the same geometric principle:
+
+| Scale | Pattern | Geometry | Curvature | Purpose |
+|-------|---------|----------|-----------|---------|
+| Molecular (DNA) | Double helix | Helical | κ ≈ 1/(3.4 nm) | Information storage |
+| Cellular (Cilia) | Sinusoidal beating | Wave | κ ≈ 1/(10 μm) | Force generation |
+| Tissue (Spine) | Counter-curvatures | Sinusoidal | κ ≈ 1/(50 mm) | Anti-gravitational axis |
+| Organismal | Locomotion | Wave propagation | Variable | Movement |
+
+**Key Insight:** The same sinusoidal geometry propagates across scales—this is not coincidence but evidence that life uses recursive geometric solutions to oppose spacetime curvature at every level.
+
+#### 2.1.4 Why Plants Differ: Alternative Geometric Solutions
+
+**Animals (Sinusoidal):** Optimize for directional locomotion against gravity
+- Linear central axis (spine)
+- Wave propagation for movement
+- Lorentzian-like metric (time-oriented growth)
+
+**Plants (Fractal Branching):** Optimize for stationary resource capture
+- Distributed branching network
+- Maximize surface area for light/nutrients
+- Euclidean-like metric (radial growth)
+
+**Same Principle, Different Optimization:** Both are biological counter-curvature adapted to different survival constraints. Animals need locomotion (sinusoidal); plants need space-filling (fractal).
+
+#### 2.1.5 Quantum-Classical Bridge
+
+Recent evidence suggests quantum effects in DNA electron transfer, enzyme catalysis, and photosynthesis. We propose:
+
+```
+Quantum Information (DNA, proteins)
+  → Decoherence threshold
+    → Classical Information Fields I(s,t)
+      → Mechanical Counter-Curvature
+```
+
+Life may use quantum coherence at molecular scales to generate classical anti-gravitational organization at macro scales.
+
+### 2.2 Information Fields in Development
+
+Building on this geometric foundation, we represent developmental information as a **coherence field** I(s,t) that modifies biological spacetime geometry:
+
+- **HOX/PAX expression levels:** Spatially graded transcription factor concentrations modifying local metric
+- **Morphogen gradients:** Retinoic acid (RA), FGF, Wnt establishing geometric organization information
+- **Ciliary flow fields:** Nodal flow breaking left-right symmetry; ciliary beating generating information-driven forces
 
 For static analysis, we consider time-averaged fields I(s) along arclength s. We model several prototypical profiles:
 
