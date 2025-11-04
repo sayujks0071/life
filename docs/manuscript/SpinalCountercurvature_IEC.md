@@ -1,12 +1,12 @@
 # Biological Counter-Curvature and Information-Elasticity Coupling in Spinal Development
 
-**Authors:** Dr. Sayuj Krishnan
+**Author:** Dr. Sayuj Krishnan  
 
-**Affiliations:** [Your institution]
+**Affiliation:** [Institution placeholder]  
 
-**Corresponding Author:** Dr. Sayuj Krishnan (sayuj@example.com)
+**Correspondence:** sayuj@example.com
 
-**Status:** Draft manuscript - computational results use simplified solvers and require validation
+**Manuscript status:** Draft. Computational components currently rely on simplified Cosserat-rod solvers; quantitative claims require confirmation with high-fidelity Cosserat or finite-element implementations prior to submission.
 
 > **Computational Note:** The numerical implementations in this manuscript use simplified beam solvers for proof-of-concept. Quantitative results should be validated with rigorous finite element or Cosserat rod solvers before publication.
 
@@ -434,4 +434,3 @@ We thank [colleagues] for discussions on HOX biology, ciliary mechanics, and cli
 *Manuscript prepared: October 2025*  
 *Code version: 0.1.0*  
 *Repository: https://github.com/[username]/spinalmodes*
-
