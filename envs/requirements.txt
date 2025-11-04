@@ -1,0 +1,29 @@
+# Requirements for IEC Model (pip installation)
+# 
+# Usage:
+#   pip install -r envs/requirements.txt
+#   python test_solver_upgrade.py  # Should pass all 4 tests
+#
+# For publication reproducibility, exact versions are pinned.
+# This environment has been tested with the BVP solver upgrade.
+#
+# Last updated: 2025-11-04
+# Compatible with: IEC model v0.2.0 (BVP solver upgrade)
+
+# Core scientific computing
+numpy==1.24.3
+scipy==1.11.2
+matplotlib==3.7.0
+
+# Testing and development (optional, for full test suite)
+pytest==7.4.0
+pytest-cov==4.1.0
+
+# Code quality tools (optional)
+black==23.7.0
+ruff==0.0.285
+mypy==1.5.0
+
+# Note: For production/reproduction, install only core dependencies:
+#   pip install numpy==1.24.3 scipy==1.11.2 matplotlib==3.7.0
+

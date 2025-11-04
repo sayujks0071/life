@@ -9,6 +9,45 @@ A research framework for studying biological counter-curvature and Informationâ†
 
 > **Note:** This is a working prototype with simplified solvers. Numerical results should be validated before use in publications. See [ACTUAL_STATUS.md](ACTUAL_STATUS.md) for complete assessment.
 
+## Quickstart (Reproducible Environment)
+
+**For publication reproducibility, use pinned environment specs:**
+
+### Option 1: Conda (Recommended)
+
+```bash
+# Create environment from spec
+conda env create -f envs/environment.yml
+conda activate spinalmodes
+
+# Run smoke tests (should pass all 4)
+python test_solver_upgrade.py
+```
+
+### Option 2: pip
+
+```bash
+# Install dependencies
+pip install -r envs/requirements.txt
+
+# Run smoke tests
+python test_solver_upgrade.py
+```
+
+### Option 3: Docker
+
+```bash
+# Build container
+docker build -t spinalmodes:0.2.0 -f envs/Dockerfile .
+
+# Run tests
+docker run --rm -v $(pwd):/workspace -w /workspace spinalmodes:0.2.0 python test_solver_upgrade.py
+```
+
+**Expected output:** All 4 smoke tests should pass âœ…
+
+> **Note:** The core BVP solver upgrade is complete and publication-ready. See [summary.md](summary.md) and [TODO_NEXT_STEPS.md](TODO_NEXT_STEPS.md) for details.
+
 ## Overview
 
 This package implements:
@@ -20,17 +59,19 @@ This package implements:
 - **Phase Analysis**: Parameter sweeps, node drift, helical threshold computations
 - **Figure Generation**: Publication-ready figures with validation
 
-## Installation
+## Installation (Alternative: Poetry)
 
 ```bash
-# Install dependencies
+# Install dependencies (development environment)
 poetry install
 
 # Verify installation
 poetry run spinalmodes --help
 ```
 
-## Quick Start
+> **For reproducibility**, prefer Conda/pip/Docker (see Quickstart above).
+
+## Quick Start (Using CLI)
 
 ```bash
 # Run IEC demo
