@@ -119,6 +119,15 @@ class IECParameters:
     P_load: float = field(default=100.0, metadata={"unit": "N"})
     distributed_load: float = field(default=0.0, metadata={"unit": "N/m"})
 
+    # Gravity and CSF Buoyancy
+    g: float = field(default=9.81, metadata={"unit": "m/s²", "description": "Gravitational acceleration"})
+    rho_CSF: float = field(default=1000.0, metadata={"unit": "kg/m³", "description": "CSF density"})
+    rho_tissue: float = field(default=1050.0, metadata={"unit": "kg/m³", "description": "Tissue density"})
+    chi_g: float = field(default=0.0, metadata={"unit": "dimensionless", "range": (-1.0, 1.0), "description": "Gravity-information coupling"})
+    chi_b: float = field(default=0.0, metadata={"unit": "dimensionless", "range": (-1.0, 1.0), "description": "Buoyancy-information coupling"})
+    include_gravity: bool = field(default=False, metadata={"description": "Include gravity-dependent information field"})
+    include_buoyancy: bool = field(default=False, metadata={"description": "Include CSF buoyancy effects"})
+
     # Numerical
     random_seed: int = 1337
 
@@ -144,6 +153,10 @@ class IECParameters:
             raise ValueError(f"length must be positive, got {self.length}")
         if self.n_nodes < 2:
             raise ValueError(f"n_nodes must be >= 2, got {self.n_nodes}")
+        if self.rho_CSF <= 0 or self.rho_tissue <= 0:
+            raise ValueError(f"Densities must be positive")
+        if self.rho_tissue < self.rho_CSF:
+            raise ValueError(f"Tissue density should be >= CSF density for buoyancy")
 
     def get_s_array(self) -> NDArray[np.float64]:
         """

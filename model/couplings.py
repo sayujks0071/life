@@ -16,7 +16,12 @@ from numpy.typing import NDArray
 from typing import Tuple
 
 from .core import IECParameters
-from .coherence_fields import generate_coherence_field, compute_gradient
+from .coherence_fields import (
+    generate_coherence_field,
+    compute_gradient,
+    compute_gravity_information_field,
+    compute_buoyancy_information_field,
+)
 
 
 def apply_iec_coupling(
@@ -49,8 +54,17 @@ def apply_iec_coupling(
         >>> kappa_t, E, C, M = apply_iec_coupling(s, params)
         >>> assert np.std(kappa_t) > 0  # Spatial variation from IEC-1
     """
-    # Generate coherence field
-    I_field = generate_coherence_field(s, params)
+    # Generate base coherence field (genetic/CSF)
+    I_genetic = generate_coherence_field(s, params)
+    
+    # Add gravity-dependent component if enabled
+    I_gravity = compute_gravity_information_field(s, params)
+    
+    # Add buoyancy-dependent component if enabled
+    I_buoyancy = compute_buoyancy_information_field(s, params)
+    
+    # Total information field
+    I_field = I_genetic + I_gravity + I_buoyancy
     grad_I = compute_gradient(I_field, s)
 
     # IEC-1: Target curvature bias

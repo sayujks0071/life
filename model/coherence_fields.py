@@ -12,7 +12,7 @@ All fields are dimensionless and normalized.
 
 import numpy as np
 from numpy.typing import NDArray
-from typing import Literal
+from typing import Literal, Tuple
 
 from .core import IECParameters
 
@@ -153,3 +153,99 @@ def compute_gradient_norm(
     """
     grad = compute_gradient(field, s)
     return float(np.sqrt(np.trapz(grad**2, s)) / (s[-1] - s[0]))
+
+
+def compute_gravity_information_field(
+    s: NDArray[np.float64], params: IECParameters
+) -> NDArray[np.float64]:
+    """
+    Compute gravity-dependent information field component.
+
+    I_gravity(s) = χ_g · σ_effective(s)
+    where σ_effective(s) = (ρ_tissue - ρ_CSF) · g · (L - s)
+
+    This represents mechanotransduction: gravitational stress → gene expression.
+
+    Args:
+        s: Spatial coordinates (m), shape (n_nodes,)
+        params: IEC parameters with gravity coupling
+
+    Returns:
+        Gravity-dependent information field I_gravity(s), dimensionless
+    """
+    if not params.include_gravity or params.chi_g == 0.0:
+        return np.zeros_like(s)
+
+    L = params.length
+    rho_effective = params.rho_tissue - params.rho_CSF
+    sigma_effective = rho_effective * params.g * (L - s)
+    
+    # Normalize to dimensionless (scale by typical stress)
+    sigma_normalized = sigma_effective / (rho_effective * params.g * L)
+    
+    return params.chi_g * sigma_normalized
+
+
+def compute_buoyancy_information_field(
+    s: NDArray[np.float64], params: IECParameters
+) -> NDArray[np.float64]:
+    """
+    Compute CSF buoyancy-dependent information field component.
+
+    I_buoyancy(s) = -χ_b · ρ_CSF · g · (L - s) / (ρ_tissue · g · L)
+
+    This represents the counteracting effect of CSF buoyancy on gravitational stress.
+
+    Args:
+        s: Spatial coordinates (m), shape (n_nodes,)
+        params: IEC parameters with buoyancy coupling
+
+    Returns:
+        Buoyancy-dependent information field I_buoyancy(s), dimensionless
+    """
+    if not params.include_buoyancy or params.chi_b == 0.0:
+        return np.zeros_like(s)
+
+    L = params.length
+    # Normalized buoyancy contribution (negative, counteracting gravity)
+    buoyancy_normalized = -params.rho_CSF * params.g * (L - s) / (params.rho_tissue * params.g * L)
+    
+    return params.chi_b * buoyancy_normalized
+
+
+def compute_effective_load(
+    params: IECParameters
+) -> Tuple[float, NDArray[np.float64]]:
+    """
+    Compute effective load accounting for CSF buoyancy.
+
+    P_effective = P_load - P_buoyant
+    where P_buoyant = ρ_CSF · g · A_cross · L
+
+    Also computes distributed load accounting for effective weight:
+    w_effective(s) = (ρ_tissue - ρ_CSF) · g · A_cross
+
+    Args:
+        params: IEC parameters
+
+    Returns:
+        Tuple of (P_effective, w_effective):
+        - P_effective: Effective tip load (N)
+        - w_effective: Effective distributed load (N/m), shape (n_nodes,)
+    """
+    if not params.include_buoyancy:
+        s = params.get_s_array()
+        return params.P_load, np.full(len(s), params.distributed_load)
+
+    # Buoyant force reduces effective load
+    P_buoyant = params.rho_CSF * params.g * params.A_cross * params.length
+    P_effective = params.P_load - P_buoyant
+
+    # Effective distributed load (accounting for buoyancy)
+    rho_effective = params.rho_tissue - params.rho_CSF
+    w_effective = rho_effective * params.g * params.A_cross + params.distributed_load
+
+    s = params.get_s_array()
+    w_array = np.full(len(s), w_effective)
+
+    return P_effective, w_array
