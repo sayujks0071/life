@@ -86,6 +86,11 @@ class IECParameters:
         P_load: Applied tip/end load (N), default 100.0
         distributed_load: Uniform distributed load (N/m), default 0.0
 
+        # Gravitation / countercurvature
+        g_magnitude: Gravitational field strength (m/s^2), default 9.81
+        countercurvature_gain: Dimensionless gain opposing gravity, range [0, 5]
+        countercurvature_orientation: Direction of growth relative to gravity
+
         # Numerical
         random_seed: For reproducibility, default 1337
     """
@@ -119,6 +124,15 @@ class IECParameters:
     P_load: float = field(default=100.0, metadata={"unit": "N"})
     distributed_load: float = field(default=0.0, metadata={"unit": "N/m"})
 
+    # Gravitation / countercurvature
+    g_magnitude: float = field(default=9.81, metadata={"unit": "m/s^2", "range": (0.0, 50.0)})
+    countercurvature_gain: float = field(
+        default=0.0, metadata={"unit": "dimensionless", "range": (0.0, 5.0)}
+    )
+    countercurvature_orientation: Literal["against_gravity", "with_gravity"] = (
+        "against_gravity"
+    )
+
     # Numerical
     random_seed: int = 1337
 
@@ -144,6 +158,10 @@ class IECParameters:
             raise ValueError(f"length must be positive, got {self.length}")
         if self.n_nodes < 2:
             raise ValueError(f"n_nodes must be >= 2, got {self.n_nodes}")
+        if self.countercurvature_orientation not in {"against_gravity", "with_gravity"}:
+            raise ValueError(
+                "countercurvature_orientation must be 'against_gravity' or 'with_gravity'"
+            )
 
     def get_s_array(self) -> NDArray[np.float64]:
         """

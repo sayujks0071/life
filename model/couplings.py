@@ -1,5 +1,5 @@
 """
-IEC coupling mechanisms: IEC-1, IEC-2, IEC-3.
+IEC coupling mechanisms: IEC-1, IEC-2, IEC-3, and countercurvature response.
 
 Implements the three mechanisms linking information fields I(s)
 to mechanical properties:
@@ -7,6 +7,7 @@ to mechanical properties:
 - IEC-1: Target curvature bias κ̄(s) = κ̄_gen + χ_κ · ∂I/∂s
 - IEC-2: Constitutive bias E(s) = E₀(1 + χ_E·I), C(s) = C₀(1 + χ_C·I)
 - IEC-3: Active moment M_act(s) = χ_f · ∇I(s)
+- Countercurvature: Growth-driven rejection of gravitational bending
 
 All couplings include biological justification and literature references.
 """
@@ -17,6 +18,7 @@ from typing import Tuple
 
 from .core import IECParameters
 from .coherence_fields import generate_coherence_field, compute_gradient
+from .countercurvature import apply_countercurvature
 
 
 def apply_iec_coupling(
@@ -28,7 +30,7 @@ def apply_iec_coupling(
     NDArray[np.float64],  # M_active
 ]:
     """
-    Apply all three IEC couplings to modify mechanical properties.
+    Apply IEC couplings and countercurvature response to modify mechanical properties.
 
     This is the main entry point for coupling information fields to mechanics.
 
@@ -41,7 +43,7 @@ def apply_iec_coupling(
         - kappa_target: Target curvature profile (1/m), shape (n_nodes,)
         - E_field: Effective Young's modulus (Pa), shape (n_nodes,)
         - C_field: Effective damping coefficient (N·s/m), shape (n_nodes,)
-        - M_active: Active moment field (N·m), shape (n_nodes,)
+        - M_active: Active moment field including countercurvature response (N·m)
 
     Examples:
         >>> params = IECParameters(chi_kappa=0.04, I_mode="step")
@@ -61,6 +63,9 @@ def apply_iec_coupling(
 
     # IEC-3: Active moment
     M_active = apply_iec3_active_moment(grad_I, params)
+
+    # Countercurvature hypothesis: oppose gravitational bending
+    kappa_target, M_active = apply_countercurvature(s, params, kappa_target, M_active)
 
     return kappa_target, E_field, C_field, M_active
 

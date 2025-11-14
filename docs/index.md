@@ -7,6 +7,7 @@ Welcome to the documentation for the **Spinal Modes** project, implementing the 
 - [CLI Reference](cli.md) - Command-line interface documentation
 - [Figure Guide](figures.md) - Generated figures and interpretation
 - [Manuscript](manuscript/SpinalCountercurvature_IEC.md) - Full research manuscript
+- [Countercurvature Model Notes](Countercurvature_Model_Notes.md) - Detailed explanation of growth opposing gravity
 
 ## Overview
 
