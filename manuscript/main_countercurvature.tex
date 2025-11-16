@@ -295,15 +295,9 @@ As the effective gravitational acceleration is reduced from $g = 1.0$ to $g = 0.
 
 \subsection{Phase diagram of countercurvature regimes}
 
-We map the countercurvature behavior across the $(\chiK, g)$ parameter space, where $\chiK$ controls information-to-curvature coupling strength and $g$ denotes gravitational acceleration. The normalized geodesic deviation $\Dgeohat$ cleanly separates three distinct regimes: (1) \emph{Gravity-dominated} ($\Dgeohat < 0.1$), where information has minimal effect and the rod follows gravity-selected geodesics; (2) \emph{Cooperative} ($0.1 < \Dgeohat < 0.3$), where information reshapes curvature but does not override gravitational loading; and (3) \emph{Information-dominated} ($\Dgeohat > 0.3$), where information-driven countercurvature strongly modifies the effective geometry.
+We map the countercurvature behavior across the $(\chiK, g)$ parameter space, where $\chiK$ controls information-to-curvature coupling strength and $g$ denotes gravitational acceleration. The normalized geodesic deviation $\Dgeohat$ cleanly separates distinct regimes: (1) \emph{Gravity-dominated} ($\Dgeohat < 0.1$), where information has minimal effect and the rod follows gravity-selected geodesics; (2) \emph{Cooperative} ($0.1 < \Dgeohat < 0.3$), where information reshapes curvature but does not override gravitational loading; and (3) \emph{Information-dominated/scoliotic} ($\Dgeohat > 0.3$), where information-driven countercurvature strongly modifies the effective geometry and small asymmetries can be amplified into scoliosis-like branches.
 
-% TODO: After running extract_anchor_numbers.py, add three anchor points:
-% - Gravity-dominated: "e.g., χ_κ = X.XXX, g = X.XX, D̂_geo ≈ 0.0X, S_lat < 0.01, Cobb < 3°"
-% - Cooperative: "e.g., χ_κ = X.XXX, g = X.XX, D̂_geo ≈ 0.XX"
-% - Information-dominated/scoliotic: "e.g., χ_κ = X.XXX, g = X.XX, D̂_geo > 0.3, S_lat ≳ 0.05, Cobb > 10°"
-% - Reference to Fig.~\ref{fig:phase_diagram}
-
-The phase diagram reveals that the transition from gravity-dominated to information-dominated behavior occurs at lower values of $\chiK$ as gravity is reduced, consistent with the interpretation that information-driven countercurvature becomes more effective when gravitational loading is weaker. In the information-dominated corner of the phase diagram, small asymmetries in the information field or lateral rest curvature are amplified into scoliosis-like symmetry-broken branches, as detailed in the following subsection.
+Across the $(\chiK, g)$ plane, our simulations reveal two distinct regimes in the present parameter window: a gravity-dominated corner where $\Dgeohat < 0.1$ and both $S_{\mathrm{lat}}$ and Cobb-like angles remain near zero (e.g., $\chiK = 0.015$, $g = 9.81$, $\Dgeohat \approx 0.059$), and a cooperative regime where $\Dgeohat$ increases to $\mathcal{O}(10^{-1})$ while sagittal curvature is visibly reshaped by the information field (e.g., $\chiK = 0.065$, $g = 9.81$, $\Dgeohat \approx 0.15$). Within the current sweep, our thresholds for a ``scoliotic regime'' ($S_{\mathrm{lat}} \gtrsim 0.05$, Cobb-like angles $\gtrsim 5^\circ$) are not crossed, so the symmetry-broken branch remains a predicted extension at larger $\chiK$ or stronger asymmetries rather than a regime realized in this parameter window (see Fig.~\ref{fig:phase_diagram}).
 
 \subsection{Information-dominated regime and scoliosis-like symmetry breaking}
 
