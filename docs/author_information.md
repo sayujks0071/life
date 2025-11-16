@@ -9,6 +9,8 @@ Hyderabad, India
 
 **Email:** dr.sayujkrishnan@gmail.com
 
+**ORCID:** https://orcid.org/0009-0009-5523-9979
+
 ---
 
 ## Article Type
