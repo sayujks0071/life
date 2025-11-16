@@ -41,19 +41,23 @@ def extract_microgravity_numbers():
         row = df[df["gravity"] == closest_g].iloc[0]
         selected_rows.append((closest_g, row))
     
-    print("g (m/s²) | Passive Energy | D_geo_norm | Notes")
+    # Check available columns
+    has_passive_energy = "passive_energy" in df.columns or "E_passive" in df.columns
+    has_countercurvature = "countercurvature_energy" in df.columns
+    
+    print("g (m/s²) | D_geo_norm | Countercurvature Energy | Notes")
     print("-" * 70)
     
     results = []
     for g, row in selected_rows:
-        passive_energy = row.get("passive_energy", row.get("E_passive", np.nan))
         D_geo_norm = row.get("D_geo_norm", np.nan)
+        countercurvature_energy = row.get("countercurvature_energy", np.nan)
         
-        print(f"  {g:6.2f}  | {passive_energy:13.3e} | {D_geo_norm:10.3f} |")
+        print(f"  {g:6.2f}  | {D_geo_norm:10.3f} | {countercurvature_energy:20.3e} |")
         results.append({
             "g": g,
-            "passive_energy": passive_energy,
             "D_geo_norm": D_geo_norm,
+            "countercurvature_energy": countercurvature_energy,
         })
     
     # Calculate ratios
@@ -61,26 +65,24 @@ def extract_microgravity_numbers():
         g_high = results[0]
         g_low = results[-1]
         
-        energy_ratio = g_low["passive_energy"] / g_high["passive_energy"]
-        energy_percent_change = (1 - energy_ratio) * 100
-        
         D_geo_ratio = g_low["D_geo_norm"] / g_high["D_geo_norm"]
         D_geo_percent_change = abs(1 - D_geo_ratio) * 100
         
         print("\n" + "-" * 70)
         print("KEY METRICS:")
-        print(f"  Passive energy collapse: {energy_percent_change:.1f}% reduction")
-        print(f"    (from {g_high['passive_energy']:.3e} to {g_low['passive_energy']:.3e})")
         print(f"  D_geo_norm persistence: {D_geo_percent_change:.1f}% change")
         print(f"    (from {g_high['D_geo_norm']:.3f} to {g_low['D_geo_norm']:.3f}, ratio = {D_geo_ratio:.2f})")
+        if not np.isnan(g_high["countercurvature_energy"]) and not np.isnan(g_low["countercurvature_energy"]):
+            energy_ratio = g_low["countercurvature_energy"] / g_high["countercurvature_energy"]
+            print(f"  Countercurvature energy ratio: {energy_ratio:.2f}×")
         
         print("\n" + "="*70)
         print("MANUSCRIPT SENTENCE:")
         print("="*70)
         print(
             f"As g decreases from {g_high['g']:.1f} to {g_low['g']:.2f}, "
-            f"passive curvature energy falls by {energy_percent_change:.0f}%, "
-            f"while D̂_geo changes by only {D_geo_percent_change:.1f}%, "
+            f"D̂_geo changes by only {D_geo_percent_change:.1f}% "
+            f"(from {g_high['D_geo_norm']:.3f} to {g_low['D_geo_norm']:.3f}), "
             f"indicating that the information-selected 'spinal wave' is largely "
             f"preserved in microgravity."
         )
