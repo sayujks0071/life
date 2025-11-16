@@ -92,19 +92,14 @@ An Information--Cosserat Framework for Spinal Geometry}
 \maketitle
 
 \begin{abstract}
-% Paste your ~275-word abstract here, or the short version if required.
-% See: docs/paper_draft_abstract.md
+Living systems routinely generate and maintain structure against gravity, from plant stems that grow upward to vertebrate spines that adopt robust S-shaped profiles. Here we develop a quantitative framework in which such behavior is interpreted as \emph{biological countercurvature}: information-driven modification of the effective geometry experienced by a body in a gravitational field. We combine an information--elasticity coupling (IEC) model of spinal patterning with three-dimensional Cosserat rod mechanics implemented in PyElastica, treating the rod in gravity as an analog spacetime and the IEC information field $\Ifield$ as a source of effective countercurvature.
 
-Living systems routinely generate and maintain structure against gravity, from plant stems that grow upward to vertebrate spines that adopt robust S-shaped profiles. Here we develop a quantitative framework in which such behaviour is interpreted as \emph{biological countercurvature}: information-driven modification of the effective geometry experienced by a body in a gravitational field. We combine an information--elasticity coupling (IEC) model of spinal patterning with three-dimensional Cosserat rod mechanics implemented in PyElastica, treating the rod in gravity as an analog spacetime and the IEC information field $\Ifield$ as a source of effective countercurvature.
-
-On the body axis $s$, we define a biological metric $\metricEff$, where the conformal factor $\gEff(s)$ depends on the local amplitude and gradient of $\Ifield$. Using this countercurvature metric, we introduce a normalized geodesic curvature deviation $\Dgeohat$ that measures how far information-shaped equilibrium curvature profiles depart from the corresponding gravity-selected profiles. Across a set of canonical simulations---human-like spinal S-curves, plant-like stems, and microgravity adaptation---we show that $\Dgeohat$ cleanly separates gravity-dominated, cooperative, and information-dominated regimes in $(\chiK, g)$ space, where $\chiK$ controls information-to-curvature coupling and $g$ denotes gravitational strength.
+On the body axis $s$, we define a biological metric $\metricEff$, where the conformal factor $\gEff(s)$ depends on the local amplitude and gradient of $\Ifield$. Using this countercurvature metric, we introduce a normalized geodesic curvature deviation $\Dgeohat$ that measures how far information-shaped equilibrium curvature profiles depart from the corresponding gravity-selected profiles. Across canonical simulations---human-like spinal S-curves, plant-like stems, and microgravity adaptation---we show that $\Dgeohat$ cleanly separates gravity-dominated, cooperative, and information-dominated regimes in $(\chiK, g)$ space, where $\chiK$ controls information-to-curvature coupling and $g$ denotes gravitational strength.
 
 To probe pathology within the same framework, we introduce a small, localized thoracic asymmetry in the information field or lateral rest curvature and track coronal-plane deformations. In the gravity-dominated regime, this perturbation produces negligible lateral deviation. In contrast, in the information-dominated corner of the phase diagram, the same small asymmetry is amplified into a scoliosis-like symmetry-broken branch, characterized by increased lateral displacement and Cobb-like angles, together with large $\Dgeohat$. These results suggest that normal sagittal curvature and scoliosis-like patterns can emerge from a single IEC--Cosserat model operating in different countercurvature regimes, providing an analog-gravity perspective on how biological information reshapes equilibrium geometry in a gravitational field.
 \end{abstract}
 
 \section*{Significance}
-% Paste your significance paragraph here.
-% See: docs/paper_draft_significance.md
 
 Why does life so often grow and stand ``against'' gravity? In this work we develop a concrete mechanical model where developmental and neural information fields reshape the equilibrium geometry of a spine-like structure in a gravitational field. Using a Cosserat rod in gravity as an analog spacetime, and an information--elasticity coupling as a source of ``biological countercurvature,'' we show how normal human-like S-shaped spinal profiles, plant-like upward growth, microgravity adaptation, and scoliosis-like lateral deviations can all be generated within a single framework. A metric derived from the information field lets us treat normal and pathological curvatures as different ``geodesics'' in an information-modified geometry. This provides a quantitative language for how biological information can stabilize, redirect, or destabilize the shapes that gravity alone would select.
 
@@ -115,21 +110,12 @@ Why does life so often grow and stand ``against'' gravity? In this work we devel
 % 1. Introduction
 % ---------------------------------------------------------------------------
 \section{Introduction}
-% - Motivation: life vs gravity, spine, plants, microgravity.
-% - Biological countercurvature idea (high-level).
-% - Analog gravity viewpoint: Cosserat rod in gravity as "spacetime".
-% - Overview of contributions.
 
-Living systems do not simply obey gravity; they appear to negotiate with it. Human spines adopt robust S-shaped profiles, plant stems grow upward, and neural structures adapt under microgravity. 
+Living systems do not simply obey gravity; they appear to negotiate with it. Human spines adopt robust S-shaped profiles, plant stems grow upward, and neural structures adapt under microgravity. These behaviors suggest that biological information---developmental patterning, neural control, or genetic programs---actively reshapes the equilibrium geometry that gravity alone would select.
 
-% TODO: Paste full introduction from docs/paper_draft_intro.md (if exists)
-% or draft based on:
-% - Problem: Life vs gravity
-% - Hypothesis: Biological countercurvature
-% - Method: IEC + Cosserat + metric
-% - Preview: Regimes, scoliosis branch
+We propose that such behavior can be understood through \emph{biological countercurvature}: information-driven modification of the effective geometry experienced by a body in a gravitational field. To make this concrete, we combine an information--elasticity coupling (IEC) model with three-dimensional Cosserat rod mechanics, treating the rod in gravity as an analog spacetime and the IEC information field as a source of effective countercurvature. This analog-gravity perspective provides a quantitative framework for understanding how biological information can stabilize, redirect, or destabilize curvature modes in a gravitational background.
 
-% ...
+Our framework introduces three key elements: (1) a biological metric $\metricEff$ derived from the information field $\Ifield$ and its gradient, (2) a normalized geodesic curvature deviation $\Dgeohat$ that quantifies how information reshapes equilibrium curvature relative to gravity-selected profiles, and (3) a phase diagram mapping distinct countercurvature regimes---gravity-dominated, cooperative, and information-dominated---as a function of information-coupling strength and gravitational loading. We show that normal sagittal spinal curvature and scoliosis-like lateral deviations emerge as different regimes of the same unified model, providing a quantitative bridge between information processing, mechanics, and geometry in living systems.
 
 % ---------------------------------------------------------------------------
 % 2. Methods
@@ -137,40 +123,18 @@ Living systems do not simply obey gravity; they appear to negotiate with it. Hum
 \section{Methods}
 
 \subsection{Information--Elasticity Coupling (IEC) and beam model}
-% Describe:
-% - Baseline IEC model along the body axis.
-% - Definition of I(s), χ parameters, κ_gen(s).
-% - Existing BVP / beam solver.
 
-We consider a one-dimensional body axis parameterized by arc-length $s \in [0,L]$, along which an information field $\Ifield$ is defined. 
+We consider a one-dimensional body axis parameterized by arc-length $s \in [0,L]$, along which an information field $\Ifield$ is defined. The IEC model couples this information field to mechanical properties: rest curvature $\kappa_{\mathrm{rest}}(s)$, effective stiffness $E_{\mathrm{eff}}(s)$, and active moments $M_{\mathrm{info}}(s)$. The coupling is controlled by three dimensionless parameters: $\chiK$ (information-to-curvature coupling), $\chi_E$ (information-to-stiffness coupling), and $\chi_M$ (information-to-active-moment coupling). For the spine-like configuration, we use a canonical information field that peaks in lumbar and cervical regions, corresponding to regions of high neural activity, and a rest curvature $\kappa_{\mathrm{gen}}(s)$ chosen to match typical human sagittal spinal curvature.
 
-% TODO: Paste from docs/paper_draft_methods_iec.md or expand:
-% - Information field I(s) definition
-% - IEC coupling parameters (χ_κ, χ_E, χ_M)
-% - Rest curvature κ_gen(s) for spine
-% - Beam/BVP solver (existing implementation)
-
-% ...
+The baseline beam model solves the static equilibrium of a cantilever beam under gravity, with boundary conditions of a clamped base and free end. The information-coupled rest curvature, effective stiffness, and active moments modify the equilibrium solution relative to the passive (gravity-only) case.
 
 \subsection{Cosserat rod formulation and PyElastica implementation}
-% Describe:
-% - Cosserat rod equations (brief).
-% - How you implement them with PyElastica.
-% - Boundary conditions and gravity.
 
-We upgrade the IEC beam model to a full three-dimensional Cosserat rod in gravity using PyElastica~\cite{pyelastica2021}. 
+We upgrade the IEC beam model to a full three-dimensional Cosserat rod in gravity using PyElastica~\cite{pyelastica2021}. The Cosserat rod formulation accounts for bending, twisting, and stretching along the rod axis, with director frames tracking the orientation of cross-sections. The rod is discretized into $n$ elements, each with its own rest curvature, stiffness, and material properties.
 
-% TODO: Expand with:
-% - Cosserat rod mechanics (brief overview)
-% - PyElastica implementation details
-% - Boundary conditions (clamped base, free end)
-% - Gravity application
-% - Time integration
-
-% ...
+Boundary conditions consist of a clamped base (position and orientation fixed) and a free end. Gravity is applied as a body force along the rod. The information-coupled properties---rest curvature $\kappa_{\mathrm{rest}}(s)$, effective stiffness $E_{\mathrm{eff}}(s)$, and active moments $M_{\mathrm{info}}(s)$---are interpolated onto the rod discretization and applied element-wise. Time integration uses PyElastica's standard Position-Verlet scheme, with damping to reach static equilibrium.
 
 \subsection{Biological countercurvature metric and geodesic curvature deviation}
-% Here you insert your Mathematical Box for g_eff and D_geo.
 
 \begin{mathbox}[Countercurvature metric and geodesic curvature deviation]
 
@@ -198,56 +162,23 @@ where $\epsilon$ is a small regularization parameter.
 
 \end{mathbox}
 
-% Then expand in regular text: normalization of I, definition of φ(s), D_geo, D_geohat.
-
-The countercurvature metric $\gEff(s)$ weights regions of high information density or sharp information gradients more heavily in the effective geometry, encoding where ``biological countercurvature of spacetime'' is most active. The geodesic curvature deviation $\Dgeohat$ quantifies how far information-driven equilibrium configurations depart from the gravity-selected geodesics, providing a quantitative measure of information-driven structure maintenance.
+The countercurvature metric $\gEff(s)$ weights regions of high information density or sharp information gradients more heavily in the effective geometry, encoding where biological countercurvature is most active. The geodesic curvature deviation $\Dgeohat$ quantifies how far information-driven equilibrium configurations depart from the gravity-selected geodesics, providing a quantitative measure of information-driven structure maintenance.
 
 \subsection{Numerical experiments}
 
 \subsubsection{Spine-like S-curves}
-% - Define canonical spinal IEC pattern.
-% - How you set χ_κ, gravity, and boundary conditions.
 
-For the spine-like configuration, we use a canonical spinal information field $\Ifield$ that peaks in lumbar and cervical regions, corresponding to regions of high neural activity. The rest curvature $\kappa_{\mathrm{gen}}(s)$ is chosen to match typical human sagittal spinal curvature. We sweep the information--curvature coupling parameter $\chiK \in [0, 0.05]$ while maintaining fixed gravity $g = 9.81$~\si{\meter\per\second\squared}.
-
-% TODO: Expand with:
-% - Specific I(s) pattern (lumbar/cervical peaks)
-% - κ_gen(s) formula
-% - Boundary conditions
-% - Parameter ranges
-
-% ...
+For the spine-like configuration, we use a canonical spinal information field $\Ifield$ that peaks in lumbar and cervical regions, corresponding to regions of high neural activity. The rest curvature $\kappa_{\mathrm{gen}}(s)$ is chosen to match typical human sagittal spinal curvature. We sweep the information--curvature coupling parameter $\chiK \in [0, 0.05]$ while maintaining fixed gravity $g = 9.81$~\si{\meter\per\second\squared}. Boundary conditions consist of a clamped base and free end.
 
 \subsubsection{Plant-like upward growth}
-% - Rod clamped at base, sag vs info-driven upward bending.
 
-For the plant-like configuration, we compare a passive rod (sagging under gravity) to an information-driven rod that bends upward. The information field $\Ifield$ is chosen to promote upward curvature, and we vary $\chiK$ to explore the transition from passive sag to active upward growth.
-
-% TODO: Expand with:
-% - I(s) pattern for upward growth
-% - Comparison metrics (D_geohat, L2 norm)
-% - Visualization of centerline shapes
-
-% ...
+For the plant-like configuration, we compare a passive rod (sagging under gravity) to an information-driven rod that bends upward. The information field $\Ifield$ is chosen to promote upward curvature, and we vary $\chiK$ to explore the transition from passive sag to active upward growth. The geodesic deviation $\Dgeohat$ quantifies this transition, with $\Dgeohat < 0.1$ indicating gravity-dominated sag and $\Dgeohat > 0.2$ indicating strong information-driven upward bending.
 
 \subsubsection{Microgravity adaptation}
-% - Sequence of g values, same I(s), compare D_geohat across g.
 
 We run the same information field $\Ifield$ across a range of gravity levels $g \in \{1.0, 0.5, 0.1, 0.05, 0.01\}$ times Earth gravity. For each $g$, we compute both the passive (gravity-only) curvature energy and the normalized geodesic deviation $\Dgeohat$, demonstrating that information-driven structure persists as gravitational loading is reduced.
 
-% TODO: Expand with:
-% - Specific g values used
-% - Passive energy calculation
-% - D_geohat persistence quantification
-
-% ...
-
 \subsection{Thoracic asymmetry and scoliosis metrics}
-% Paste / adapt your Methods paragraph for asymmetry + S_lat + Cobb-like angle.
-% See: docs/paper_draft_methods_scoliosis.md
-
-% Optional: Analog gravity interpretation can also be placed here as a bridge
-% to Discussion, or moved to Discussion section.
 
 To probe scoliosis-like symmetry breaking, we introduced a small left--right asymmetry in the model spine. The body axis was discretized as a one-dimensional arc-length coordinate $s \in [0,L]$, which we normalized to $\hat{s} \in [0,1]$. A localized thoracic bump was defined on this normalized coordinate as
 \begin{equation}
@@ -272,20 +203,11 @@ with $L_{\mathrm{eff}} = \max_s z(s) - \min_s z(s)$ the effective longitudinal s
 
 \subsection{Gravity-selected vs information-selected curvature modes}
 
-% Information-selected spinal curvature as a sine-like mode against gravity.
 In the spine-like configuration, the information field $\Ifield$ generates a smooth S-shaped curvature profile $\kappaInfo(s)$ that is well approximated by a single sign-changing mode along the cranio--caudal axis. In contrast, the purely gravity-selected solution $\kappaPassive(s)$ tends toward a monotonic, C-shaped sag. The stabilized sagittal S-curve is dominated by a single smooth sign-changing mode: $\kappaInfo(s)$ exhibits only one sign change along the axis and a max-to-RMS curvature ratio of $\approx 1.81$, consistent with a sine-like counter-curvature profile against gravity. The normalized geodesic curvature deviation between the gravity-selected and information-selected solutions is $\Dgeohat \approx 0.14$, confirming that the information-driven S-curve is not a small perturbation of the passive sag. In this sense, the mature human spine behaves as a sinusoidal counter-curvature mode stabilized against gravity by information--elasticity coupling.
 
-% Plant-like upward growth experiment
 For the plant-like configuration, we compare a passive rod (sagging under gravity) to an information-driven rod that bends upward. The information field $\Ifield$ is chosen to promote upward curvature, and we vary $\chiK$ to explore the transition from passive sag to active upward growth. The geodesic deviation $\Dgeohat$ quantifies this transition, with $\Dgeohat < 0.1$ indicating gravity-dominated sag and $\Dgeohat > 0.2$ indicating strong information-driven upward bending.
 
-% TODO: Expand with:
-% - Plant experiment: upward growth vs sag
-% - D_geohat as regime indicator
-% - Quantitative comparison
-
 \subsection{Persistence of information-driven shape in microgravity}
-% - Show how passive curvature energy falls with g, but D_geohat remains.
-% - Reference the relevant panel in the 4-panel figure.
 
 As gravitational loading is reduced, the passive (gravity-only) curvature energy collapses, yet the information-selected structure persists. We ran the same information field $\Ifield$ across a range of gravity levels $g \in \{1.0, 0.5, 0.1, 0.05, 0.01\}$ times Earth gravity. For each $g$, we computed both the passive curvature energy and the normalized geodesic deviation $\Dgeohat$ between passive and information-driven solutions.
 
@@ -311,20 +233,12 @@ These results suggest that scoliosis-like patterns can emerge naturally when the
 % 4. Discussion
 % ---------------------------------------------------------------------------
 \section{Discussion}
-% - Biological interpretation: how information reshapes gravity-selected modes.
-% - Relation to scoliosis and microgravity adaptation.
-% - Analog gravity view: Cosserat rod + metric vs true spacetime curvature.
-% - Conceptual links to consciousness (carefully, not over-claiming).
-
-% TODO: Expand with content from:
-% - Biological interpretation of regimes
-% - Analog-gravity framing
-% - Scoliosis implications
-% - Future directions
 
 \subsection{Biological interpretation of countercurvature regimes}
 
-% ...
+The phase diagram reveals how biological information and gravity interact to shape equilibrium curvature. In the gravity-dominated regime, the rod follows the geodesics selected by gravity alone, with information playing a minimal role. As information--curvature coupling increases, the system transitions to a cooperative regime where information reshapes curvature while still operating within the gravitational background. In the information-dominated regime, information-driven countercurvature becomes the dominant factor, strongly modifying the effective geometry and enabling symmetry-breaking behaviors such as scoliosis-like lateral deviations.
+
+This framework provides a quantitative language for understanding how developmental and neural information can stabilize, redirect, or destabilize curvature modes in a gravitational field. The normalized geodesic curvature deviation $\Dgeohat$ serves as a quantitative measure of this interaction, allowing us to map distinct regimes and predict transitions between them.
 
 \subsection{Growth against gravity as a standing counter-curvature mode}
 
@@ -334,42 +248,40 @@ Our results suggest that the adult sagittal spine can be interpreted as a standi
 
 Our use of the term ``countercurvature of spacetime'' is explicitly analog rather than fundamental. In this work, the Cosserat rod in a uniform gravitational field plays the role of an effective spacetime, and the information field $\Ifield$ modifies the metric $\metricEff$ along the body axis. The geodesic curvature deviation $\Dgeohat$ then measures how strongly information reshapes the equilibrium geometry relative to the gravity-selected solution, in close analogy to how additional fields can modify geodesics in general relativity. We do not propose any modification of Einstein's equations or claim that biological information directly curves physical spacetime. Instead, we use this analog-gravity language to organize and quantify how developmental and neuromuscular information can select, stabilize, or destabilize curvature modes of the spine in a gravitational background.
 
-% ...
-
 \subsection{Implications for scoliosis and spinal control}
 
-% ...
+The framework suggests that scoliosis-like patterns can emerge when the spine operates in an information-dominated countercurvature regime, where small asymmetries are amplified into pronounced lateral deviations. This provides a quantitative perspective on how developmental or neuromuscular asymmetries might lead to pathological curvature patterns. The phase diagram indicates that such behavior is most likely when information--curvature coupling is strong and gravitational loading is moderate or reduced, suggesting potential mechanisms for scoliosis development and progression.
+
+The unified framework also suggests that normal sagittal curvature and scoliosis-like lateral deviations are not fundamentally different phenomena, but rather different regimes of the same information--elasticity coupling mechanism. This perspective may inform therapeutic strategies that target the information--curvature coupling itself, rather than treating normal and pathological curvature as separate problems.
 
 % ---------------------------------------------------------------------------
 % 5. Limitations and Outlook
 % ---------------------------------------------------------------------------
 \section{Limitations and Outlook}
-% Paste / adapt your limitations + future directions text.
-% See: docs/paper_draft_limitations_outlook.md
 
-% TODO: Paste full text from paper_draft_limitations_outlook.md
+Several limitations should be noted. First, the information field $\Ifield$ is phenomenological rather than derived from first principles; its functional form and coupling parameters are chosen to match observed spinal curvature patterns. Second, the countercurvature metric $\gEff(s)$ is a heuristic construction that encodes the hypothesis that information density and gradients modify effective geometry, but the specific weighting parameters ($\beta_1$, $\beta_2$) are empirical choices. Third, the current implementation uses a simplified beam model for most experiments, with full 3D Cosserat rod mechanics applied primarily to the scoliosis analysis; future work should extend the full 3D treatment to all experiments.
+
+Second, the normalized geodesic curvature deviation $\Dgeohat$ can inflate as gravity approaches zero because the denominator (base energy) collapses while $\Dgeo$ may remain finite. This is expected behavior but should be interpreted with caution in the microgravity limit.
+
+Third, the scoliosis metrics ($S_{\mathrm{lat}}$, Cobb-like angles) are defined for coronal-plane coordinates, but in 2D beam models we use a ``pseudo-coronal'' projection where the sagittal $x$-coordinate is treated as lateral deviation. This is an approximation; full 3D Cosserat rod models provide actual coronal-plane coordinates.
+
+Future directions include: (1) extending the framework to experimental data from microgravity experiments and clinical scoliosis measurements, (2) deriving the information field from first principles based on developmental patterning or neural control mechanisms, (3) exploring the relationship between information--curvature coupling and known biological processes such as HOX/PAX patterning or neuromuscular control, and (4) developing therapeutic strategies that target the information--curvature coupling itself.
 
 % ---------------------------------------------------------------------------
 % 6. Conclusion
 % ---------------------------------------------------------------------------
 \section{Conclusion}
-% Short recap of:
-% - Biological countercurvature concept.
-% - IEC + Cosserat + metric + D_geohat.
-% - Normal vs scoliosis-like regimes.
-% - Future experimental / theoretical directions.
 
-% TODO: Write concise conclusion summarizing:
-% - Main contributions
-% - Key results
-% - Future directions
+We have developed a quantitative framework for biological countercurvature that unifies normal sagittal spinal curvature and scoliosis-like lateral deviations within a single information--elasticity coupling model. The framework introduces a biological metric $\metricEff$ derived from information fields, a normalized geodesic curvature deviation $\Dgeohat$ that quantifies information-driven departures from gravity-selected profiles, and a phase diagram mapping distinct countercurvature regimes. Our results demonstrate that information-driven structure maintenance persists in microgravity, that normal and pathological curvature patterns emerge as different regimes of the same unified model, and that the framework provides a quantitative language for understanding how biological information reshapes equilibrium geometry in a gravitational field.
+
+The analog-gravity perspective---treating the rod in gravity as an effective spacetime and information fields as sources of countercurvature---provides a conceptual bridge between information processing, mechanics, and geometry in living systems. Future work should extend the framework to experimental data, derive information fields from first principles, and explore therapeutic strategies that target the information--curvature coupling itself.
 
 % ---------------------------------------------------------------------------
 % Code and Data Availability
 % ---------------------------------------------------------------------------
 \section*{Code Availability}
 
-All simulations and analyses in this work were performed using the open-source Python package \texttt{spinalmodes} (version 0.1.0), available at \url{<your GitHub URL>}. The package implements the information--elasticity coupling (IEC) beam solver, the countercurvature metric, geodesic curvature deviation, scoliosis metrics, and PyElastica-based Cosserat rod simulations used in this study.
+All simulations and analyses in this work were performed using the open-source Python package \texttt{spinalmodes} (version 0.1.0), available at \url{https://github.com/sayujks0071/life}. The package implements the information--elasticity coupling (IEC) beam solver, the countercurvature metric, geodesic curvature deviation, scoliosis metrics, and PyElastica-based Cosserat rod simulations used in this study.
 
 Key functions include \texttt{compute\_countercurvature\_metric} and \texttt{geodesic\_curvature\_deviation} (module \texttt{spinalmodes.countercurvature.api}), scoliosis metrics \texttt{compute\_scoliosis\_metrics} and \texttt{classify\_scoliotic\_regime}, and the IEC solver \texttt{solve\_beam\_static}. All experiment scripts (microgravity, spine modes, plant growth, phase diagram, and scoliosis regime) are provided under \texttt{src/spinalmodes/experiments/countercurvature/}, and can be invoked via documented command-line interfaces and shell helpers. A minimal end-to-end example is provided in \texttt{examples/quickstart.py} and \texttt{examples/quickstart.ipynb}.
 
