@@ -3,6 +3,10 @@ message: "If you use this software, please cite it as below."
 authors:
   - family-names: "Krishnan"
     given-names: "Sayuj"
+    name-particle: "S"
+    name-suffix: "MBBS, DNB (Neurosurgery)"
+    affiliation: "Yashoda Hospitals, Malakpet, Hyderabad, India"
+    email: "dr.sayujkrishnan@gmail.com"
     orcid: "https://orcid.org/0000-0000-0000-0000"  # TODO: Add your ORCID
 title: "Biological Countercurvature of Spacetime: An Information--Cosserat Framework for Spinal Geometry"
 version: 0.1.0
