@@ -1,101 +1,98 @@
-# Key Claims: Reusable Bullets for PRX Life Submission
+# Key Claims Bullets
 
-## 3-4 Bullet Version (For Submission Forms, Talks, Emails)
+## PRX Life Submission-Ready Version
 
-### Version 1: Concise (PRX Life Submission Form)
-
-1. **Unified framework**: Normal sagittal spinal curvature and scoliosis-like lateral deviations emerge from a single Information-Elasticity Coupling (IEC) model operating in different countercurvature regimes, providing a unified description of both normal and pathological spinal geometry.
-
-2. **Quantitative regime mapping**: We map three distinct countercurvature regimes—gravity-dominated (D̂_geo < 0.1), cooperative (0.1 < D̂_geo < 0.3), and information-dominated (D̂_geo > 0.3)—in a phase diagram spanning information-coupling strength (χ_κ) and gravitational loading (g), with explicit quantitative thresholds.
-
-3. **Scoliosis as symmetry breaking**: In the information-dominated regime, small thoracic asymmetries (ε_asym = 5%) are amplified into pronounced lateral deviations (S_lat ≈ 0.12, Cobb-like angles > 10°), demonstrating that scoliosis-like patterns emerge as a symmetry-broken branch of the same unified model.
-
-4. **Fully reproducible platform**: All simulations, metrics, and experiments are implemented in the open-source Python package `spinalmodes` (v0.1.0), with a documented public API, versioned releases, and scripted experiments that enable direct validation and extension of the framework.
+**Use this version for:**
+- PRX Life submission form
+- Cover letter
+- Conference abstracts
+- Talks and presentations
 
 ---
 
-### Version 2: More Technical (For Talks, Detailed Emails)
+### 1. Information-selected spinal S-curve as a sine-like mode against gravity.
 
-1. **Information-driven countercurvature**: We introduce a biological metric g_eff(s) = exp(2φ(s)) derived from information fields I(s) and their gradients, treating slender biological structures as Cosserat rods in an information-modified effective geometry. The normalized geodesic curvature deviation D̂_geo quantifies how information reshapes equilibrium curvature relative to gravity-selected profiles.
-
-2. **Phase diagram of countercurvature regimes**: We map three distinct regimes—gravity-dominated (D̂_geo < 0.1), cooperative (0.1 < D̂_geo < 0.3), and information-dominated (D̂_geo > 0.3)—as a function of information-coupling strength (χ_κ) and gravitational loading (g), demonstrating that information-driven structure maintenance persists independently of gravitational strength (D̂_geo remains ≈0.25 while passive curvature energy collapses by 95% as g → 0.01).
-
-3. **Scoliosis as symmetry breaking in information-dominated regime**: By introducing a small, localized thoracic asymmetry (ε_asym = 0.05), we show that the same IEC–Cosserat framework produces a scoliosis-like symmetry-broken branch only in the information-dominated regime (D̂_geo > 0.3, χ_κ > 0.06), characterized by lateral scoliosis index S_lat ≈ 0.12 and Cobb-like angles > 10°, representing a 2-3× amplification relative to the gravity-dominated regime.
-
-4. **Reproducible computational framework**: All models, metrics, and experiments are implemented in the open-source Python package `spinalmodes` (v0.1.0), which provides a stable public API (`spinalmodes.countercurvature.api`) for countercurvature metrics, geodesic curvature deviation, scoliosis indices, and PyElastica-based 3D rod simulations, with versioned releases, comprehensive documentation, and scripted experiments that enable direct validation and extension.
+We show that the information-driven sagittal S-curve is dominated by a single smooth, sign-changing mode: $\kappa_{I}(s)$ exhibits only one sign change along the cranio--caudal axis and a max-to-RMS curvature ratio of $\approx 1.81$, with a normalized geodesic curvature deviation $\widehat{D}_{\mathrm{geo}} \approx 0.14$ from the gravity-selected sag. This indicates that the mature spine behaves as a stabilized, sine-like counter-curvature mode rather than a small perturbation of a passive beam.
 
 ---
 
-### Version 3: Conceptual Emphasis (For Broad Audiences)
+### 2. Persistence of the "spinal wave" in microgravity.
 
-1. **Analog gravity perspective on living structure**: We treat slender biological structures (spines, plant stems) as Cosserat rods in a gravitational field, with information fields I(s) acting as sources of "biological countercurvature" that reshape the effective geometry. This analog-gravity framework provides a quantitative bridge between information processing, mechanics, and geometry in living systems.
-
-2. **Unified model for normal and pathological curvature**: Normal sagittal spinal curvature and scoliosis-like lateral deviations emerge as different "geodesic branches" of a single Information-Elasticity Coupling (IEC) model, demonstrating that both normal and pathological patterns can be understood within one unified framework operating in different countercurvature regimes.
-
-3. **Testable predictions with quantitative observables**: The framework yields explicit, testable predictions for microgravity experiments and scoliosis-like symmetry breaking, formulated in terms of quantitative observables (D̂_geo, S_lat, Cobb-like angles) that can be directly compared to experimental data and clinical measurements.
-
-4. **Open, reproducible, and extensible**: All simulations and analyses are implemented in the open-source Python package `spinalmodes` (v0.1.0), with a documented public API, versioned releases, and scripted experiments that enable the broader community to validate, extend, and apply the framework to new biological systems and clinical scenarios.
+In a microgravity series, reducing the effective gravitational acceleration from $g = 1.0$ to $g = 0.10$ leaves the normalized geodesic curvature deviation essentially unchanged ($\widehat{D}_{\mathrm{geo}} \approx 0.091$, 0.0% change to three decimal places), showing that the information-selected spinal curvature is geometrically stable even as the passive gravitational contribution weakens.
 
 ---
 
-## Single-Sentence Version (For Email Subject Lines, Twitter)
+### 3. Distinct gravity-dominated and cooperative regimes in the phase diagram.
 
-> "Biological countercurvature of spacetime: a unified Information-Elasticity Coupling framework that explains both normal spinal curvature and scoliosis-like symmetry breaking as different regimes of one information-driven mechanical model."
-
----
-
-## Two-Sentence Version (For Abstract-Like Summaries)
-
-> "We develop a quantitative framework in which information fields I(s) act as sources of 'biological countercurvature' that reshape the effective geometry of slender biological structures in gravitational fields. Normal sagittal spinal curvature and scoliosis-like lateral deviations emerge as different regimes of a single Information-Elasticity Coupling (IEC) model, with explicit quantitative thresholds (D̂_geo, S_lat, Cobb-like angles) that enable direct experimental validation."
+Across the $(\chi_{\kappa}, g)$ plane, we identify a gravity-dominated regime (e.g., $\chi_{\kappa} = 0.015$, $g = 9.81$) with $\widehat{D}_{\mathrm{geo}} \approx 0.059$ and near-zero lateral indices, and a cooperative regime (e.g., $\chi_{\kappa} = 0.065$, $g = 9.81$) with $\widehat{D}_{\mathrm{geo}} \approx 0.15$, where gravity and information jointly shape curvature. Within the present parameter window, the scoliosis-like regime remains a predicted extension at stronger coupling, rather than a realized branch.
 
 ---
 
-## Usage Guidelines
+### 4. Reproducible, open analog-gravity framework for spinal geometry.
 
-### PRX Life Submission Form
-- **Use**: Version 1 (concise, 3-4 bullets)
-- **Length**: ~50-75 words per bullet
-- **Focus**: Key results, quantitative thresholds, reproducibility
-
-### Talks / Presentations
-- **Use**: Version 2 (more technical) or Version 3 (conceptual)
-- **Length**: Can expand to 100-150 words per bullet
-- **Focus**: Technical details or conceptual framing, depending on audience
-
-### Emails to Collaborators
-- **Use**: Version 1 or single-sentence version
-- **Length**: Brief, scannable
-- **Focus**: What's new, why it matters, how to access
-
-### Social Media / Outreach
-- **Use**: Single-sentence or two-sentence version
-- **Length**: Very brief
-- **Focus**: Hook + key concept
+All simulations, metrics, and figures are implemented in the open-source Python package `spinalmodes` (v0.1.0), which provides a documented public API (`compute_countercurvature_metric`, `geodesic_curvature_deviation`, `compute_scoliosis_metrics`, `solve_beam_static`) and scripted experiments with one-command full sweeps and automatic anchor-number extraction.
 
 ---
 
-## Customization Notes
+## Plain Text Version (For Forms/Emails)
 
-- **Replace placeholder numbers**: Once you run full sweeps, update:
-  - "D̂_geo ≈ 0.25" → actual value from microgravity experiment
-  - "S_lat ≈ 0.12" → actual value from scoliosis experiment
-  - "Cobb-like angles > 10°" → actual value
-  - "2-3× amplification" → actual ratio
+**Use this version when LaTeX formatting isn't supported:**
 
-- **Add specific predictions**: If you have concrete experimental predictions, add:
-  - "Predicts that microgravity experiments should show D̂_geo ≈ X"
-  - "Predicts scoliosis-like patterns for χ_κ > Y"
+1. **Information-selected spinal S-curve as a sine-like mode against gravity.**
 
-- **Emphasize novelty**: Adjust based on what's most novel:
-  - If analog gravity framing is novel → emphasize Version 3
-  - If unified model is novel → emphasize Version 1
-  - If computational framework is novel → emphasize Version 2
+   We show that the information-driven sagittal S-curve is dominated by a single smooth, sign-changing mode: κ_I(s) exhibits only one sign change along the cranio–caudal axis and a max-to-RMS curvature ratio of ≈1.81, with a normalized geodesic curvature deviation D̂_geo ≈ 0.14 from the gravity-selected sag. This indicates that the mature spine behaves as a stabilized, sine-like counter-curvature mode rather than a small perturbation of a passive beam.
+
+2. **Persistence of the "spinal wave" in microgravity.**
+
+   In a microgravity series, reducing the effective gravitational acceleration from g = 1.0 to g = 0.10 leaves the normalized geodesic curvature deviation essentially unchanged (D̂_geo ≈ 0.091, 0.0% change to three decimal places), showing that the information-selected spinal curvature is geometrically stable even as the passive gravitational contribution weakens.
+
+3. **Distinct gravity-dominated and cooperative regimes in the phase diagram.**
+
+   Across the (χ_κ, g) plane, we identify a gravity-dominated regime (e.g., χ_κ = 0.015, g = 9.81) with D̂_geo ≈ 0.059 and near-zero lateral indices, and a cooperative regime (e.g., χ_κ = 0.065, g = 9.81) with D̂_geo ≈ 0.15, where gravity and information jointly shape curvature. Within the present parameter window, the scoliosis-like regime remains a predicted extension at stronger coupling, rather than a realized branch.
+
+4. **Reproducible, open analog-gravity framework for spinal geometry.**
+
+   All simulations, metrics, and figures are implemented in the open-source Python package `spinalmodes` (v0.1.0), which provides a documented public API (`compute_countercurvature_metric`, `geodesic_curvature_deviation`, `compute_scoliosis_metrics`, `solve_beam_static`) and scripted experiments with one-command full sweeps and automatic anchor-number extraction.
+
+---
+
+## Concise Version (For Short Forms)
+
+**Use this when space is limited:**
+
+1. Information-selected spinal S-curve: single sign-changing mode (max/RMS ≈ 1.81, D̂_geo ≈ 0.14), indicating a stabilized sine-like counter-curvature against gravity.
+
+2. Microgravity persistence: D̂_geo ≈ 0.091 unchanged from g=1.0 to g=0.10, showing geometric stability independent of gravitational strength.
+
+3. Phase diagram: gravity-dominated (χ_κ=0.015, D̂_geo≈0.059) and cooperative (χ_κ=0.065, D̂_geo≈0.15) regimes identified; scoliosis remains predicted extension.
+
+4. Open-source framework: `spinalmodes` v0.1.0 with documented API, scripted experiments, and reproducible full sweeps.
+
+---
+
+## Single-Sentence Version (For Very Short Forms)
+
+1. Information-driven spinal S-curve exhibits a single sign-changing mode (max/RMS ≈ 1.81, D̂_geo ≈ 0.14), behaving as a stabilized sine-like counter-curvature against gravity.
+
+2. The information-selected spinal curvature persists in microgravity (D̂_geo ≈ 0.091, unchanged from g=1.0 to g=0.10), demonstrating geometric stability independent of gravitational strength.
+
+3. Phase diagram reveals gravity-dominated (χ_κ=0.015, D̂_geo≈0.059) and cooperative (χ_κ=0.065, D̂_geo≈0.15) regimes; scoliosis remains a predicted extension at stronger coupling.
+
+4. Open-source `spinalmodes` v0.1.0 provides reproducible framework with documented API and one-command full sweeps.
+
+---
+
+## Usage Notes
+
+- **PRX Life submission form**: Use the "Plain Text Version" (form fields typically don't support LaTeX)
+- **Cover letter**: Use the "PRX Life Submission-Ready Version" (LaTeX formatting)
+- **Talks/Posters**: Use "Concise Version" for slides, full version for abstracts
+- **Email summaries**: Use "Single-Sentence Version" for quick communication
 
 ---
 
 ## Status
 
-✅ **Ready to use**: Replace placeholder numbers with actual values from full sweeps
-
-**Next**: Run full parameter sweeps → Extract numbers → Update bullets with real values
-
+✅ **Updated with extracted anchor numbers**  
+✅ **Consistent with manuscript Results section**  
+✅ **Ready for PRX Life submission**
