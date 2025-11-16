@@ -92,6 +92,14 @@ poetry run spinalmodes iec node-drift \
   --out-fig outputs/figs/fig_iec_node_drift.png
 ```
 
+## 3-command quickstart (countercurvature)
+
+```bash
+python examples/quickstart.py
+python -m spinalmodes.experiments.countercurvature.experiment_spine_modes_vs_gravity --quick
+python -m spinalmodes.experiments.countercurvature.experiment_phase_diagram --quick
+```
+
 ## Development
 
 ```bash
@@ -144,4 +152,3 @@ Coupling in Spinal Development. [Journal TBD].
 ## License
 
 MIT License - see LICENSE file for details.
-

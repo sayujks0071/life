@@ -33,6 +33,10 @@ mypy==1.5.1
 SALib==1.4.7          # Sobol indices, Morris screening
 seaborn==0.12.2       # Enhanced visualization
 
+# Optional: Cosserat rod solver for countercurvature experiments
+# pyelastica          # Install with: pip install pyelastica
+#                     # Note: PyElastica is optional; experiments work with beam solver fallback
+
 # Note: For minimal production/reproduction, install only core dependencies:
 #   pip install numpy==1.24.3 scipy==1.11.2 matplotlib==3.7.2 pandas==2.0.3 typer==0.9.0 pydantic==2.3.0
 

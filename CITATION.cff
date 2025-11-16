@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Krishnan"
+    given-names: "Sayuj"
+    orcid: "https://orcid.org/0000-0000-0000-0000"  # TODO: Add your ORCID
+title: "Biological Countercurvature of Spacetime: An Information--Cosserat Framework for Spinal Geometry"
+version: 0.1.0
+date-released: 2025-01-XX  # TODO: Update with actual release date
+doi: 10.5281/zenodo.XXXXXXX  # TODO: Add Zenodo DOI when available
+repository-code: "https://github.com/sayujks0071/life"
+license: "MIT"  # TODO: Verify license
+keywords:
+  - "biological countercurvature"
+  - "information-elasticity coupling"
+  - "spinal biomechanics"
+  - "scoliosis"
+  - "analog gravity"
+  - "Cosserat rod mechanics"
+abstract: "A computational framework implementing biological countercurvature of spacetime using Information-Elasticity Coupling (IEC) and Cosserat rod mechanics. The framework quantifies how information-driven countercurvature reshapes spinal geometry, providing a unified model for normal sagittal curvature and scoliosis-like lateral deviations."
+

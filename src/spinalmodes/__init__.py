@@ -2,7 +2,16 @@
 
 __version__ = "0.1.0"
 
-from spinalmodes.iec import IECParameters, apply_iec_coupling, generate_coherence_field
+from spinalmodes.iec import (
+    IECParameters,
+    apply_iec_coupling,
+    generate_coherence_field,
+    solve_beam_static,
+)
 
-__all__ = ["IECParameters", "apply_iec_coupling", "generate_coherence_field"]
-
+__all__ = [
+    "IECParameters",
+    "apply_iec_coupling",
+    "generate_coherence_field",
+    "solve_beam_static",
+]
