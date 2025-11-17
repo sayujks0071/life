@@ -10,8 +10,8 @@ authors:
     orcid: "https://orcid.org/0009-0009-5523-9979"
 title: "Biological Countercurvature of Spacetime: An Information--Cosserat Framework for Spinal Geometry"
 version: 0.1.0
-date-released: 2025-01-XX  # TODO: Update with actual release date
-doi: 10.5281/zenodo.XXXXXXX  # TODO: Add Zenodo DOI when available
+date-released: 2025-11-17
+doi: 10.5281/zenodo.17634760
 repository-code: "https://github.com/sayujks0071/life"
 license: "MIT"  # TODO: Verify license
 keywords:
