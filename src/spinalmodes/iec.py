@@ -41,9 +41,13 @@ class IECParameters:
     n_nodes: int = 100  # Number of spatial nodes
 
     @property
-    def get_s_array(self) -> NDArray[np.float64]:
-        """Generate spatial coordinate array."""
+    def s_array(self) -> NDArray[np.float64]:
+        """Spatial coordinate array (cached on access)."""
         return np.linspace(0, self.length, self.n_nodes)
+
+    def get_s_array(self) -> NDArray[np.float64]:
+        """Backward-compatible accessor for spatial coordinate array."""
+        return self.s_array
 
 
 def generate_coherence_field(
