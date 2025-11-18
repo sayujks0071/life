@@ -1,6 +1,11 @@
 """Spinal modes: Counter-curvature and IEC model."""
 
-__version__ = "0.1.0"
+import sys
+
+if sys.version_info < (3, 10):
+    raise RuntimeError("spinalmodes requires Python >= 3.10")
+
+__version__ = "0.3.0"
 
 from spinalmodes.iec import (
     IECParameters,

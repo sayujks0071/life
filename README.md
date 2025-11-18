@@ -131,6 +131,21 @@ python -m spinalmodes.experiments.countercurvature.experiment_spine_modes_vs_gra
 python -m spinalmodes.experiments.countercurvature.experiment_phase_diagram --quick
 ```
 
+## One-command reproduce
+
+```bash
+python -m pip install -e ".[dev]"
+make all  # env + tests + figures + (optional) paper
+```
+
+### Build & install wheel
+
+```bash
+python -m pip install build
+make build && make dist
+python -c "import spinalmodes, sys; print('ok', sys.version)"
+```
+
 ## Development
 
 ```bash

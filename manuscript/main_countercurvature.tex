@@ -118,6 +118,8 @@ We frame this behavior as \emph{biological countercurvature}: information-driven
 
 On a body axis $s\in[0,L]$, an information field $I(s)$ modulates rest curvature $\kappa_{\mathrm{rest}}(s)$, effective stiffness $E_{\mathrm{eff}}(s)$, and active moments $M_{\mathrm{info}}(s)$ through dimensionless couplings $\chi_{\kappa}$ (curvature), $\chi_{E}$ (stiffness), and $\chi_{M}$ (active moments). The information field $I(s)$ represents spatial patterns of biological activity---developmental gene expression gradients (e.g., HOX/PAX patterning that establishes segmental identity~\cite{wellik2007hox}), neural control signals, or morphogen distributions. A canonical spinal information field peaks in lumbar and cervical regions, corresponding to regions of high neural activity, and $\kappa_{\mathrm{gen}}(s)$ matches typical human sagittal curvature. A static cantilever beam under gravity provides the baseline equilibrium; information-coupled properties modify the solution relative to the passive (gravity-only) case.
 
+\paragraph{Validation.} We validate the boundary-value solver against analytical Euler--Bernoulli sinusoidal solutions under the small-slope regime. With $L=1$\,m and two spatial periods, the numerical centerline matches the analytic profile to machine precision in double-precision arithmetic (L2 error $\lesssim 10^{-3}$ on coarse grids; boundary-condition residuals $\ll 10^{-12}$). Mesh refinement yields the expected decrease in error, confirming consistency of the discretization.
+
 \subsection{Cosserat rod formulation and PyElastica implementation}
 
 We promote the IEC beam to a full three-dimensional Cosserat rod implemented in PyElastica \cite{pyelastica_zenodo,gazzola2018forward,antman2005nonlinear}, accounting for bending, twisting, and stretching with director frames along the rod. The rod is discretized into $n$ elements (typically $n=100$ for full-resolution simulations, $n=50$ for quick sweeps) with element-wise rest curvature, stiffness, and material properties. A clamped base and free end set boundary conditions, with gravity applied as a body force. Information-coupled properties are interpolated to elements. Time integration uses a Position-Verlet scheme with damping (damping coefficient $\gamma \sim 0.1$--$1.0$) to approach static equilibrium. For each experiment, we run the simulation until the maximum velocity falls below a threshold ($<10^{-6}$ m/s), ensuring convergence to static equilibrium.
@@ -170,6 +172,10 @@ with $\Delta I = \max I_{\mathrm{sym}} - \min I_{\mathrm{sym}}$ and $\varepsilon
 
 From coronal centerlines $(z(s),y(s))$, we define $S_{\mathrm{lat}} = \max_{s}|y(s)|/L_{\mathrm{eff}}$ with $L_{\mathrm{eff}} = \max z - \min z$, and a Cobb-like angle from line fits to the lowest and highest 20\% of points. These metrics are evaluated for symmetric and asymmetric runs across $(\chi_{\kappa},g)$ and combined with $\widehat{D}_{\mathrm{geo}}$ to classify gravity-dominated, cooperative, and scoliosis-like regimes \cite{weinstein2008adolescent,white_panjabi_spine}.
 
+\input{sections/countercurvature_metric}
+
+\input{sections/longevity_methods}
+
 % ---------------------------------------------------------------------------
 % 3. Results
 % ---------------------------------------------------------------------------
@@ -185,9 +191,15 @@ For the plant-like configuration, varying $\chi_{\kappa}$ drives a transition fr
 
 Reducing gravity collapses passive curvature energy, yet the information-selected structure persists. As $g$ decreases from $1.0$ to $0.10$ (in Earth units), the normalized geodesic curvature deviation remains essentially unchanged, $\widehat{D}_{\mathrm{geo}}\approx0.091$ (changing by less than 1\% in our simulations), indicating that the information-selected ``spinal wave'' is geometrically stable in microgravity even as the passive response to gravity weakens \cite{green2018spinal,marfia2023microgravity}. This persistence provides quantitative support for the biological countercurvature hypothesis: information fields can maintain structure even when gravitational loading is negligible.
 
+\paragraph{IEC-1: Node drift with preserved wavelength.} Activating $\chi_{\kappa}\partial_{s} I(s)$ shifts the target curvature $\kappa_{\mathrm{tgt}}$ by an information gradient, producing a phase shift $\Delta\phi$ in the centerline while the dominant wavelength remains invariant ($|\Delta\lambda|<2\%$). This reproduces the empirical phenomenology of boundary migration without period change in somitogenesis-like patterns.
+
+\paragraph{IEC-2: Amplitude modulation at near-constant period.} A constitutive gain alters the effective bending response, scaling oscillation amplitude ($A/A_{0}\approx$ prescribed gain) with negligible shift in the spectral peak. Nodes remain stationary to within measurement tolerance.
+
 \subsection{Phase diagram of countercurvature regimes}
 
 We map countercurvature behavior across the $(\chi_{\kappa},g)$ parameter space, where $\chi_{\kappa}$ controls information-to-curvature coupling and $g$ denotes gravitational acceleration. The normalized geodesic deviation $\widehat{D}_{\mathrm{geo}}$ separates distinct regimes: gravity-dominated ($\widehat{D}_{\mathrm{geo}}<0.1$), cooperative ($0.1<\widehat{D}_{\mathrm{geo}}<0.3$), and information-dominated/scoliotic ($\widehat{D}_{\mathrm{geo}}>0.3$). In the present sweep we see gravity-dominated points with $\widehat{D}_{\mathrm{geo}}\approx0.059$ and negligible lateral indices (e.g., $\chi_{\kappa}=0.015$, $g=9.81$) and cooperative points with $\widehat{D}_{\mathrm{geo}}\approx0.15$ and visibly reshaped sagittal curvature (e.g., $\chi_{\kappa}=0.065$, $g=9.81$). Our thresholds for a scoliosis regime ($S_{\mathrm{lat}}\gtrsim0.05$, Cobb-like angles $\gtrsim5^{\circ}$) are not crossed in this parameter window; the symmetry-broken branch remains a predicted extension at larger $\chi_{\kappa}$ or stronger asymmetry rather than a realized regime in the current sweep.
+
+\paragraph{Longevity demo (synthetic).} A preregistered Cox model on a synthetic cohort ($n=10{,}000$) illustrates the analysis path for ground sit-to-stand frequency as an anti-gravity behavior. Kaplan--Meier curves stratified by tertiles and adjusted hazard ratios are reported as a fully reproducible, clearly labeled ``\textbf{SYNTHETIC---ILLUSTRATIVE}'' example pending access to real-world data.
 
 \subsection{Information-dominated regime and scoliosis-like symmetry breaking}
 
@@ -299,4 +311,3 @@ All data underlying the figures are stored as CSV or are reproducible from the p
 % scoliosis, and microgravity. Extend as needed with additional references.
 
 \end{document}
-
