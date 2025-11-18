@@ -3,4 +3,4 @@ recursive-include manuscript *.tex *.bib *.cls *.sty sections/*.tex
 recursive-include analysis *.py
 recursive-include figures *.pdf *.svg
 recursive-include tables *.csv *.json
-
+include src/spinalmodes/py.typed

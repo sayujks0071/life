@@ -1,25 +1,22 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+message: "If you use this software or results, please cite:"
+title: "spinalmodes: Information–Cosserat framework for spinal countercurvature"
+version: 0.3.0
 authors:
-  - family-names: "Krishnan"
-    given-names: "Sayuj"
-    name-particle: "S"
-    name-suffix: "MBBS, DNB (Neurosurgery)"
-    affiliation: "Yashoda Hospitals, Malakpet, Hyderabad, India"
-    email: "dr.sayujkrishnan@gmail.com"
-    orcid: "https://orcid.org/0009-0009-5523-9979"
-title: "Biological Countercurvature of Spacetime: An Information--Cosserat Framework for Spinal Geometry"
-version: 0.1.0
-date-released: 2025-11-17
-doi: 10.5281/zenodo.17634760
-repository-code: "https://github.com/sayujks0071/life"
-license: "MIT"  # TODO: Verify license
-keywords:
-  - "biological countercurvature"
-  - "information-elasticity coupling"
-  - "spinal biomechanics"
-  - "scoliosis"
-  - "analog gravity"
-  - "Cosserat rod mechanics"
-abstract: "A computational framework implementing biological countercurvature of spacetime using Information-Elasticity Coupling (IEC) and Cosserat rod mechanics. The framework quantifies how information-driven countercurvature reshapes spinal geometry, providing a unified model for normal sagittal curvature and scoliosis-like lateral deviations."
+  - family-names: Krishnan
+    given-names: Sayuj
+    affiliation: Yashoda Hospitals, Hyderabad
+license: MIT
+repository-code: https://github.com/sayujks0071/life
+identifiers:
+  - type: doi
+    value: 10.0000/placeholder-doi
+preferred-citation:
+  type: article
+  title: "Biological Countercurvature: An Information–Cosserat Theory of Spinal Geometry"
+  authors:
+    - family-names: Krishnan
+      given-names: Sayuj
+  journal: "preprint"
+  year: 2025
 

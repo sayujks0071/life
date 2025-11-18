@@ -37,7 +37,7 @@ mkdocs = "^1.5.0"
 mkdocs-material = "^9.2.0"
 
 [tool.poetry.extras]
-dev = ["pytest>=8.2", "ruff>=0.6", "black>=24.8", "mypy>=1.11", "lifelines>=0.27"]
+dev = ["pytest>=8.2", "pytest-cov>=4.1", "ruff>=0.6", "black>=24.8", "mypy>=1.11", "lifelines>=0.27"]
 cosserat = ["pyelastica>=0.0.7"]
 docs = ["pandoc>=3.1"]
 
