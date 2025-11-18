@@ -87,8 +87,9 @@ def _check_pyelastica() -> None:
     """Raise ImportError if PyElastica is not available."""
     if not PYELASTICA_AVAILABLE:
         raise ImportError(
-            "PyElastica is required for countercurvature simulations. "
-            "Install with: pip install pyelastica"
+            "PyElastica is not installed. It is required for 3D countercurvature simulations.\n"
+            "Please install it via: pip install pyelastica\n"
+            "Or install the full environment: pip install -r envs/requirements.txt"
         )
 
 

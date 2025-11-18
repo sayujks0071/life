@@ -1,18 +1,52 @@
-# Spinal Modes: Counter-Curvature & IEC Model
+# Spinal Modes: Biological Countercurvature of Spacetime
 
-[![Status](https://img.shields.io/badge/status-publication--ready-green.svg)]()
+[![Status](https://img.shields.io/badge/status-publication_ready-green.svg)]()
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Solver](https://img.shields.io/badge/solver-BVP%20validated-blue.svg)]()
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**✅ STATUS: Core Framework Publication-Ready (85% Complete)**
+**An Information–Cosserat Framework for Spinal Geometry**
 
-A research framework for studying biological counter-curvature and Information-Elasticity Coupling (IEC) in spinal biomechanics, integrating developmental genetics (HOX/PAX), ciliary origins, and scoliosis as symmetry-breaking.
+This repository contains the reference implementation for the **Information-Elasticity Coupling (IEC)** model of spinal geometry. It treats the spine in gravity as an analog to a body in curved spacetime, where biological information (genetic patterning, neural control) modifies the effective metric.
 
-> **Upgrade Complete (2025-11-04):** Rigorous BVP solver implemented and validated (L2 error = 0.0000 vs analytical). All three IEC mechanisms functional. See [summary.md](summary.md) for full report.
+## Key Features
 
-## Quickstart (Reproducible Environment)
+- **IEC Beam Solver:** Coupled ODEs for information-driven curvature
+- **Countercurvature Metric:** $g_{\mathrm{eff}}(s)$ derived from information fields $I(s)$
+- **Geodesic Deviation:** Quantify "distance" between gravity-selected and information-selected curvatures
+- **Scoliosis Analysis:** Phase diagrams for symmetry breaking (Fig 2)
+- **PyElastica Bridge:** Full 3D Cosserat rod simulations
 
-**For publication reproducibility, use pinned environment specs:**
+## Quickstart
+
+### 1. Install
+
+```bash
+pip install -r envs/requirements.txt
+```
+
+### 2. Run Microgravity Experiment (Fig 1D)
+
+```bash
+python -m spinalmodes.experiments.countercurvature.experiment_microgravity_adaptation --quick
+```
+
+### 3. Run Full Experiment Suite
+
+```bash
+./run_experiments.sh
+```
+
+### 4. Generate Manuscript Figures
+
+```bash
+# Spine modes vs. gravity (Fig 1A-C)
+python -m spinalmodes.experiments.countercurvature.experiment_spine_modes_vs_gravity
+
+# Phase diagram (Fig 2)
+python -m spinalmodes.experiments.countercurvature.experiment_phase_diagram
+```
+
+## Installation (Detailed)
 
 ### Option 1: Conda (Recommended)
 
@@ -21,8 +55,8 @@ A research framework for studying biological counter-curvature and Information-E
 conda env create -f envs/environment.yml
 conda activate spinalmodes
 
-# Run smoke tests (should pass all 4)
-python test_solver_upgrade.py
+# Run tests
+pytest tests/
 ```
 
 ### Option 2: pip
@@ -31,23 +65,20 @@ python test_solver_upgrade.py
 # Install dependencies
 pip install -r envs/requirements.txt
 
-# Run smoke tests
-python test_solver_upgrade.py
+# Run tests
+pytest tests/
 ```
 
 ### Option 3: Docker
 
 ```bash
 # Build container
-docker build -t spinalmodes:0.2.0 -f envs/Dockerfile .
+docker build -t spinalmodes:0.1.0 -f envs/Dockerfile .
 
-# Run tests
-docker run --rm -v $(pwd):/workspace -w /workspace spinalmodes:0.2.0 python test_solver_upgrade.py
+# Run experiments
+docker run --rm -v $(pwd):/workspace -w /workspace spinalmodes:0.1.0 \
+    python -m spinalmodes.experiments.countercurvature.experiment_microgravity_adaptation
 ```
-
-**Expected output:** All 4 smoke tests should pass ✅
-
-> **Note:** The core BVP solver upgrade is complete and publication-ready. See [summary.md](summary.md) and [TODO_NEXT_STEPS.md](TODO_NEXT_STEPS.md) for details.
 
 ## Overview
 

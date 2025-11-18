@@ -383,12 +383,17 @@ def main():
     print("✅ Experiment complete!")
     print(f"   CSV: {results['csv_path']}")
     print(f"   Summary: {results['summary_path']}")
-    print("   Summary metrics:")
+    print(f"   Figure: {results['figure_path']}")
+    print()
+    print("-" * 60)
+    print(f"{'Gravity':<15} | {'D_geo_norm':<12} | {'Preservation':<12}")
+    print("-" * 60)
     for result in results["results"]:
         print(
-            f"   {result['gravity_label']}: D_geo_norm={result['D_geo_norm']:.6f}, "
-            f"shape_preservation={result['shape_preservation_index']:.3f}"
+            f"{result['gravity_label']:<15} | {result['D_geo_norm']:>10.6f}   | "
+            f"{result['shape_preservation_index']:>10.3f}"
         )
+    print("-" * 60)
     print()
     print("   Interpretation:")
     print("   - Information-driven structure persists when gravity is reduced")

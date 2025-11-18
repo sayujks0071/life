@@ -40,6 +40,7 @@ class IECParameters:
     length: float = 0.4  # Spine length (m)
     n_nodes: int = 100  # Number of spatial nodes
 
+    @property
     def get_s_array(self) -> NDArray[np.float64]:
         """Generate spatial coordinate array."""
         return np.linspace(0, self.length, self.n_nodes)
