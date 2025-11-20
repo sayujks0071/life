@@ -37,9 +37,9 @@ mkdocs = "^1.5.0"
 mkdocs-material = "^9.2.0"
 
 [tool.poetry.extras]
-dev = ["pytest", "pytest-cov", "ruff", "black", "mypy", "lifelines"]
-cosserat = ["pyelastica"]
-docs = ["pandoc"]
+dev = ["pytest>=8.2", "pytest-cov>=4.1", "ruff>=0.6", "black>=24.8", "mypy>=1.11", "lifelines>=0.27"]
+cosserat = ["pyelastica>=0.0.7"]
+docs = ["pandoc>=3.1"]
 
 [tool.poetry.scripts]
 spinalmodes = "spinalmodes.cli:app"
