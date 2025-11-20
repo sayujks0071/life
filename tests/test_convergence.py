@@ -19,4 +19,6 @@ def run_error(n: int) -> float:
 def test_refinement_improves_accuracy():
     coarse = run_error(401)
     fine = run_error(1601)
-    assert fine <= coarse * 1.01
+    # Refinement should not degrade accuracy: fine mesh error should be < coarse mesh error
+    # (For well-converged solvers, improvement may be small, but should never degrade)
+    assert fine < coarse, f"Fine mesh error ({fine}) should be < coarse error ({coarse})"
