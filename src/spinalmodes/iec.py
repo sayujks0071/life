@@ -183,8 +183,15 @@ def compute_node_positions(
     Returns:
         Array of node positions (m)
     """
-    # Handle empty arrays
+    # Handle empty arrays and validate inputs
     if len(s) == 0 or len(theta) == 0:
+        return np.array([], dtype=np.float64)
+    
+    if len(s) != len(theta):
+        raise ValueError(f"Length mismatch: s has {len(s)} elements, theta has {len(theta)} elements")
+    
+    # Need at least 3 points to detect local minima (point and two neighbors)
+    if len(s) < 3:
         return np.array([], dtype=np.float64)
     
     theta_centered = theta - np.mean(theta)
