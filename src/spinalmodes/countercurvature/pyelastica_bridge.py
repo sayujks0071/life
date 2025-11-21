@@ -385,18 +385,13 @@ class CounterCurvatureRodSystem:
                         s_elements, self.s_cumsum[:-1], self.M_info[:-1]
                     )
 
-                    # Apply moments as internal couples
+                    # Apply moments as internal couples (vectorized)
                     # For planar sagittal bending, we apply moments about y-axis
                     # PyElastica stores internal moments in director frame
                     # We add to the internal moment collection
-                    n_elems = self.rod.n_elems
-                    for i in range(n_elems):
-                        # Apply moment about y-axis (sagittal plane bending)
-                        # This is a simplified approach; full implementation would
-                        # properly transform to director frame
-                        if hasattr(self.rod, "internal_forces"):
-                            # Add to internal moments (y-component for sagittal bending)
-                            self.rod.internal_forces[1, i] += M_interp[i]
+                    if hasattr(self.rod, "internal_forces"):
+                        # Vectorized addition to internal moments (y-component for sagittal bending)
+                        self.rod.internal_forces[1, :] += M_interp
 
             system.add_forcing_to(self.rod).using(
                 ActiveMomentForcing, M_info=M_info, rod=self.rod
