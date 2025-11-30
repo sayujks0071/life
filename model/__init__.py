@@ -18,6 +18,7 @@ __author__ = "Dr. Sayuj Krishnan"
 from .core import IECParameters, ModelState, PhysicalUnits
 from .coherence_fields import generate_coherence_field
 from .couplings import apply_iec_coupling
+from .countercurvature import apply_countercurvature
 
 __all__ = [
     "IECParameters",
@@ -25,4 +26,5 @@ __all__ = [
     "PhysicalUnits",
     "generate_coherence_field",
     "apply_iec_coupling",
+    "apply_countercurvature",
 ]
