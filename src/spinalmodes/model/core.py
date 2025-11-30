@@ -35,9 +35,11 @@ def iec_kappa_target(st: State, p: Params) -> np.ndarray:
 
     IEC-2 (χ_E) is applied in solver/load amplitude rather than adding a second derivative term here.
     """
-    kappa = np.copy(st.kappa0)
     if st.I is not None and p.chi_k != 0.0:
         dIds = np.gradient(st.I, st.s, edge_order=2)
-        kappa += p.chi_k * dIds
-    return kappa
+        # Avoid copy when we need to add correction anyway
+        return st.kappa0 + p.chi_k * dIds
+    else:
+        # Only copy when no modification needed (caller may mutate result)
+        return np.copy(st.kappa0)
 
