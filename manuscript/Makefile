@@ -1,7 +1,7 @@
 # Makefile for IEC Model Manuscript
 # Compiles LaTeX manuscript to PDF
 
-MAIN = main_countercurvature_refined
+MAIN = main
 TEX = $(MAIN).tex
 PDF = $(MAIN).pdf
 BIB = references.bib

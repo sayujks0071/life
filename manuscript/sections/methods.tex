@@ -1,92 +1,34 @@
-\section{Methods}
+\section{Methods: Deterministic Beam Model and PyElastica Simulations}
 
-\subsection{Information--elasticity coupling and beam model}
+We implement the Information--Cosserat framework using two complementary numerical approaches: a fast deterministic beam model for parameter sweeps and eigenanalysis, and a full three-dimensional Cosserat rod simulation for capturing large deformations and geometric nonlinearities.
 
-On a body axis $s\in[0,L]$, an information field $I(s)$ modulates rest curvature $\kappa_{\mathrm{rest}}(s)$, effective stiffness $E_{\mathrm{eff}}(s)$, and active moments $M_{\mathrm{info}}(s)$ through dimensionless couplings $\chi_{\kappa}$ (curvature), $\chi_{E}$ (stiffness), $\chi_{C}$ (cross-linking, analogous to nonlocal sliding parameters $\mu$ and $\gamma$ in counterbend mechanics), and $\chi_{M}$ (active moments). The information field $I(s)$ represents spatial patterns of biological activity---developmental gene expression gradients (e.g., HOX/PAX patterning that establishes segmental identity~\cite{wellik2007hox}), neural control signals, or morphogen distributions. A canonical spinal information field peaks in lumbar and cervical regions, corresponding to regions of high neural activity, and $\kappa_{\mathrm{gen}}(s)$ matches typical human sagittal curvature. A static cantilever beam under gravity provides the baseline equilibrium; information-coupled properties modify the solution relative to the passive (gravity-only) case.
+\subsection{Deterministic IEC Beam Model}
 
-The IEC coupling relations are:
-\begin{align}
-\kappa_{\mathrm{rest}}(s) &= \kappa_{0}(s) + \chi_{\kappa} \frac{\partial I(s)}{\partial s}, \label{eq:iec_curvature} \\
-E_{\mathrm{eff}}(s) &= E_{0} \left(1 + \chi_{E} I(s)\right), \label{eq:iec_stiffness} \\
-M_{\mathrm{info}}(s) &= \chi_{M} I(s) \kappa_{\mathrm{gen}}(s), \label{eq:iec_moment}
-\end{align}
-where $\kappa_{0}(s)$ is the gravity-selected baseline curvature and $E_{0}$ is the baseline stiffness.
+To explore the mode selection mechanism (Eq.~\ref{eq:mode_selection}), we discretize the linearized beam equations using a finite difference scheme on a 1D domain $s \in [0, L]$. The rod is divided into $N=100$ segments. The information field $I(s)$ is mapped to local stiffness $E_i$ and rest curvature $\kappa_{i}$ at each node. We solve the resulting boundary value problem (BVP) using a standard shooting method (or sparse matrix solver for the eigenproblem). This allows rapid exploration of the $(\chi_\kappa, g)$ parameter space to identify regions where S-modes become the ground state.
 
-\paragraph{Validation.} We validate the boundary-value solver against analytical Euler--Bernoulli sinusoidal solutions under the small-slope regime. With $L=1$\,m and two spatial periods, the numerical centerline matches the analytic profile to machine precision in double-precision arithmetic (L2 error $\lesssim 10^{-3}$ on coarse grids; boundary-condition residuals $\ll 10^{-12}$). Mesh refinement yields the expected decrease in error, confirming consistency of the discretization.
+\subsection{3D Cosserat Rod Implementation (PyElastica)}
 
-\subsection{Cosserat rod formulation and PyElastica implementation}
+For full 3D simulations, we utilize \texttt{PyElastica}~\cite{pyelastica_zenodo,gazzola2018forward}, an open-source Python implementation of Cosserat rod theory. The spine is modeled as a Cosserat rod with the following specifications:
 
-We promote the IEC beam to a full three-dimensional Cosserat rod implemented in PyElastica~\cite{pyelastica_zenodo,gazzola2018forward,antman2005nonlinear}, accounting for bending, twisting, and stretching with director frames along the rod. The rod is discretized into $n$ elements (typically $n=100$ for full-resolution simulations, $n=50$ for quick sweeps) with element-wise rest curvature, stiffness, and material properties. A clamped base and free end set boundary conditions, with gravity applied as a body force. Information-coupled properties are interpolated to elements. Time integration uses a Position-Verlet scheme with damping (damping coefficient $\gamma \sim 0.1$--$1.0$) to approach static equilibrium. For each experiment, we run the simulation until the maximum velocity falls below a threshold ($<10^{-6}$ m/s), ensuring convergence to static equilibrium.
+\begin{itemize}
+    \item \textbf{Discretization}: The rod is discretized into $n=50$--$100$ elements.
+    \item \textbf{IEC Coupling}: We implemented a custom callback in \texttt{PyElastica} that updates the local rest curvature vector $\bm{\kappa}^0(s)$ and bending stiffness matrix $\mathbf{B}(s)$ at each time step (or initialization) based on the information field $I(s)$.
+    \item \textbf{Boundary Conditions}: The rod is clamped at the base (sacrum) and free at the top (cranium), simulating a cantilever column under gravity. For specific validation cases, clamped-clamped conditions are used.
+    \item \textbf{Gravitational Loading}: Gravity is applied as a uniform body force $\mathbf{f} = \rho A \mathbf{g}$.
+    \item \textbf{Damping}: To find static equilibrium configurations, we apply external damping ($\nu \sim 0.1$--$1.0$) and integrate the dynamic equations until the kinetic energy dissipates ($v_{\max} < 10^{-6}$ m/s).
+\end{itemize}
 
-The Cosserat rod equilibrium equations, incorporating IEC coupling, are:
-\begin{align}
-\frac{\partial \bm{F}}{\partial s} + \bm{f}_{\mathrm{ext}} &= \rho A \frac{\partial^{2}\bm{r}}{\partial t^{2}}, \label{eq:cosserat_force} \\
-\frac{\partial \bm{M}}{\partial s} + \frac{\partial \bm{r}}{\partial s} \times \bm{F} + \bm{m}_{\mathrm{ext}} + M_{\mathrm{info}}(s) \hat{\bm{e}}_{3} &= \rho I \frac{\partial^{2}\bm{\theta}}{\partial t^{2}}, \label{eq:cosserat_moment}
-\end{align}
-where $\bm{F}$ and $\bm{M}$ are the internal force and moment vectors, $\bm{f}_{\mathrm{ext}}$ and $\bm{m}_{\mathrm{ext}}$ are external forces and moments (including gravity), $\bm{r}(s)$ is the centerline position, $\bm{\theta}(s)$ is the rotation vector, and $M_{\mathrm{info}}(s)$ is the information-driven active moment from Eq.~\eqref{eq:iec_moment}.
+The source code for the IEC-modified Cosserat solver is available in the \texttt{spinalmodes} Python package (see Data Availability).
 
-\subsection{Biological countercurvature metric and geodesic curvature deviation}
+\subsection{Parameter Sweeps and Mode Classification}
 
-On $s\in[0,L]$, we define the biological countercurvature metric:
-\begin{equation}
-    d\ell_{\mathrm{eff}}^{2} = g_{\mathrm{eff}}(s)\,ds^{2}, \label{eq:metric}
-\end{equation}
-with the conformal factor:
-\begin{equation}
-    g_{\mathrm{eff}}(s) = \exp\bigl[2\phi(s)\bigr], \qquad
-    \phi(s) = \beta_{1}\,\widetilde{I}_{\mathrm{centered}}(s) + \beta_{2}\,\widetilde{I}'(s), \label{eq:metric_factor}
-\end{equation}
-where $\widetilde{I}\in[0,1]$ is the normalized information field, $\widetilde{I}_{\mathrm{centered}} = \widetilde{I} - \langle\widetilde{I}\rangle$ (with $\langle\cdot\rangle$ denoting spatial average), $\widetilde{I}'$ is the normalized gradient, and $\beta_{1},\beta_{2}>0$ are dimensionless weights (typically $\beta_{1}=1.0$, $\beta_{2}=0.5$)~\cite{lee2018riemannian}. 
+We perform systematic parameter sweeps over the coupling strength $\chi_\kappa$ (range $[0, 0.1]$) and gravitational acceleration $g$ (range $[0.01, 1.0]$ $g_{\mathrm{Earth}}$). For each simulation, we compute the equilibrium shape and evaluate the following metrics:
+1.  \textbf{Geodesic Deviation} $\widehat{D}_{\mathrm{geo}}$: Quantifies the difference between the realized shape and the gravity-only geodesic.
+2.  \textbf{Lateral Deviation} $S_{\mathrm{lat}}$: Measures symmetry breaking in the coronal plane.
+3.  \textbf{Cobb Angle}: Standard clinical measure for scoliotic curves.
 
-The geodesic curvature deviation between passive and information-coupled curvature profiles is:
-\begin{equation}
-    D_{\mathrm{geo}}^{2}
-    = \int_{0}^{L} g_{\mathrm{eff}}(s)\,\bigl[\kappa_{I}(s)-\kappa_{0}(s)\bigr]^{2}\,ds, \label{eq:d_geo}
-\end{equation}
-with $\kappa_{0}$ the gravity-only curvature and $\kappa_{I}$ the information-coupled curvature. The normalized form is:
-\begin{equation}
-    \widehat{D}_{\mathrm{geo}}
-    = \frac{D_{\mathrm{geo}}}{\sqrt{\int_{0}^{L} g_{\mathrm{eff}}(s)\,\kappa_{0}(s)^{2}\,ds} + \varepsilon}, \label{eq:d_geo_hat}
-\end{equation}
-with small regularization $\varepsilon \sim 10^{-6}$ to prevent division by zero. The metric $g_{\mathrm{eff}}(s)$ weights regions of high information density or gradient; $\widehat{D}_{\mathrm{geo}}$ quantifies departures from gravity-selected geodesics in this countercurvature geometry.
+Regimes are classified as \emph{gravity-dominated} ($\widehat{D}_{\mathrm{geo}} < 0.1$), \emph{cooperative} ($0.1 < \widehat{D}_{\mathrm{geo}} < 0.3$), or \emph{information-dominated} ($\widehat{D}_{\mathrm{geo}} > 0.3$).
 
-\begin{mathbox}[Biological Countercurvature Metric]
-The biological metric $g_{\mathrm{eff}}(s)$ encodes how information processing reshapes effective geometry. Regions with high $I(s)$ or sharp gradients $\partial I/\partial s$ are assigned larger metric weight, effectively ``stretching'' the local coordinate system. This implements biological countercurvature as a phenomenological Riemannian metric on the rod's arc-length coordinate, analogous to how matter curves spacetime in general relativity~\cite{einstein1916grundlage,wald1984gr}.
-\end{mathbox}
+\subsection{Validation}
 
-\subsection{Connection to counterbend mechanics}
-
-The IEC framework connects to counterbend mechanics through the cross-linking parameter $\chi_{C}$, which is analogous to the nonlocal sliding parameters $\mu$ (sliding resistance) and $\gamma$ (basal compliance) in counterbend models. The relationship is:
-\begin{equation}
-\chi_{C} \propto \frac{\mu}{\gamma}, \label{eq:counterbend_analogy}
-\end{equation}
-where higher $\chi_{C}$ corresponds to increased nonlocal coupling between rod segments, similar to how cross-linked filaments in counterbend systems exhibit nonlocal sliding behavior. This connection provides a mechanistic bridge between developmental information fields and the mechanical properties of biological structures.
-
-\subsection{Numerical experiments}
-
-\paragraph{Spine-like S-curves.}
-A spinal information field $I(s)$ peaks in lumbar and cervical regions; $\kappa_{\mathrm{gen}}(s)$ matches typical human sagittal curvature. We sweep $\chi_{\kappa}\in[0,0.05]$ at $g=9.81\,\mathrm{m/s}^{2}$ with clamped base and free tip.
-
-\paragraph{Plant-like upward growth.}
-A passive, sagging rod is compared to an information-driven rod that bends upward. The coupling $\chi_{\kappa}$ controls the transition; $\widehat{D}_{\mathrm{geo}}<0.1$ indicates gravity-dominated sag, while $\widehat{D}_{\mathrm{geo}}>0.2$ indicates strong information-driven upward bending.
-
-\paragraph{Microgravity adaptation.}
-A fixed information field $I(s)$ is run across $g\in\{1.0, 0.5, 0.1, 0.05, 0.01\}$ (in units of Earth gravity). Passive curvature energy and $\widehat{D}_{\mathrm{geo}}$ are computed to show information-driven structure persisting as gravity is reduced~\cite{green2018spinal,marfia2023microgravity}.
-
-\subsection{Thoracic asymmetry and scoliosis metrics}
-
-A localized thoracic bump on normalized $\hat{s}\in[0,1]$ is defined as:
-\begin{equation}
-    G(\hat{s}) = \exp\!\Bigl[-\tfrac{1}{2}\bigl((\hat{s}-\hat{s}_{0})/\sigma\bigr)^{2}\Bigr] \label{eq:asymmetry_bump}
-\end{equation}
-with $\hat{s}_{0}\approx0.6$ and width $\sigma$ spanning $\sim2$--$3$ vertebral levels. An otherwise symmetric field $I_{\mathrm{sym}}$ is perturbed by:
-\begin{equation}
-    I_{\mathrm{asym}}(s) = I_{\mathrm{sym}}(s) + \varepsilon_{\mathrm{asym}}\,\Delta I\,G(\hat{s}), \label{eq:asymmetric_field}
-\end{equation}
-with $\Delta I = \max I_{\mathrm{sym}} - \min I_{\mathrm{sym}}$ and $\varepsilon_{\mathrm{asym}}\sim0.05$. Alternatively, a lateral curvature bump $\kappa_{\mathrm{lat}}(s) = \varepsilon_{\mathrm{lat}}G(\hat{s})$ with $\varepsilon_{\mathrm{lat}} = 0.01$--$0.05\,\mathrm{m}^{-1}$ is added to the coronal rest curvature.
-
-From coronal centerlines $(z(s),y(s))$, we define the lateral deviation index:
-\begin{equation}
-S_{\mathrm{lat}} = \frac{\max_{s}|y(s)|}{L_{\mathrm{eff}}}, \label{eq:slat}
-\end{equation}
-where $L_{\mathrm{eff}} = \max z - \min z$ is the effective length, and a Cobb-like angle $\theta_{\mathrm{Cobb}}$ from line fits to the lowest and highest 20\% of points. These metrics are evaluated for symmetric and asymmetric runs across $(\chi_{\kappa},g)$ and combined with $\widehat{D}_{\mathrm{geo}}$ to classify gravity-dominated, cooperative, and scoliosis-like regimes~\cite{weinstein2008adolescent,white_panjabi_spine}.
+The numerical implementation was validated against analytical solutions for small-deflection Euler-Bernoulli beams. The \texttt{PyElastica} implementation was further verified by reproducing standard buckling and hanging chain benchmarks (see Supplementary Material).
