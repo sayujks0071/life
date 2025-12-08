@@ -8,7 +8,7 @@ set -e
 export PYTHONPATH="${PYTHONPATH}:$(pwd)/src"
 
 # Use python3 (macOS default)
-PYTHON=python3
+PYTHON=.venv/bin/python3
 
 # Get experiment name from argument, or run all
 EXPERIMENT="${1:-all}"
