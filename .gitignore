@@ -1,0 +1,4 @@
+life/
+.venv/
+__pycache__/
+.DS_Store
