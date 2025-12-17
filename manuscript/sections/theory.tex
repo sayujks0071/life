@@ -18,7 +18,7 @@ The central hypothesis of IEC is that the information field modifies the ``effec
 d\ell_{\mathrm{eff}}^2 = g_{\mathrm{eff}}(s)\,ds^2 = \exp\left[2\left(\beta_1 \tilde{I}(s) + \beta_2 \frac{\partial \tilde{I}}{\partial s}\right)\right] ds^2,
 \label{eq:biological_metric}
 \end{equation}
-where $\tilde{I}$ is the normalized information field and $\beta_{1,2}$ are coupling constants. This metric implies that regions of high information density or gradient have a larger ``effective length,'' effectively prescribing a target curvature.
+where $\tilde{I}$ is the normalized information field and $\beta_{1,2}$ are dimensionless coupling constants. The exponential form ensures $g_{\mathrm{eff}} > 0$ for all field configurations and can be motivated as follows: in the weak-coupling limit ($\beta_{1,2} \ll 1$), $g_{\mathrm{eff}} \approx 1 + 2\beta_1 \tilde{I} + 2\beta_2 \partial_s \tilde{I}$, recovering a linear perturbation to the flat metric. The exponential provides a natural nonlinear extension that preserves positivity. Alternative forms (polynomial, logarithmic) are possible; we choose this ansatz for mathematical tractability and consistency with conformal rescaling conventions in differential geometry. This metric implies that regions of high information density or gradient have a larger ``effective length,'' effectively prescribing a target curvature. We emphasize that this is a phenomenological metric used for post-hoc geometric interpretation; the forward mechanical model directly couples $I(s)$ to rest curvature and stiffness as described below.
 
 The energetics of the rod are governed by an IEC-modified elastic energy functional. Unlike a passive beam with uniform stiffness $B$, the biological rod minimizes a total potential energy that couples bending elasticity, gravitational potential, and information-dependent modulation:
 
@@ -48,3 +48,19 @@ The interplay between the gravitational potential (favoring a C-shaped sag) and 
 \label{eq:mode_selection}
 \end{equation}
 where $N(s)$ is the axial tension due to gravity and $\lambda_n$ are eigenvalues. The boundary conditions for a clamped-free spine are: $y(0) = 0$, $y'(0) = 0$ (sacral fixation), and $M(L) = 0$, $F(L) = 0$ (free cranial end), where $M = -B_{\mathrm{eff}} y''$ is the internal bending moment and $F$ is the shear force. The information field modifies the differential operator $\mathcal{L}_{\mathrm{IEC}}$ through $B_{\mathrm{eff}}(s)$ such that the lowest energy mode $\lambda_0$ shifts from a monotonic C-shape (passive buckling) to a higher-order S-shape (counter-curvature). This spectral shift explains the robustness of the spinal curve: the S-shape becomes the energetic ground state of the information-coupled system.
+
+\subsection{Geodesic curvature deviation metric}
+
+To quantify the degree of biological countercurvature—the extent to which information reshapes equilibrium geometry beyond passive gravitational response—we define a normalized geodesic curvature deviation $\widehat{D}_{\mathrm{geo}}$. This metric compares the realized curvature profile $\kappa_{\mathrm{IEC}}(s)$ from the full IEC-coupled simulation to the reference passive curvature $\kappa_{\mathrm{passive}}(s)$ obtained with identical boundary conditions and loading but $\chi_\kappa = \chi_E = 0$:
+
+\begin{equation}
+D_{\mathrm{geo}} = \int_0^L \left| \kappa_{\mathrm{IEC}}(s) - \kappa_{\mathrm{passive}}(s) \right|^2 w(s)\, ds,
+\label{eq:dgeo_raw}
+\end{equation}
+where $w(s) = g_{\mathrm{eff}}(s)$ is an optional weighting function reflecting the biological metric. For regime classification, we normalize by the maximum deviation observed across the parameter space:
+
+\begin{equation}
+\widehat{D}_{\mathrm{geo}} = \frac{D_{\mathrm{geo}}}{D_{\mathrm{geo,max}}(\chi_\kappa, g)},
+\label{eq:dgeo_normalized}
+\end{equation}
+where $D_{\mathrm{geo,max}}$ is computed over the explored $(\chi_\kappa, g)$ domain. Physically, $\widehat{D}_{\mathrm{geo}} \approx 0$ indicates the system follows gravitational geodesics (passive regime), while $\widehat{D}_{\mathrm{geo}} \sim 1$ indicates strong information-driven geometric distortion. We classify regimes as: \emph{gravity-dominated} ($\widehat{D}_{\mathrm{geo}} < 0.1$), \emph{cooperative} ($0.1 \leq \widehat{D}_{\mathrm{geo}} \leq 0.3$), and \emph{information-dominated} ($\widehat{D}_{\mathrm{geo}} > 0.3$), with thresholds chosen to separate qualitatively distinct curvature morphologies observed in simulations.
