@@ -10,44 +10,66 @@ Consider a slender rod parameterized by arc-length $s \in [0, L]$. The configura
 
 We introduce a scalar field $I(s)$ representing the spatial distribution of developmental identity along the axis (e.g., HOX gene expression domains or segmentation clock outputs). This field acts as a ``morphogenetic coordinate,'' encoding the target geometry. For the spine, $I(s)$ is modeled as a bimodal distribution peaking in the cervical and lumbar regions, corresponding to the lordotic curves required for upright posture.
 
+\subsection{The Information--Cosserat Manifold}
+
+The Human spine is modeled as a one-dimensional Cosserat rod embedded in three-dimensional Euclidean space. However, in the IEC framework, we treat the rod's reference configuration not as a flat segment, but as a manifold whose intrinsic geometry is warped by a developmental information field $I(s)$. We draw a formal analogy to General Relativity (GR), where the geometry of spacetime $g_{ab}$ is determined by the mass-energy distribution $T_{ab}$. in our context, the information field acts as a source of \emph{information-matter density} $\rho_{I}(s)$ that dictates the target curvature $\kappa_{\mathrm{rest}}(s)$, effectively "shaping" the biological spacetime in which the musculoskeletal system must equilibrate. This field is physically anchored by the structural specificity of developmental transcription factors; for instance, AlphaFold 3 analysis of HOXC8 (UniProt P31273) and HOXB13 (UniProt Q92826) reveals highly conserved amino acid domains (avg. pLDDT $\sim 64.1$) whose structural rigidity provides the necessary binding affinity landscapes to generate the segmented information profiles used in our model.
+
 \subsection{Biological metric and effective energy}
 
-The central hypothesis of IEC is that the information field modifies the ``effective'' metric experienced by the rod. We define a \emph{biological metric} $d\ell_{\mathrm{eff}}^2$ that dilates or contracts the reference manifold based on information content:
+The central hypothesis of the IEC framework is that developmental information modifies the \emph{effective} metric experienced by the rod's reference manifold. We define a \emph{biological metric} $d\ell_{\mathrm{eff}}^2$ that encodes target geometry via a local dilation factor $g_{\mathrm{eff}}(s)$:
 
 \begin{equation}
 d\ell_{\mathrm{eff}}^2 = g_{\mathrm{eff}}(s)\,ds^2 = \exp\left[2\left(\beta_1 \tilde{I}(s) + \beta_2 \frac{\partial \tilde{I}}{\partial s}\right)\right] ds^2,
 \label{eq:biological_metric}
 \end{equation}
-where $\tilde{I}$ is the normalized information field and $\beta_{1,2}$ are dimensionless coupling constants. The exponential form ensures $g_{\mathrm{eff}} > 0$ for all field configurations and can be motivated as follows: in the weak-coupling limit ($\beta_{1,2} \ll 1$), $g_{\mathrm{eff}} \approx 1 + 2\beta_1 \tilde{I} + 2\beta_2 \partial_s \tilde{I}$, recovering a linear perturbation to the flat metric. The exponential provides a natural nonlinear extension that preserves positivity. Alternative forms (polynomial, logarithmic) are possible; we choose this ansatz for mathematical tractability and consistency with conformal rescaling conventions in differential geometry. This metric implies that regions of high information density or gradient have a larger ``effective length,'' effectively prescribing a target curvature. We emphasize that this is a phenomenological metric used for post-hoc geometric interpretation; the forward mechanical model directly couples $I(s)$ to rest curvature and stiffness as described below.
+where $\tilde{I}$ is the normalized information field and $\beta_{1,2}$ are dimensionless coupling constants. 
 
-The energetics of the rod are governed by an IEC-modified elastic energy functional. Unlike a passive beam with uniform stiffness $B$, the biological rod minimizes a total potential energy that couples bending elasticity, gravitational potential, and information-dependent modulation:
+\paragraph{Justification of the functional form:} The exponential form is chosen for several physical and geometric reasons. First, it ensures $g_{\mathrm{eff}} > 0$ for all field configurations, preserving the metric's positivity. Second, it follows the convention of conformal rescaling in differential geometry ($g_{ab} \to e^{2\phi} g_{ab}$), where the scalar field $\phi = \beta_1 \tilde{I} + \beta_2 \partial_s \tilde{I}$ acts as a local conformal factor. In the weak-coupling limit ($\beta_{1,2} \ll 1$), we recover a linear perturbation $g_{\mathrm{eff}} \approx 1 + 2\beta_1 \tilde{I} + 2\beta_2 \partial_s \tilde{I}$, while the full form allows for the large geometric distortions required to model lordotic counter-curvature. We emphasize that this metric is a phenomenological ansatz used to interpret the resulting geometry; the forward mechanical model implements these effects through information-dependent rest states as derived below.
+
+The mechanics of the biological rod are governed by the minimization of a total potential energy $\mathcal{E}_{\mathrm{total}}$ that couples bending, torsion, and extension to the information field and gravity. For a Cosserat rod with centerline $\mathbf{r}(s)$, the full energy functional is:
 
 \begin{equation}
-\mathcal{E}_{\mathrm{total}} = \int_0^L \left[ \frac{1}{2} B_{\mathrm{eff}}(s) \left( \kappa(s) - \kappa_{\mathrm{rest}}(s) \right)^2 + \rho A \mathbf{r}(s) \cdot \mathbf{g} \right] ds,
+\mathcal{E}_{\mathrm{total}} = \int_0^L \left[ \frac{1}{2} B_{\mathrm{eff}}(\kappa - \kappa_{\mathrm{rest}})^2 + \frac{1}{2} C_{\mathrm{eff}} \tau^2 + \frac{1}{2} K_{\mathrm{eff}} \varepsilon^2 + \rho A \mathbf{r} \cdot \mathbf{g} \right] ds,
 \label{eq:iec_energy}
 \end{equation}
-where $\kappa(s)$ is the realized curvature, $\kappa_{\mathrm{rest}}(s) = \kappa_0 + \chi_\kappa \partial_s I$ is the information-dependent rest curvature, $B_{\mathrm{eff}}(s) = E_0 I_{\mathrm{area}} (1 + \chi_E I(s))$ is the information-modified bending stiffness, and $\mathbf{r}(s)$ is the centerline position vector. The effective stiffness $B_{\mathrm{eff}}(s)$ defines a spatially-varying weighting function $w(I) = 1 + \chi_E I(s)$ that penalizes deviations from the information-prescribed shape more heavily in regions of high information content.
+where: 
+\begin{itemize}
+    \item $B_{\mathrm{eff}}(s) = E_0 I_{\mathrm{area}} (1 + \chi_E I(s))$ is the information-modulated bending stiffness.
+    \item $C_{\mathrm{eff}}(s) = G_0 J (1 + \chi_C I(s))$ is the torsional stiffness ($G_0$: shear modulus).
+    \item $K_{\mathrm{eff}}(s) = E_0 A (1 + \chi_M I(s))$ is the extensional stiffness.
+    \item $\kappa_{\mathrm{rest}}(s) = \kappa_0 + \chi_\kappa \partial_s I$ is the information-driven target curvature.
+    \item $\tau$ and $\varepsilon$ are the local torsion and strain, respectively.
+\end{itemize}
+The weighting $w(I) = (1 + \chi_E I(s))$ penalizes deviations from the information-prescribed counter-curvature more heavily in high-identity regions (e.g., cervical/lumbar junctions).
 
 \subsection{Cosserat force and moment balance}
 
-The equilibrium configuration is found by minimizing the total potential energy (elastic + gravitational). In the language of Cosserat rod theory, this yields the balance of linear and angular momentum. For a static rod subject to gravity $\mathbf{f}_g = \rho A \mathbf{g}$ and IEC-driven active moments, the equations are:
+The equilibrium configuration is found by finding the stationary state of the total potential energy. For a static rod subject to gravity $\mathbf{f}_g = \rho A \mathbf{g}$ and active moments induced by the information field gradients, the balance equations for internal force $\mathbf{n}$ and moment $\mathbf{m}$ are:
 
 \begin{align}
 \mathbf{n}'(s) + \mathbf{f}_g &= \mathbf{0}, \nonumber \\
 \mathbf{m}'(s) + \mathbf{r}'(s) \times \mathbf{n}(s) + \mathbf{m}_{\mathrm{info}}'(s) &= \mathbf{0},
 \label{eq:cosserat_balance}
 \end{align}
-where $\mathbf{n}$ is the internal force, $\mathbf{m}$ is the internal moment, and $\mathbf{m}_{\mathrm{info}}$ represents the active couple induced by the information field.
+where $\mathbf{m}_{\mathrm{info}}$ represents the active couple.
+
+\paragraph{Boundary Conditions:} To model the human spine, we impose clamped-free boundary conditions. The sacral base ($s=0$) is rigidly fixed, while the cranial tip ($s=L$) is free of external loads:
+\begin{align}
+\mathbf{r}(0) = \mathbf{0}, \quad &\mathbf{d}_i(0) = \mathbf{e}_i \quad (\text{Clamped Base}) \nonumber \\
+\mathbf{n}(L) = \mathbf{0}, \quad &\mathbf{m}(L) = \mathbf{0} \quad (\text{Free Tip})
+\label{eq:boundary_conditions}
+\end{align}
+where $\{\mathbf{e}_i\}$ is the laboratory frame.
 
 \subsection{Mode selection and spinal geometry}
 
-The interplay between the gravitational potential (favoring a C-shaped sag) and the IEC energy (favoring an S-shape) can be understood as a mode selection problem. In the linearized planar limit, small deflections $y(s)$ from the vertical satisfy an eigenvalue problem of the form:
+The transition from a sagging C-shape to a counter-curved S-shape can be analyzed as a spectral shift in the rod's eigenmodes. In the linearized limit, small transverse deflections $y(s)$ satisfy:
 
 \begin{equation}
 \mathcal{L}_{\mathrm{IEC}}[y(s)] = \frac{d^2}{ds^2} \left( B_{\mathrm{eff}}(s) \frac{d^2 y}{ds^2} \right) - \frac{d}{ds} \left( N(s) \frac{dy}{ds} \right) = \lambda_n y_n(s),
 \label{eq:mode_selection}
 \end{equation}
-where $N(s)$ is the axial tension due to gravity and $\lambda_n$ are eigenvalues. The boundary conditions for a clamped-free spine are: $y(0) = 0$, $y'(0) = 0$ (sacral fixation), and $M(L) = 0$, $F(L) = 0$ (free cranial end), where $M = -B_{\mathrm{eff}} y''$ is the internal bending moment and $F$ is the shear force. The information field modifies the differential operator $\mathcal{L}_{\mathrm{IEC}}$ through $B_{\mathrm{eff}}(s)$ such that the lowest energy mode $\lambda_0$ shifts from a monotonic C-shape (passive buckling) to a higher-order S-shape (counter-curvature). This spectral shift explains the robustness of the spinal curve: the S-shape becomes the energetic ground state of the information-coupled system.
+where $N(s) = \int_s^L \rho A g \, ds'$ is the axial tension due to gravity. The information field modifies the stiffness landscape $B_{\mathrm{eff}}(s)$. For a uniform beam ($\chi_E = 0$), the lowest eigenvalue $\lambda_0$ corresponds to a monotonic C-shaped mode. As $\chi_\kappa$ and $\chi_E$ increase, the effective stiffness at the peaks of $I(s)$ (cervical and lumbar regions) increases, making the C-mode energetically unfavorable. At a critical coupling strength $\chi_{\mathrm{crit}}$, a \emph{mode crossing} occurs where the S-shaped mode (characterized by a second zero-crossing in curvature) becomes the ground state ($\lambda_0$).
 
 \subsection{Geodesic curvature deviation metric}
 

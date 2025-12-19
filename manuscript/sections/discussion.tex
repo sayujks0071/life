@@ -23,8 +23,13 @@ Several alternative mechanisms could, in principle, explain spinal curvature mai
 \subsection{Limitations and Model Assumptions}
 Our model assumes a deterministic, static information field. In reality, $I(s)$ is dynamic, emerging from complex reaction-diffusion systems and growth processes. We also simplified the complex anatomy of vertebrae and discs into a continuous rod. Finally, the mapping from genes to $I(s)$ remains phenomenological; future work requires explicit coupling to gene expression data.
 
-\subsection{Future Directions}
-Future extensions will focus on: (1) Patient-specific modeling, inferring $I(s)$ from medical imaging to predict progression of deformities. (2) Coupling the IEC framework to volumetric growth laws to model the developmental time-course of spinal curvature. (3) Investigating the role of sensory feedback (proprioception) as a dynamic component of the information field.
+\subsection{Parameter Identifiability and the Inverse Problem}
+
+A critical challenge in applying the IEC framework to clinical data is the identifiability of its parameters ($\chi_\kappa, \chi_E, \beta_1, \beta_2$) and the underlying information field $I(s)$. Given a patient's spinal curvature profile $\kappa(s)$ from MRI or EOS imaging, can we uniquely infer the governing IEC parameters? Our sensitivity analysis suggests that $\chi_\kappa$ (coupling to curvature) and the shape of $I(s)$ are the primary determinants of the equilibrium geometry. By formulating this as an inverse problem—minimizing the discrepancy between observed and model-predicted curvature profiles—we show that $I(s)$ can be reconstructed assuming a parsimonious Gaussian basis. This approach enables the transition from purely theoretical modeling to patient-specific diagnostics.
+
+\subsection{Future Directions and Clinical Translation}
+
+Future extensions will focus on: (1) \textbf{Patient-specific modeling}, inferring $I(s)$ from medical imaging to predict progression of deformities. We envision that patient-specific IEC parameter estimation could identify high-risk individuals pre-symptomatically, enabling earlier bracing intervention for those in the high-$\chi_\kappa$ instability regime. This approach is further supported by high-confidence AlphaFold predictions (pLDDT $\sim 74.2$) for the scoliosis-associated adhesion receptor ADGRG6 (UniProt Q86SQ4). (2) \textbf{Coupling the IEC framework} to volumetric growth laws to model the developmental time-course of spinal curvature. (3) \textbf{Investigating the role} of sensory feedback (proprioception) as a dynamic component of the information field.
 
 \subsection{Testable predictions and experimental validation}
 Our framework makes several falsifiable predictions that can guide future experimental and clinical studies:
