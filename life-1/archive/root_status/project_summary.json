@@ -1,0 +1,492 @@
+{
+  "project": {
+    "name": "Spinal Modes: Information-Elasticity Coupling Model",
+    "version": "0.1.0-prototype",
+    "domain": "Biomechanics / Developmental Biology / Scoliosis Research",
+    "primary_claim": "Three IEC mechanisms (χ_κ, χ_E, χ_C, χ_f) couple developmental information fields (HOX/PAX, morphogens, ciliary flow) to mechanical properties, explaining spinal morphogenesis and curvature disorders",
+    "target_journals": ["arXiv", "PLOS Comp Bio", "J Biomech", "Dev Cell", "Spine"],
+    "license": "MIT",
+    "authors": ["Dr. Sayuj Krishnan"],
+    "repository": {
+      "path": "/Users/dr.sayujkrishnan/LIFE",
+      "branch": "main",
+      "last_commit": "3a96de8",
+      "status": "prototype"
+    }
+  },
+
+  "inventory": {
+    "source_code": {
+      "core_modules": [
+        {
+          "path": "src/spinalmodes/iec.py",
+          "lines": 340,
+          "description": "IEC model core: parameters, coherence fields, couplings, simplified solvers",
+          "status": "functional_but_simplified",
+          "key_functions": [
+            "IECParameters (dataclass)",
+            "generate_coherence_field (4 modes: constant/linear/gaussian/step)",
+            "apply_iec_coupling (IEC-1/2/3 implementations)",
+            "solve_beam_static (SIMPLIFIED cantilever, needs upgrade)",
+            "solve_dynamic_modes",
+            "compute_wavelength, compute_amplitude, compute_node_positions"
+          ],
+          "critical_gap": "solve_beam_static uses forward integration, not BVP solver"
+        },
+        {
+          "path": "src/spinalmodes/cli.py",
+          "lines": 40,
+          "description": "Main CLI entry point",
+          "status": "stub"
+        },
+        {
+          "path": "src/spinalmodes/iec_cli.py",
+          "lines": 387,
+          "description": "Five IEC subcommands: demo, sweep, phase, node-drift, helical-threshold",
+          "status": "implemented_but_untested_end_to_end"
+        },
+        {
+          "path": "src/spinalmodes/fig_iec_discriminators.py",
+          "lines": 223,
+          "description": "Three-panel discriminator figure generation",
+          "status": "code_exists_no_outputs_generated"
+        }
+      ],
+      "tests": [
+        {
+          "path": "tests/test_iec.py",
+          "lines": 316,
+          "count": 15,
+          "coverage": "good_for_core_functions",
+          "gaps": [
+            "No CLI smoke tests (skipped)",
+            "No regression tests",
+            "No convergence tests",
+            "No solver validation tests"
+          ]
+        }
+      ],
+      "tools": [
+        {
+          "path": "tools/validate_figures.py",
+          "lines": 150,
+          "description": "Figure validation (DPI, dimensions, metadata)",
+          "status": "not_run_no_figures_exist"
+        }
+      ]
+    },
+
+    "documentation": {
+      "manuscript": [
+        {
+          "path": "docs/manuscript/SpinalCountercurvature_IEC.md",
+          "lines": 433,
+          "sections": ["abstract", "intro", "theory", "results", "methods", "discussion", "outlook"],
+          "status": "draft_with_placeholders",
+          "gaps": [
+            "Affiliations placeholder",
+            "No generated figures referenced",
+            "Quantitative results unvalidated",
+            "References incomplete"
+          ]
+        },
+        {
+          "path": "docs/manuscript/Cilia_Genes_Idiopathic_Scoliosis.md",
+          "description": "Cilia-related genes manuscript",
+          "status": "supplementary"
+        }
+      ],
+      "guides": [
+        {
+          "path": "README.md",
+          "status": "complete_with_prototype_disclaimer"
+        },
+        {
+          "path": "docs/cli.md",
+          "status": "complete"
+        },
+        {
+          "path": "docs/figures.md",
+          "status": "describes_nonexistent_figures"
+        }
+      ],
+      "analysis": [
+        {
+          "path": "docs/Grimes_IEC_Connection_Analysis.md",
+          "lines": 215,
+          "description": "Connects Grimes et al. 2016 zebrafish cilia-CSF research to IEC-3",
+          "status": "excellent_biological_validation"
+        },
+        {
+          "path": "docs/Cilia_CSF_Implementation_Guide.md",
+          "status": "implementation_plan"
+        }
+      ]
+    },
+
+    "data_and_outputs": {
+      "generated_figures": {
+        "count": 0,
+        "expected": [
+          "outputs/figs/fig_iec_discriminators.png (3-panel: node drift, amplitude, helical)",
+          "outputs/figs/fig_iec_phase.png",
+          "outputs/figs/fig_iec_node_drift.png"
+        ],
+        "status": "missing"
+      },
+      "generated_data": {
+        "count": 1,
+        "files": [
+          "outputs/csv/demo.csv (exists, small demo)",
+          "outputs/csv/demo_summary.json"
+        ],
+        "status": "minimal"
+      },
+      "external_data": {
+        "count": 0,
+        "status": "none_required_currently"
+      }
+    },
+
+    "infrastructure": {
+      "build_system": {
+        "tool": "poetry",
+        "status": "configured_but_environment_not_tested",
+        "file": "pyproject.toml"
+      },
+      "makefile": {
+        "targets": ["install", "test", "format", "lint", "typecheck", "green", "clean"],
+        "status": "functional"
+      },
+      "ci_cd": {
+        "status": "missing",
+        "needed": [
+          ".github/workflows/ci.yml",
+          ".github/workflows/pages.yml"
+        ]
+      },
+      "docker": {
+        "status": "missing",
+        "priority": "high"
+      },
+      "environment": {
+        "python_version": "3.10+",
+        "pinned": false,
+        "environment_yml": "missing",
+        "requirements_txt": "missing"
+      }
+    }
+  },
+
+  "dependencies": {
+    "core": [
+      {"package": "numpy", "version": "^1.24.0", "purpose": "numerical arrays"},
+      {"package": "scipy", "version": "^1.11.0", "purpose": "scientific computing, solvers"},
+      {"package": "matplotlib", "version": "^3.7.0", "purpose": "visualization"},
+      {"package": "pandas", "version": "^2.0.0", "purpose": "data tables"},
+      {"package": "typer", "version": "^0.9.0", "purpose": "CLI framework"},
+      {"package": "pydantic", "version": "^2.0.0", "purpose": "data validation"}
+    ],
+    "dev": [
+      {"package": "pytest", "version": "^7.4.0"},
+      {"package": "pytest-cov", "version": "^4.1.0"},
+      {"package": "black", "version": "^23.7.0"},
+      {"package": "ruff", "version": "^0.0.285"},
+      {"package": "mypy", "version": "^1.5.0"}
+    ],
+    "missing_for_upgrade": [
+      {"package": "pyelastica", "purpose": "Cosserat rod solver (optional heavy dep)"},
+      {"package": "fenics/fenicsx", "purpose": "FEM solver (optional heavy dep)"},
+      {"package": "SALib", "purpose": "Sobol sensitivity analysis"},
+      {"package": "seaborn", "purpose": "enhanced visualization"}
+    ]
+  },
+
+  "computational_model": {
+    "iec_mechanisms": [
+      {
+        "name": "IEC-1: Target Curvature Bias",
+        "equation": "κ̄(s) = κ̄_gen(s) + χ_κ · ∂I/∂s",
+        "discriminator": "Node shift without wavelength change (|ΔΛ| < 2%)",
+        "parameter": "χ_κ",
+        "estimated_range": "0.02–0.06 m",
+        "validation_status": "tested_in_simplified_solver"
+      },
+      {
+        "name": "IEC-2: Constitutive Bias",
+        "equation": "E(s) = E₀[1 + χ_E·I(s)], C(s) = C₀[1 + χ_C·I(s)]",
+        "discriminator": "Amplitude modulation at fixed load (>10% for 25% modulus change)",
+        "parameters": ["χ_E", "χ_C"],
+        "estimated_range": "χ_E: -0.3 to +0.3, χ_C: -0.2 to +0.5",
+        "validation_status": "tested_in_simplified_solver"
+      },
+      {
+        "name": "IEC-3: Active Moment",
+        "equation": "M_act(s) = χ_f · ∇I(s)",
+        "discriminator": "Helical threshold reduction with ||∇I|| > 0",
+        "parameter": "χ_f",
+        "estimated_range": "0.01–0.1 N·m",
+        "biological_validation": "Grimes et al. 2016 ciliary flow",
+        "validation_status": "tested_in_simplified_solver"
+      }
+    ],
+
+    "governing_equations": {
+      "type": "Cosserat rod",
+      "current_implementation": "simplified_cantilever_beam",
+      "needed_implementation": [
+        "Full Cosserat rod with 6-DOF",
+        "BVP solver for static equilibrium",
+        "Stability analysis for helical modes",
+        "Time-dependent dynamics with segmentation clock coupling"
+      ],
+      "discretization": {
+        "current": "finite_differences_n100_uniform",
+        "needed": "convergence_study_n50_to_400"
+      },
+      "boundary_conditions": {
+        "current": "cantilever_clamped_free",
+        "needed": ["pinned_pinned", "general_bc_support"]
+      }
+    },
+
+    "coherence_fields": {
+      "modes": ["constant", "linear", "gaussian", "step"],
+      "current_status": "implemented_and_tested",
+      "missing": "file-based I(s) from external data"
+    },
+
+    "solvers": {
+      "static": {
+        "current": "solve_beam_static (forward integration)",
+        "critical_issue": "Not a BVP solver, insufficient for publication",
+        "upgrade_options": [
+          "scipy.integrate.solve_bvp",
+          "Custom shooting method",
+          "Cosserat rod (PyElastica)",
+          "FEM (FEniCSx/SfePy)"
+        ]
+      },
+      "dynamic": {
+        "current": "solve_dynamic_modes (analytical approximation)",
+        "status": "adequate_for_estimates",
+        "upgrade": "eigenvalue analysis of full operator"
+      }
+    }
+  },
+
+  "validation_and_verification": {
+    "unit_tests": {
+      "count": 15,
+      "coverage": "~80% of core functions",
+      "status": "good",
+      "gaps": ["solver validation", "convergence tests", "regression tests"]
+    },
+
+    "acceptance_criteria": {
+      "iec1_node_drift": {
+        "criterion": "|ΔΛ| ≤ 2% with measurable node shift",
+        "status": "tested_passing_in_simplified_solver",
+        "needs": "validation_in_rigorous_solver"
+      },
+      "iec2_amplitude": {
+        "criterion": "≥10% amplitude change for 25% modulus change",
+        "status": "tested_passing_in_simplified_solver",
+        "needs": "validation_in_rigorous_solver"
+      },
+      "iec3_threshold": {
+        "criterion": "Helical threshold reduction ≥10% with gradI > 0",
+        "status": "tested_passing_in_simplified_solver",
+        "needs": "validation_in_rigorous_solver"
+      }
+    },
+
+    "convergence_studies": {
+      "spatial": "missing",
+      "temporal": "missing",
+      "needed": "Δx, Δt → 0 analysis with error vs. cost plots"
+    },
+
+    "sensitivity_analysis": {
+      "status": "missing",
+      "needed": [
+        "Sobol indices for 4D parameter space (χ_κ, χ_E, χ_C, χ_f)",
+        "Morris screening",
+        "Uncertainty quantification (bootstrap or Bayesian)"
+      ]
+    },
+
+    "benchmark_tests": {
+      "status": "missing",
+      "needed": [
+        "Euler-Bernoulli cantilever (analytical)",
+        "Timoshenko beam comparison",
+        "Published Cosserat rod results"
+      ]
+    }
+  },
+
+  "gaps_and_priorities": {
+    "blocking_for_publication": [
+      {
+        "item": "Upgrade solve_beam_static to rigorous BVP solver",
+        "priority": "CRITICAL",
+        "effort": "4-8 hours",
+        "approach": "scipy.integrate.solve_bvp or custom shooting method"
+      },
+      {
+        "item": "Generate all figures with provenance",
+        "priority": "CRITICAL",
+        "effort": "2-4 hours",
+        "approach": "Run analysis scripts, validate outputs"
+      },
+      {
+        "item": "Convergence and validation studies",
+        "priority": "CRITICAL",
+        "effort": "4-6 hours",
+        "approach": "Systematic mesh refinement, benchmark comparisons"
+      },
+      {
+        "item": "Sensitivity analysis (Sobol)",
+        "priority": "HIGH",
+        "effort": "3-5 hours",
+        "approach": "SALib integration, LHS sampling"
+      }
+    ],
+
+    "nice_to_have": [
+      {
+        "item": "Cosserat rod solver (PyElastica)",
+        "priority": "MEDIUM",
+        "effort": "8-16 hours",
+        "benefit": "Full 6-DOF, better helical mode capture"
+      },
+      {
+        "item": "FEM option (FEniCSx)",
+        "priority": "LOW",
+        "effort": "16-32 hours",
+        "benefit": "Complex geometry, material heterogeneity"
+      },
+      {
+        "item": "Time-dependent I(s,t) with segmentation clock",
+        "priority": "MEDIUM",
+        "effort": "8-12 hours",
+        "benefit": "Dynamic coupling to somitogenesis"
+      }
+    ],
+
+    "reproducibility_infrastructure": [
+      {
+        "item": "Dockerfile with pinned environment",
+        "priority": "HIGH",
+        "effort": "1-2 hours"
+      },
+      {
+        "item": "environment.yml and requirements.txt",
+        "priority": "HIGH",
+        "effort": "30 minutes"
+      },
+      {
+        "item": "GitHub Actions CI (lint, test, smoke)",
+        "priority": "MEDIUM",
+        "effort": "1-2 hours"
+      },
+      {
+        "item": "CITATION.cff",
+        "priority": "LOW",
+        "effort": "15 minutes"
+      }
+    ]
+  },
+
+  "compute_budget": {
+    "current_runs": "<1 CPU-minute for demos",
+    "target": "120 CPU-minutes for full analysis pipeline",
+    "recommendations": [
+      "Small n=50-100 for CI smoke tests",
+      "Full n=200-400 for publication figures behind --full flag"
+    ]
+  },
+
+  "biological_context": {
+    "experimental_validation": [
+      {
+        "study": "Grimes et al. 2016 (Science)",
+        "finding": "Zebrafish cilia-CSF-scoliosis link",
+        "connection": "Validates IEC-3 mechanism",
+        "model_organism": "zebrafish (ptk7 mutants)",
+        "readout": "CSF flow (PIV), spinal curvature"
+      }
+    ],
+    "candidate_molecules": {
+      "iec1": ["HOX proteins", "PAX1/9"],
+      "iec2": ["SOX9", "COL2A1", "ACAN", "RhoA"],
+      "iec3": ["IFT proteins", "DNAH", "PKD2"]
+    },
+    "clinical_relevance": "Idiopathic scoliosis (2-3% prevalence), ciliopathies, congenital vertebral malformations"
+  },
+
+  "recommended_workflow": {
+    "phase_1_infrastructure": {
+      "duration": "1-2 days",
+      "tasks": [
+        "Create environment.yml and requirements.txt with pinned versions",
+        "Write Dockerfile (CPU, deterministic build)",
+        "Extend Makefile with 'make env', 'make figures', 'make paper', 'make all'",
+        "Set up basic GitHub Actions CI"
+      ]
+    },
+
+    "phase_2_solver_upgrade": {
+      "duration": "3-5 days",
+      "tasks": [
+        "Implement BVP solver (scipy.integrate.solve_bvp)",
+        "Add analytical benchmarks (Euler-Bernoulli, Timoshenko)",
+        "Convergence study (n=50,100,200,400)",
+        "Unit tests for solver (energy conservation, BC satisfaction)"
+      ]
+    },
+
+    "phase_3_validation": {
+      "duration": "2-3 days",
+      "tasks": [
+        "Sensitivity analysis (Sobol, Morris)",
+        "Uncertainty quantification (bootstrap or Bayesian)",
+        "Parameter sweeps with error bars",
+        "Robustness checks (perturbation studies)"
+      ]
+    },
+
+    "phase_4_outputs": {
+      "duration": "1-2 days",
+      "tasks": [
+        "Generate all figures with provenance JSON",
+        "Run full analysis pipeline (make figures)",
+        "Validate figure specs (DPI, dimensions, fonts)",
+        "Create supplementary materials"
+      ]
+    },
+
+    "phase_5_manuscript": {
+      "duration": "2-3 days",
+      "tasks": [
+        "Assemble manuscript with LaTeX or Pandoc pipeline",
+        "Integrate generated figures",
+        "Complete references.bib",
+        "Add reproducibility checklist",
+        "Finalize affiliations and acknowledgments"
+      ]
+    }
+  },
+
+  "metadata": {
+    "generated_by": "Claude Code - Senior Research Compiler",
+    "timestamp": "2025-11-04",
+    "git_sha": "3a96de8",
+    "analysis_scope": "comprehensive_repository_audit",
+    "total_python_loc": 1466,
+    "total_test_loc": 316,
+    "documentation_files": 14,
+    "manuscript_lines": 433
+  }
+}

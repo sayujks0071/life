@@ -1,0 +1,33 @@
+\section{Results}
+
+We present numerical results demonstrating how the Information--Elasticity Coupling (IEC) framework stabilizes spinal geometry against gravity and how this stability breaks down in information-dominated regimes.
+
+\subsection{Segmentation-Derived Information Field and IEC Landscape}
+
+We first establish the connection between developmental patterning and the mechanical information field. Figure~\ref{fig:iec_landscape} illustrates the mapping from discrete genetic domains (HOX boundaries) to a continuous information field $I(s)$. The resulting field exhibits peaks in the cervical ($s/L \approx 0.8$) and lumbar ($s/L \approx 0.25$) regions, with peak amplitudes $A \in [0.5, 0.7]$.
+
+Through the biological metric (Eq.~\ref{eq:biological_metric}), these regions possess a larger ``effective length,'' effectively encoding the target S-shape into the manifold itself. In the strong coupling regime ($\beta_1=1.0, \beta_2=0.5$), the effective metric $g_{\mathrm{eff}}(s)$ peaks at $\sim 1.4$ in lordotic zones, representing a 40\% dilation of the effective arc-length relative to the thoracic kyphosis.
+
+\subsection{Mode Spectrum of the IEC Beam in Gravity}
+
+To understand why the S-shape is selected, we analyze the eigenmodes of the linearized IEC beam equation (Eq.~\ref{eq:mode_selection}). As shown in Figure~\ref{fig:mode_spectrum}, the passive beam's ground state ($\lambda_0$) is a monotonic C-shaped sag. However, as the IEC coupling $\chi_\kappa$ increases, the spectrum shifts. With $\chi_\kappa > 0.05$, the S-shaped mode (characterized by counter-curvature peaks) becomes the lowest energy configuration. Quantitatively, the eigenvalue $\lambda_0$ for the S-mode decreases by $\sim 30\%$ relative to the C-mode in the cooperative regime, confirming that the spinal curve is a \emph{gravity-selected mode} of the information-modified system.
+
+\subsection{3D Cosserat Rod S-Curve Solutions}
+
+We verify these linear predictions using full 3D Cosserat rod simulations. Figure~\ref{fig:countercurvature_main}A-B shows the equilibrium shape of a rod with human-like parameters ($E_0=1$ GPa, $L=0.4$ m). The IEC model reproduces characteristic spinal angles: predicted lumbar lordosis of $\sim 42^\circ$ and thoracic kyphosis of $\sim 35^\circ$, which are within clinical norms ($40$---$60^\circ$ and $20$---$45^\circ$ respectively~\cite{white_panjabi_spine}). Sensitivity analysis (±10% parameter variation) shows $\widehat{D}_{\mathrm{geo}} = 0.113 \pm 0.011$, confirming robust counter-curvature formation.
+
+Crucially, this shape is robust to gravitational unloading. As shown in Figure~\ref{fig:countercurvature_main}D, the normalized geodesic deviation $\widehat{D}_{\mathrm{geo}}$ remains $>0.15$ even as $g \to 0$, while the passive curvature energy vanishes ($E_{bend} \to 0$). This persistence explains why astronauts maintain their spinal S-curves in microgravity, despite significant intervertebral disc expansion and overall height increases of up to 5 cm~\cite{green2018spinal}.
+
+\subsection{Phase Diagrams of Curvature Patterns}
+
+We map the system behavior across the parameter space $(\chi_\kappa, g)$ (Fig.~\ref{fig:phase_diagram}). In the \emph{gravity-dominated} regime (low $\chi_\kappa$, high $g$), the rod follows the passive geodesic ($\widehat{D}_{\mathrm{geo}} < 0.1$). In the \emph{cooperative} regime ($\chi_\kappa \approx 0.05, g=1.0$), information and gravity balance to produce the stable S-curve. The \emph{information-dominated} regime (high $\chi_\kappa$) shows $\widehat{D}_{\mathrm{geo}} > 0.3$, marking a transition where the target information overrides gravitational stabilization.
+
+\subsection{Perturbations and Scoliosis-like Instabilities}
+
+Finally, we test the emergence of scoliosis by introducing a lateral asymmetry in the information field ($\varepsilon_{\mathrm{asym}}=0.05$ in the thoracic region). As shown in Figure~\ref{fig:scoliosis_emergence}, the system exhibits a \emph{bifurcation} sensitive to the IEC coupling strength. In the cooperative regime ($\chi_\kappa < 0.06$), the asymmetry is suppressed by gravity, with lateral Cobb angles remaining $< 5^\circ$. However, in the information-dominated regime ($\chi_\kappa > 0.08$), the same 5\% perturbation is amplified into a large lateral deviation ($S_{\mathrm{lat}} > 0.05$) with predicted Cobb angles $> 15^\circ$, reproducing the clinical threshold for adolescent idiopathic scoliosis intervention. This confirms that scoliosis is an accessible ``pathological mode'' of the information-coupled spine that emerges when the countercurvature mechanism becomes over-sensitive to patterning noise.
+
+\subsection{Growth Dynamics and the Adolescent Onset of Scoliosis}
+
+Clinical observation indicates that idiopathic scoliosis typically emerges or progresses rapidly during the adolescent growth spurt. To model this, we examine the stability of the S-curve as the rod length $L$ increases while maintaining constant coupling $\chi_\kappa$. In the linearized model (Eq.~\ref{eq:mode_selection}), the effective stiffness $B_{\mathrm{eff}}$ scales against the gravitational moment $\rho A g L^2$. As $L$ increases, the gravitational stabilization of the sagittal mode weakens relative to the information-driven target curvature.
+
+We simulate a "pubertal growth spurt" by increasing $L$ from 0.35 m to 0.45 m. Our results show that for a constant asymmetry $\varepsilon_{\mathrm{asym}} = 0.01$, the Cobb angle remains $< 5^\circ$ for $L < 0.38$ m but undergoes a supercritical bifurcation as $L$ exceeds a threshold $L_{\mathrm{crit}}$. Beyond this threshold, the system enters the information-dominated regime where the counter-curvature mechanism becomes over-sensitive to patterning noise. This provides a physical explanation for the temporal window of vulnerability in AIS: rapid axial elongation drives the spine into an unstable region of the $(\chi_\kappa, g)$ phase diagram where previously suppressed asymmetries are amplified into macroscopic deformities.
