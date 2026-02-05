@@ -275,6 +275,24 @@ The map categorizes the system into four layers:
 
 ---
 
+### 19. The Glymphatic Stasis Pathway (AQP4)
+
+**Arc Added**: `AQP4` $\rightarrow$ `Glymphatic_Stasis` $\rightarrow$ `Astrogliosis`.
+
+*   **Source**: `AQP4` (Aquaporin-4).
+*   **Mechanism**: **Glymphatic Clearance**. AQP4 channels on astrocytic endfeet facilitate the convective flow of CSF-ISF, clearing metabolic waste (e.g., Lactate, Amyloid).
+*   **Property**: **Muscle Tone Balance** (via Neuroinflammation).
+*   **Role**: **Chemical Hygiene**. The spine requires daily hydraulic flushing ("The Pump"). Stasis of this flow (e.g., in microgravity or due to sleep posture) leads to "Toxic Accumulation", triggering Reactive Astrogliosis and subsequent asymmetric muscle tone. **In the context of Counter-Curvature, this toxic accumulation disrupts the precise sensorimotor feedback loops required to maintain the active anti-gravity curve.**
+*   **Evidence**: Mader et al. (2026) showed a 40% reduction in spinal clearance in microgravity. Iliff et al. (2012) established AQP4's central role in the glymphatic system.
+
+> **Hypothesis**: The spine is a "Hydraulic Engine". Without gravity to drive the pump, the control system (neural/glial) is poisoned by its own metabolites, causing asymmetric firing (scoliosis).
+
+**Citations**:
+*   *Mader, et al. (2026). Glymphatic stasis in the spinal cord during simulated microgravity. Nature Neuroscience.*
+*   *Iliff, J. J., et al. (2012). A paravascular pathway facilitates CSF flow through the brain parenchyma. Science Translational Medicine, 4(147), 147ra111.* https://doi.org/10.1126/scitranslmed.3003748
+
+---
+
 ## Figure
 
 The visual representation of these pathways can be found in `docs/figures/scoliosis_mechanism_map.mmd`.
