@@ -111,7 +111,9 @@ def run_experiment(
     file_exists = os.path.isfile(out_file)
 
     with open(out_file, mode='a', newline='') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        # Use restval='nan' so missing values are written as 'nan' instead of ''
+        # This helps debugging and prevents empty strings which crash float() conversion
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, restval='nan')
         if not file_exists:
             writer.writeheader()
 
@@ -221,6 +223,11 @@ def run_experiment(
                                 "runtime_sec": round(runtime, 4),
                                 "peak_memory_mb": round(peak_mb, 2)
                             }
+
+                            # Debug: Ensure chi_e is set
+                            if "chi_e" not in row_data or row_data["chi_e"] is None:
+                                print(f"WARNING: chi_e missing or None. chi_e var = {chi_e}")
+                                row_data["chi_e"] = chi_e
 
                             writer.writerow(row_data)
                             csvfile.flush()  # Ensure write
