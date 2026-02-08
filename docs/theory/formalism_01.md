@@ -194,6 +194,26 @@ $$ \Omega_{VP} = \frac{\pi_V}{\pi_P} = \frac{\sigma_P^2}{\sigma_V^2} $$
     *   **Scoliosis Mechanism**: We hypothesize scoliosis begins when $\Omega_{VP}$ drops below a critical threshold (e.g., due to vestibular noise or proprioceptive hypersensitivity), causing the spine to optimize for a local "phantom" curvature.
 *   **Measurable Proxy**: The ratio of the gain of the Vestibulo-Spinal Reflex (VSR) to the gain of the Proprioceptive H-Reflex.
 
+### 2.14. The Circadian Gain Modulation ($\Gamma_{circ}$)
+
+We define a dimensionless scalar function representing the suppression of mechanosensitivity during the rest phase, mediated by Melatonin-MT2-Gi signaling.
+
+$$ \chi_{M}(t) = \chi_{M,0} \cdot \Gamma_{circ}(t) $$
+
+Where the gain modulation follows a Hill function of systemic melatonin concentration:
+
+$$ \Gamma_{circ}(t) = \frac{1}{1 + (\frac{[Mel](t)}{K_{d,mel}})^n} $$
+
+*   **Symbols**:
+    *   $[Mel](t)$: Circulating melatonin concentration $[ML^{-3}]$.
+    *   $K_{d,mel}$: Effective dissociation constant for MT2-mediated suppression $[ML^{-3}]$.
+    *   $n$: Hill coefficient (cooperativity of the signaling cascade) $[1]$.
+*   **Physical Interpretation**:
+    *   **Day ($\Gamma_{circ} \approx 1$)**: High stiffness/sensitivity. The spine actively fights gravity.
+    *   **Night ($\Gamma_{circ} \to 0$)**: Melatonin rises, suppressing cAMP/PKA. The spine relaxes to allow passive growth and remodeling ("Maintenance Mode").
+    *   **Pathology (AIS)**: If the Gi pathway is defective (e.g., *Gi* uncoupling), $\Gamma_{circ}$ remains near 1 even at night ("Constitutive Day"). The system continues to correct for "phantom" gravitational errors while unloaded, driving asymmetric growth.
+*   **Measurable Proxy**: The ratio of night-time to day-time paraspinal EMG amplitude or stiffness (measured via shear wave elastography).
+
 ## 3. The Tissue Anisotropy Tensor ($\mathbf{\Lambda}$)
 
 The tensor $\mathbf{\Lambda}$ is a rank-2, dimensionless operator representing the statistical alignment of Planar Cell Polarity (PCP) vectors and ECM fiber orientation within the vertebral cross-section.
@@ -366,6 +386,16 @@ The theory makes specific predictions about the relationship between genetic ani
 *   **Hypothesis**: Artificially reducing proprioceptive precision ($\pi_P$) via tendon vibration (inducing noise $\sigma_P^2$) will force a shift to vestibular dominance ($\Omega_{VP} \uparrow$), temporarily straightening the spine if the curvature was driven by bad proprioceptive priors.
 *   **Data Needed**: Real-time curvature tracking of scoliotic mice/zebrafish during high-frequency tendon vibration.
 *   **Refutation**: If "jamming" proprioception does not alter the curvature, the deformity is structural (fixed) rather than actively maintained by sensory loops. (Reference: Proske & Gandevia, 2012).
+
+### Test AA: The Night-Time Suppression Failure
+*   **Hypothesis**: AIS patients exhibit a specific failure of night-time muscle tone suppression due to "Constitutive Day" signaling.
+*   **Data Needed**: 24-hour continuous EMG monitoring of paraspinal muscles in AIS adolescents vs. healthy controls, specifically analyzing the Amplitude Root Mean Square (RMS) during Stage 3/4 sleep.
+*   **Refutation**: If AIS patients show normal deep-sleep atonia (silence) comparable to controls, the "Constitutive Day" hypothesis is falsified. (Reference: Moreau et al., 2004).
+
+### Test AB: The Gi-Rescue
+*   **Hypothesis**: Pharmacological activation of Gi proteins (bypassing the melatonin receptor) can restore night-time suppression and halt curvature in melatonin-deficient or clock-disrupted models.
+*   **Data Needed**: Cobb angle progression in pinealectomized chickens or *Per2* mutant mice treated with a Gi-biased agonist (e.g., Adenosine A1 agonist) vs. Vehicle during the dark phase.
+*   **Refutation**: If Gi-agonists fail to reduce curvature progression despite lowering intracellular cAMP, the pathway is not the primary driver of the deformity. (Reference: Azeddine et al., 2007).
 
 ## 7. References
 
