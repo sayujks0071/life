@@ -56,40 +56,25 @@ class StructureParser:
         try:
             with open(pdb_path, 'r') as f:
                 for line in f:
-                    if line.startswith("ATOM"):
-                        # Check for CA atom (Atom name is cols 12-16, 0-indexed: 12-15 usually)
-                        # PDB format (1-based index in documentation, 0-based slice here):
-                        # 12-16: Atom name (cols 13-16)
-                        # 16: AltLoc (Alternate location indicator)
-                        # 17-20: Residue name
-                        # 21: Chain identifier
-                        # 30-38: X
-                        # 38-46: Y
-                        # 46-54: Z
-                        # 60-66: Temperature factor (pLDDT)
+                    # Bolt Optimization: specialized CA check avoiding strip() and allocs
+                    # Check "ATOM" (start) and " CA " (cols 12-16 => indices 12-15 match " CA ")
+                    if line.startswith("ATOM") and line[13:15] == "CA" and line[12] == " ":
+                        # Only handle primary conformations (' ' or 'A') at index 16
+                        if line[16] == ' ' or line[16] == 'A':
+                            try:
+                                # Residue name 17:20 (3 chars). Skip strip() for speed.
+                                res_name = line[17:20]
+                                x = float(line[30:38])
+                                y = float(line[38:46])
+                                z = float(line[46:54])
+                                b_factor = float(line[60:66])
+                                res_name = line[17:20].strip()
 
-                        # Bolt Optimization 2026-06-25: Direct index check for CA
-                        # Avoids creating substrings and stripping for every ATOM line.
-                        # Standard PDB format for Alpha Carbon (' CA '):
-                        # Col 13=' ' (idx 12), Col 14='C' (idx 13), Col 15='A' (idx 14), Col 16=' ' (idx 15)
-                        # This also correctly excludes Calcium ('CA  ') which has 'C' at idx 12.
-                        if len(line) > 66 and line[13] == 'C' and line[14] == 'A':
-                            # Only handle primary conformations (' ' or 'A')
-                            # AF structures usually don't have altlocs, but we check for safety.
-                            alt_loc = line[16]
-                            if alt_loc == ' ' or alt_loc == 'A':
-                                try:
-                                    res_name = line[17:20].strip()
-                                    x = float(line[30:38])
-                                    y = float(line[38:46])
-                                    z = float(line[46:54])
-                                    b_factor = float(line[60:66])
-
-                                    coords_list.append([x, y, z])
-                                    plddt_list.append(b_factor)
-                                    resnames_list.append(res_name)
-                                except ValueError:
-                                    continue # Skip malformed lines
+                                coords_list.append([x, y, z])
+                                plddt_list.append(b_factor)
+                                resnames_list.append(res_name)
+                            except ValueError:
+                                continue # Skip malformed lines
 
             if not coords_list:
                 return None, None, None

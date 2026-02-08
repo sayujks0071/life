@@ -181,18 +181,38 @@ $$ E_{nuc} = E_{basal} + \Gamma_{CS} \cdot [\text{H3K9me3}] $$
 
 ### 2.13. The Vestibular Precision Ratio ($\Omega_{VP}$)
 
-We quantify the sensory weighting between global gravitational orientation (Vestibular) and local inter-vertebral alignment (Proprioceptive).
+We define the Vestibular Precision Ratio as the ratio of the global vestibular sensory gain to the local proprioceptive sensory gain.
 
-$$ \Omega_{VP} = \frac{\gamma_P}{\gamma_V} $$
+$$ \Omega_{VP} = \frac{G_{VSR}}{G_{H}} $$
 
 *   **Symbols**:
-    *   $\gamma_P$: Proprioceptive Gain $[ML^2T^{-2}]$ (Torque per unit curvature error). Sensitivity to local deformity.
-    *   $\gamma_V$: Vestibular Gain $[ML^2T^{-2}]$ (Torque per unit gravitational tilt). Sensitivity to global verticality.
+    *   $G_{VSR}$: Gain of the Vestibulo-Spinal Reflex (global verticality reference).
+    *   $G_{H}$: Gain of the H-Reflex (local muscle length reference).
+*   **Dimensions**: $[1]$ (Dimensionless).
 *   **Physical Interpretation**:
-    *   $\Omega_{VP} \approx 1$: Balanced integration. The spine aligns to gravity while correcting local kinks.
-    *   $\Omega_{VP} \gg 1$: "Proprioceptive Capture." The system ignores the global gravity vector to obsessively correct local alignment errors, leading to a "perfectly straight" but tilted spine, or spiraling if the reference frame is twisted (as in *Adgrg6* mutants).
-    *   **AIS Pathogenesis**: We hypothesize AIS involves a primary loss of vestibular reliability ($\gamma_V \to 0$), driving $\Omega_{VP} \to \infty$. The spine becomes "blind" to gravity and aligns solely to an internal, potentially distorted, proprioceptive map.
-*   **Measurable Proxy**: The ratio of postural sway amplitude induced by Muscle Vibration (Proprioceptive perturbation) versus Galvanic Vestibular Stimulation (Vestibular perturbation).
+    *   $\Omega_{VP} \approx 1$: Balanced integration of global and local cues (Healthy).
+    *   $\Omega_{VP} > 1.5$: Vestibular dominance. The system prioritizes "verticality" over local curvature, potentially driving a "Geometric Hallucination" where the spine curves to satisfy a false vertical reference.
+*   **Measurable Proxy**: The ratio of Vestibular Evoked Myogenic Potential (VEMP) amplitude to H-Reflex amplitude in paraspinal muscles.
+
+### 2.14. The Circadian Gain Modulation ($\Gamma_{circ}$)
+
+We define a dimensionless scalar function representing the suppression of mechanosensitivity during the rest phase, mediated by Melatonin-MT2-Gi signaling.
+
+$$ \chi_{M}(t) = \chi_{M,0} \cdot \Gamma_{circ}(t) $$
+
+Where the gain modulation follows a Hill function of systemic melatonin concentration:
+
+$$ \Gamma_{circ}(t) = \frac{1}{1 + (\frac{[Mel](t)}{K_{d,mel}})^n} $$
+
+*   **Symbols**:
+    *   $[Mel](t)$: Circulating melatonin concentration $[ML^{-3}]$.
+    *   $K_{d,mel}$: Effective dissociation constant for MT2-mediated suppression $[ML^{-3}]$.
+    *   $n$: Hill coefficient (cooperativity of the signaling cascade) $[1]$.
+*   **Physical Interpretation**:
+    *   **Day ($\Gamma_{circ} \approx 1$)**: High stiffness/sensitivity. The spine actively fights gravity.
+    *   **Night ($\Gamma_{circ} \to 0$)**: Melatonin rises, suppressing cAMP/PKA. The spine relaxes to allow passive growth and remodeling ("Maintenance Mode").
+    *   **Pathology (AIS)**: If the Gi pathway is defective (e.g., *Gi* uncoupling), $\Gamma_{circ}$ remains near 1 even at night ("Constitutive Day"). The system continues to correct for "phantom" gravitational errors while unloaded, driving asymmetric growth.
+*   **Measurable Proxy**: The ratio of night-time to day-time paraspinal EMG amplitude or stiffness (measured via shear wave elastography).
 
 ## 3. The Tissue Anisotropy Tensor ($\mathbf{\Lambda}$)
 
@@ -358,14 +378,24 @@ The theory makes specific predictions about the relationship between genetic ani
 *   **Refutation**: If H3K9me3 levels are stable or increase in microgravity, the "Scalar Senescence" model is falsified. (Reference: Stephens et al., 2017).
 
 ### Test Y: The Gain Mismatch Prediction
-*   **Hypothesis**: AIS patients exhibit a specific suppression of vestibular gain ($\gamma_V$) to compensate for sensory noise, leading to $\Omega_{VP} > 1.5$.
-*   **Data Needed**: Postural sway response curves to Stochastic Vestibular Stimulation (SVS) (0-30Hz) in AIS adolescents vs age-matched controls.
-*   **Refutation**: If AIS patients show *normal* or *hypersensitive* responses to vestibular stimulation (high $\gamma_V$), the theory of "Vestibular Silencing" is falsified. (Reference: Pialasse et al., 2015).
+*   **Hypothesis**: AIS progression is driven by a sensory re-weighting where $\Omega_{VP}$ significantly exceeds unity ($\Omega_{VP} > 1.5$), causing the system to ignore local proprioceptive error signals ($G_H$ suppression) in favor of a biased vestibular reference.
+*   **Data Needed**: Simultaneous recording of VEMP and H-Reflex gains in paraspinal muscles of AIS adolescents vs. healthy controls, correlated with Cobb angle.
+*   **Refutation**: If AIS patients exhibit normal or depressed $\Omega_{VP}$ ratios (e.g., low vestibular gain), the "Vestibular Dominance" hypothesis is falsified. (Reference: Pialasse et al., 2015).
 
-### Test Z: The Dark Rearing Exacerbation
-*   **Hypothesis**: In the absence of visual feedback (which compensates for low $\gamma_V$), vestibular-deficient organisms will rapidly develop severe spinal curvature.
-*   **Data Needed**: Cobb angle progression in vestibular-mutant zebrafish (*tmtc4* or *otop1*) raised in a 14:10 light cycle vs. Total Darkness (DD).
-*   **Refutation**: If dark rearing has no effect or *improves* alignment (by removing visual noise), the dependence on visual compensation is falsified. (Reference: Karner et al., 2015).
+### Test Z: The Galvanic Sensitivity
+*   **Hypothesis**: If $\Omega_{VP} > 1$, the organism is hypersensitive to vestibular noise. Application of Galvanic Vestibular Stimulation (GVS) should induce a larger postural sway amplitude in high-$\Omega_{VP}$ subjects compared to low-$\Omega_{VP}$ controls.
+*   **Data Needed**: Center of Pressure (CoP) displacement measurements during sub-threshold GVS in AIS patients, correlated with $\Omega_{VP}$.
+*   **Refutation**: If GVS sensitivity is uniform across the population regardless of the VEMP/H-Reflex ratio, the gain mismatch does not translate to functional instability. (Reference: Pialasse et al., 2015).
+
+### Test AA: The Night-Time Suppression Failure
+*   **Hypothesis**: AIS patients exhibit a specific failure of night-time muscle tone suppression due to "Constitutive Day" signaling.
+*   **Data Needed**: 24-hour continuous EMG monitoring of paraspinal muscles in AIS adolescents vs. healthy controls, specifically analyzing the Amplitude Root Mean Square (RMS) during Stage 3/4 sleep.
+*   **Refutation**: If AIS patients show normal deep-sleep atonia (silence) comparable to controls, the "Constitutive Day" hypothesis is falsified. (Reference: Moreau et al., 2004).
+
+### Test AB: The Gi-Rescue
+*   **Hypothesis**: Pharmacological activation of Gi proteins (bypassing the melatonin receptor) can restore night-time suppression and halt curvature in melatonin-deficient or clock-disrupted models.
+*   **Data Needed**: Cobb angle progression in pinealectomized chickens or *Per2* mutant mice treated with a Gi-biased agonist (e.g., Adenosine A1 agonist) vs. Vehicle during the dark phase.
+*   **Refutation**: If Gi-agonists fail to reduce curvature progression despite lowering intracellular cAMP, the pathway is not the primary driver of the deformity. (Reference: Azeddine et al., 2007).
 
 ## 7. References
 
@@ -397,4 +427,7 @@ The theory makes specific predictions about the relationship between genetic ani
 26. **Dudek, M., et al. (2017).** "The intervertebral disc contains a functional circadian clock that regulates matrix homeostasis." *Nature Communications*. (Foundational IVD clock paper).
 27. **Nava, M. M., et al. (2020).** "Heterochromatin-driven nuclear softening protects the genome against mechanical stress-induced damage." *Cell*, 181(4). (Establishes the link between H3K9me3 and nuclear stiffness).
 28. **Stephens, A. D., et al. (2017).** "Chromatin histone modifications and rigidity affect nuclear morphology independent of lamins." *Molecular Biology of the Cell*, 28(14). (Separates chromatin contribution from Lamin A/C).
-29. **Pialasse, J. P., et al. (2015).** "Vestibular sensory reweighting in adolescent idiopathic scoliosis." *Clinical Neurophysiology*, 126. (Vestibular gain mismatch evidence).
+29. **Pialasse, J. P., et al. (2015).** "Vestibulospinal function is altered in adolescents with idiopathic scoliosis." *Clinical Neurophysiology*, 126(10). (Evidence for vestibular gain alteration).
+30. **Proske, U., & Gandevia, S. C. (2012).** "The proprioceptive senses: their roles in signaling body shape, body position and movement, and muscle force." *Physiological Reviews*, 92(4). (Foundational proprioception text).
+31. **Moreau, A., et al. (2004).** "Melatonin signaling dysfunction in adolescent idiopathic scoliosis." *Spine*, 29(16). (Demonstrates the Gi-signaling defect).
+32. **Azeddine, B., et al. (2007).** "Molecular determinants of melatonin signaling dysfunction in adolescent idiopathic scoliosis." *Clinical Orthopaedics and Related Research*, 462. (Mechanistic follow-up).
