@@ -61,5 +61,5 @@ The schedule integrates computational modeling in PyElastica with wet-lab experi
 ### Technical Risks (PyElastica)
 *   **Instability at High Anisotropy:** PyElastica is known to be stiff for anisotropy ratios > 10.
     *   *Mitigation:* Use smaller timesteps ($dt < 10^{-6}$) and implicit damping for the "Microgravity" (Week 8) simulations.
-*   **Integration Overhead:** Adding an Python optimization loop around the C++ optimized rod simulation may be slow.
+*   **Integration Overhead:** Adding a Python optimization loop around the C++ optimized rod simulation may be slow.
     *   *Mitigation:* Run the optimization steps (growth) at a much slower frequency than the physics steps ($dt_{growth} = 10^5 \cdot dt_{physics}$).
