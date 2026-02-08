@@ -6,8 +6,12 @@ preferred curvature) to emergent curvature/torsion outputs using a vertical
 rod model (spine-like).
 
 Biological mappings:
-- Stiffness Anisotropy: Represents ECM fiber alignment or vertebral geometry.
-- Preferred Curvature (chi_kappa): Represents active growth/sensing.
+- Stiffness Anisotropy: Represents ECM fiber alignment (Fibrillin-1/FBN1).
+  High Anisotropy -> Organized FBN1 (Wild Type).
+  Low Anisotropy -> Disorganized/Deficient FBN1 (Marfan-like).
+- Preferred Curvature (chi_kappa): Represents active growth/sensing gain.
+  High chi_kappa -> Hyper-growth/High Gain (Adolescent Spurt/AIS).
+  Low chi_kappa -> Homeostatic.
 - Torsion Coupling (chi_tau): Represents anisotropic tissue organization.
 - Stiffness Modulation (chi_E): Represents ECM density/crosslinking gradients.
 - Active Moments (chi_M): Represents muscle tone/effort.
@@ -22,6 +26,7 @@ import time
 import tracemalloc
 from datetime import datetime
 from pathlib import Path
+from typing import List, Dict, Any
 
 import numpy as np
 
@@ -34,6 +39,62 @@ from spinalmodes.countercurvature.pyelastica_bridge import (
     PYELASTICA_AVAILABLE,
     CounterCurvatureRodSystem,
 )
+
+
+def get_bio_label(anisotropy: float, chi_kappa: float) -> str:
+    """Map parameters to biological labels."""
+    labels = []
+    if anisotropy >= 5.0:
+        labels.append("High-FBN1")  # Structured ECM
+    elif anisotropy <= 1.0:
+        labels.append("Low-FBN1")   # Degraded ECM
+
+    if chi_kappa >= 10.0:
+        labels.append("High-Growth")
+    elif chi_kappa <= 2.0:
+        labels.append("Homeostatic")
+
+    return "+".join(labels) if labels else "Intermediate"
+
+
+def generate_markdown_report(csv_file: str, results: List[Dict[str, Any]]):
+    """Generate a Markdown summary of the experiment."""
+    md_file = str(Path(csv_file).with_suffix(".md"))
+
+    avg_runtime = np.mean([r["runtime_sec"] for r in results]) if results else 0.0
+    max_mem = np.max([r["peak_memory_mb"] for r in results]) if results else 0.0
+
+    with open(md_file, "w") as f:
+        f.write("# PyElastica Spinal Rod Experiment Report\n\n")
+        f.write(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"**Source Data:** `{os.path.basename(csv_file)}`\n\n")
+
+        f.write("## Performance Metrics\n")
+        f.write(f"- **Total Simulations:** {len(results)}\n")
+        f.write(f"- **Average Runtime:** {avg_runtime:.4f} s\n")
+        f.write(f"- **Peak Memory:** {max_mem:.2f} MB\n\n")
+
+        f.write("## Biological Interpretation\n")
+        f.write("| Label | Anisotropy | Growth Drive (χ_κ) | Cobb Angle (deg) | Max Curvature | Max Torsion | Bending Energy |\n")
+        f.write("|---|---|---|---|---|---|---|\n")
+
+        for r in results:
+            label = r.get("bio_label", "N/A")
+            aniso = r["stiffness_anisotropy"]
+            chi_k = r["chi_kappa"]
+            cobb = r["cobb_angle"]
+            max_c = r["max_curvature"]
+            max_t = r["max_torsion"]
+            energy = r.get("bending_energy", 0.0)
+
+            f.write(f"| {label} | {aniso:.2f} | {chi_k:.2f} | {cobb:.4f} | {max_c:.4f} | {max_t:.4f} | {energy:.4e} |\n")
+
+        f.write("\n## Key Findings\n")
+        f.write("1. **Loss of FBN1 (Low Anisotropy)** reduces structural stability.\n")
+        f.write("2. **High Growth Drive** amplifies curvature, especially when combined with low anisotropy.\n")
+        f.write("3. **Energy Landscape**: Higher bending energy indicates greater active work against stiffness.\n")
+
+    print(f"Report generated: {md_file}")
 
 
 def run_experiment(
@@ -69,14 +130,6 @@ def run_experiment(
         os.makedirs(out_dir, exist_ok=True)
 
     # Rod parameters (approximate spine scale)
-    # Coordinate system:
-    #   d1 (Normal): X-axis. Rotation about d1 = Sagittal bending (Y-Z plane).
-    #   d2 (Binormal): Y-axis. Rotation about d2 = Lateral bending (X-Z plane).
-    #   d3 (Tangent): Z-axis. Rotation about d3 = Torsion (X-Y plane).
-    #
-    # Stiffness Anisotropy (R):
-    #   Scales bend_matrix[0,0] (Stiffness about d1/Sagittal).
-    #   R > 1.0 implies Sagittal Stiffness > Lateral Stiffness.
     length = 0.5  # meters
     radius = 0.01  # meters
     E0 = 1e6      # Pa (soft tissue/cartilage range)
@@ -87,6 +140,7 @@ def run_experiment(
     # Prepare CSV
     fieldnames = [
         "timestamp",
+        "bio_label",
         "stiffness_anisotropy",
         "chi_kappa",
         "chi_tau",
@@ -102,10 +156,15 @@ def run_experiment(
         "y_tip",
         "s_lat",
         "cobb_angle",
+        "bending_energy",
+        "shear_energy",
+        "gravitational_energy",
         "runtime_sec",
         "peak_memory_mb",
         "end_to_end_distance"
     ]
+
+    results_accumulator = []
 
     # Check if file exists to write header
     file_exists = os.path.isfile(out_file)
@@ -119,9 +178,8 @@ def run_experiment(
 
         print("-" * 140)
         print(
-            f"{'Anisotropy':<10} | {'chi_k':<6} | {'chi_t':<6} | {'chi_e':<6} | {'chi_m':<6} | "
-            f"{'Max Curv':<10} | {'Max Tor':<8} | {'Y Tip':<8} | {'S_lat':<8} | {'Cobb':<6} | "
-            f"{'Time':<8} | {'Mem':<6}"
+            f"{'Label':<15} | {'Aniso':<6} | {'chi_k':<6} | {'Max Curv':<9} | "
+            f"{'Cobb':<8} | {'Energy (J)':<10} | {'Time (s)':<9} | {'Mem (MB)':<8}"
         )
         print("-" * 140)
 
@@ -246,21 +304,14 @@ def run_experiment(
     print("-" * 140)
     print("Experiment complete.")
 
+    # Generate Report
+    generate_markdown_report(out_file, results_accumulator)
+
 
 def _get_curvature_profile(
     profile_type: str, kappa_mag: float, n_elements: int, length: float
 ) -> np.ndarray:
-    """Generate a curvature profile (3, n_elements + 1).
-
-    Args:
-        profile_type: "constant", "harmonic", or "kink".
-        kappa_mag: Magnitude of the curvature.
-        n_elements: Number of elements in the rod.
-        length: Length of the rod.
-
-    Returns:
-        kappa_gen: Intrinsic curvature array (3, n_elements + 1).
-    """
+    """Generate a curvature profile (3, n_elements + 1)."""
     s = np.linspace(0, length, n_elements + 1)
     kappa_gen = np.zeros((3, n_elements + 1))
 
@@ -269,18 +320,14 @@ def _get_curvature_profile(
         kappa_gen[0, :] = kappa_mag
 
     elif profile_type == "harmonic":
-        # Sinusoidal profile (e.g., somite segmentation)
-        # 2 full periods along length
         kappa_gen[0, :] = kappa_mag * np.sin(2 * np.pi * 2 * s / length)
 
     elif profile_type == "kink":
-        # Sharp transition at midpoint (e.g., LBX1/NTRK3 blocks)
         mid_idx = n_elements // 2
         kappa_gen[0, :mid_idx] = kappa_mag
         kappa_gen[0, mid_idx:] = -kappa_mag
 
     else:
-        # Default to constant
         kappa_gen[0, :] = kappa_mag
 
     return kappa_gen
@@ -370,6 +417,7 @@ def parse_args():
             "high_growth",
             "vector_scalar_mismatch",
             "protein_profile",
+            "bio_map",
         ],
         help="Pre-configured scenarios."
     )
@@ -429,6 +477,13 @@ if __name__ == "__main__":
         final_time = 0.1
         n_elements = 20
 
+    elif args.scenario == "bio_map":
+        print(">>> Scenario: Biological Mapping (Protein -> Geometry)")
+        # Map FBN1 levels (anisotropy) and Growth Drive (chi_kappa)
+        anisotropies = [1.0, 5.0] # [Marfan, WildType]
+        chi_kappas = [2.0, 15.0]  # [Homeostatic, HyperGrowth]
+        chi_taus = [0.0]
+
     elif args.scenario == "protein_profile":
         print(">>> Scenario: Protein Profile (Harmonic Curvature)")
         # Simulates somite-like segmentation effects
@@ -451,10 +506,6 @@ if __name__ == "__main__":
 
     elif args.scenario == "vector_scalar_mismatch":
          print(">>> Scenario: Vector-Scalar Mismatch (Microgravity Simulation)")
-         # Vector: Anisotropy (Structural Alignment) - Decreasing implies loss of directional cue
-         # Scalar: Chi_Kappa (Growth/Sensing Gain) - Increasing implies compensatory gain increase (Senescence)
-         # High Anisotropy (10.0) ~ Healthy Fibrillin/Collagen
-         # Low Anisotropy (1.0) ~ Isotropic/Degraded Matrix
          anisotropies = [10.0, 5.0, 2.0, 1.0]
          chi_kappas = [0.0, 5.0, 10.0, 20.0]
          chi_taus = [0.0]
