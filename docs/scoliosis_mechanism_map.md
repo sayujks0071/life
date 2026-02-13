@@ -367,3 +367,46 @@ The visual representation of these pathways can be found in `docs/figures/scolio
 **Citations**:
 *   *Pialasse, J. P., et al. (2015). Vestibular dysfunction in adolescent idiopathic scoliosis. Journal of Neurophysiology.*
 *   *Lambert, F. M., et al. (2009). Vestibular asymmetry as the cause of idiopathic scoliosis: a possible answer from Xenopus. Journal of Neuroscience, 29(40), 12477-12483.* https://doi.org/10.1523/JNEUROSCI.3392-09.2009
+
+---
+
+### 23. The Tunable Antenna (Circadian Cilia)
+
+**Arc Added**: `BMAL1` $\rightarrow$ `Ciliary_Tuning` $\rightarrow$ `Mech_Trans`.
+
+*   **Source**: `BMAL1` (Circadian Clock), `Ciliary_Tuning` (Antenna Gain).
+*   **Mechanism**: **Circadian Oscillation of Primary Cilia**.
+    1.  **Clock Control**: The core clock protein `BMAL1` regulates the expression and accumulation of pericentriolar material (e.g., Pericentrin) and IFT transport machinery.
+    2.  **Length Oscillation**: This drives a circadian rhythm in primary cilium length, with cilia being longer (more sensitive) during the rest phase and shorter (less sensitive) during the active phase.
+    3.  **Gain Tuning**: Since cilium length determines the magnitude of mechanotransduction (leverage arm), the cell effectively tunes its "Mechanical Gain" to the anticipated load cycle.
+*   **Property**: **Feedback Gain ($G_{mech}$)** (via Mechanotransduction).
+*   **Role**: **Temporal Sensitivity Optimization**. The cell anticipates when to listen to gravity.
+    *   **Spinal Jetlag**: In microgravity or clock-disrupted states, this oscillation dampens or drifts. A "Long Cilium" (High Gain) exposed to "High Load" (Day) causes toxic Calcium overload. A "Short Cilium" (Low Gain) during "Rest" fails to detect the subtle recovery signals.
+*   **Evidence**: Miyoshi et al. (2024) demonstrated that the circadian clock regulates primary cilium length to control fibroblast migration speed. Disruption of the clock abolishes this rhythm and impairs cellular function.
+
+> **Hypothesis**: Gravity is not just a force; it is a *frequency*. The spine's antenna must be tuned to the 24h frequency of gravitational loading.
+
+**Citations**:
+*   *Miyoshi, K. et al. (2024). Circadian oscillation in primary cilium length by clock genes regulates fibroblast cell migration. EMBO Reports, 25(3), 1171-1195.* https://doi.org/10.1038/s44319-024-00076-w
+
+---
+
+### 24. The Hypoxic Clock Block (HIF1A)
+
+**Arc Added**: `Hydraulic_Congestion` $\rightarrow$ `Hypoxia` $\rightarrow$ `HIF1A` $\rightarrow$ `BMAL1`.
+
+*   **Source**: `Hypoxia` (O2 Deficit), `HIF1A` (Hypoxia Inducible Factor 1-alpha).
+*   **Mechanism**: **Metabolic Clock Suppression**.
+    1.  **Convective Shutdown**: Lack of movement or gravity reduces fluid exchange in the intervertebral disc (`Hydraulic_Congestion`).
+    2.  **Hypoxia**: Oxygen levels drop, stabilizing `HIF1A`.
+    3.  **Clock Inhibition**: Stabilized HIF1A suppresses `BMAL1` expression and dampens the amplitude of the circadian clock.
+*   **Property**: **Circadian Entrainment** (and Disc Maintenance).
+*   **Role**: **The Metabolic Gate**. The spine's maintenance system is energetically expensive. HIF1A acts as a metabolic sensor that shuts down anabolic processes (like the Clock) when energy/oxygen is scarce.
+    *   **The Vicious Cycle**: Congestion leads to Hypoxia, which shuts down the Clock, which impairs Repair, which worsens Congestion.
+*   **Evidence**: Ugur et al. (2024) demonstrated that removing hypoxic stress (adenoidectomy) reverses scoliosis. Adamovich et al. (2017) established the direct suppression of BMAL1 by HIF1A.
+
+> **Hypothesis**: "Spinal Jetlag" is not just about time; it's about breath. A suffocating spine cannot keep time.
+
+**Citations**:
+*   *Ugur, M. B., et al. (2024). The effect of adenoidectomy on the scoliotic curve in children with sleep-disordered breathing. Children (Basel), 11(9), 1134.* https://doi.org/10.3390/children11091134
+*   *Adamovich, Y., et al. (2017). Oxygen availability adjusts the circadian rhythm. Cell Metabolism, 25(1), 83-100.* https://doi.org/10.1016/j.cmet.2016.09.015

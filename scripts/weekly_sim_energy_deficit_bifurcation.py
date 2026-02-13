@@ -1,45 +1,45 @@
 """
 Simulation: Energy Deficit Bifurcation (2D Phase Diagram)
 
-This script performs a full parameter sweep of Curvature Sensitivity (chi_kappa) vs. Spinal Length (L)
-to map the "Energy Deficit Window" where thermodynamic cost exceeds proprioceptive supply.
+This script performs a 2D parameter sweep of Coupling Strength (chi_kappa) vs Spinal Length (L)
+to map the "Energy Deficit Window" where the thermodynamic cost of counter-curvature (P_counter)
+exceeds the proprioceptive supply (S_proprio).
 
-Hypothesis: H_2026_02_08_EnergyPhase
-Prediction: High-chi_kappa patients enter the Energy Deficit Window at shorter L (earlier onset).
+Hypothesis H_2026_02_08_EnergyPhase:
+High-chi_kappa patients enter the Energy Deficit Window at shorter L (earlier onset)
+and exit later, experiencing a wider vulnerability window.
 
 Outputs:
-- outputs/thermodynamic_cost/energy_deficit_bifurcation.csv: Phase diagram data
-- manuscript/figures/energy_deficit_bifurcation.png: Heatmap of Energy Deficit Ratio
+- outputs/thermodynamic_cost/phase_diagram_energy_deficit.csv
+- outputs/figures/phase_diagram_energy_deficit.png
+- manuscript/figures/phase_diagram_energy_deficit.png
 """
+
 import sys
 import os
 import numpy as np
-import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Add src to python path to import spinalmodes
+# Add src to python path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 try:
     from spinalmodes.iec import solve_beam_static
 except ImportError:
-    # If not found, try adding just 'src' assuming run from root
     sys.path.append('src')
     from spinalmodes.iec import solve_beam_static
 
 def generate_bimodal_gaussian_field(s, L):
     """
     Generate the bimodal Gaussian information field I(s).
-    Matches definition in scripts/experiment_energy_deficit_window.py
     """
     if L == 0:
         return np.full_like(s, 0.3)
 
     s_norm = s / L
 
-    # Parameters
+    # Parameters from manuscript/sections/methods.tex
     A_c = 0.5
     s_c = 0.80
     sigma_c = 0.08
@@ -50,185 +50,171 @@ def generate_bimodal_gaussian_field(s, L):
 
     I_0 = 0.3
 
-    # Calculate components
     term_c = A_c * np.exp(-((s_norm - s_c)**2) / (2 * sigma_c**2))
     term_l = A_l * np.exp(-((s_norm - s_l)**2) / (2 * sigma_l**2))
 
     return term_c + term_l + I_0
 
-def compute_p_counter(L, chi_kappa, chi_E=0.10):
-    """
-    Compute Thermodynamic Cost P_counter for a given length and sensitivity.
-    """
-    # Parameters
-    E0 = 1.0e9 # Pa
-    rho = 1100.0 # kg/m^3
-    A = 0.001 # m^2
-    g = 9.81 # m/s^2
-    I_moment = 1.0e-8 # m^4
-    eta_a = 1.0 # Scaling factor
-
-    # Spatial grid
-    n_nodes = 100
-    s = np.linspace(0, L, n_nodes)
-
-    # Information field
-    I_field = generate_bimodal_gaussian_field(s, L)
-    grad_I = np.gradient(I_field, s)
-
-    # Stiffness field
-    E_field = E0 * (1.0 + chi_E * I_field)
-
-    # Distributed load (gravity transverse)
-    distributed_load = rho * A * g
-
-    # 1. IEC Case: Active target curvature
-    kappa_target_iec = chi_kappa * grad_I
-    theta_iec, kappa_iec = solve_beam_static(
-        s=s,
-        kappa_target=kappa_target_iec,
-        E_field=E_field,
-        M_active=np.zeros_like(s),
-        I_moment=I_moment,
-        P_load=0.0,
-        distributed_load=distributed_load
-    )
-
-    # 2. Passive Case: Gravity only (chi_kappa = 0)
-    # We keep chi_E non-zero as it's a material property
-    theta_pass, kappa_pass = solve_beam_static(
-        s=s,
-        kappa_target=np.zeros_like(s),
-        E_field=E_field,
-        M_active=np.zeros_like(s),
-        I_moment=I_moment,
-        P_load=0.0,
-        distributed_load=distributed_load
-    )
-
-    # Calculate P_counter
-    # P_counter ~ mean(|kappa_IEC - kappa_passive|^2) * L^2 * ...
-    curvature_diff_sq = (kappa_iec - kappa_pass)**2
-    mean_diff_sq = np.mean(curvature_diff_sq)
-
-    P_counter = eta_a * rho * A * g * (L**2) * mean_diff_sq
-
-    return P_counter
-
 def run_simulation():
-    print("Starting Energy Deficit Bifurcation simulation...")
+    print("Starting Energy Deficit Bifurcation sweep...")
 
-    # Reference Calculation for S_proprio normalization
-    # We calibrate S_proprio such that at L=0.35m and chi_kappa=0.05, Supply = Cost (R=1.0)
-    # This defines the "Edge of Chaos" for a standard patient.
+    # Parameter Ranges
+    # L: 0.20m to 0.60m (Adolescent Growth)
+    L_values = np.linspace(0.20, 0.60, 40)
+
+    # chi_kappa: 0.0 to 0.15 (Coupling Strength)
+    chi_values = np.linspace(0.0, 0.15, 30)
+
+    # Fixed Parameters
+    chi_E = 0.10
+    E0 = 1.0e9
+    rho = 1100.0
+    A = 0.001
+    g = 9.81
+    I_moment = A**2 / (4 * np.pi)
+    eta_a = 1.0 # Cost scaling factor
+
+    # --- Calibration Step ---
+    print("Calibrating Proprioceptive Supply (S_0)...")
     L_ref = 0.35
-    chi_kappa_ref = 0.05
-    P_ref = compute_p_counter(L_ref, chi_kappa_ref)
+    chi_ref = 0.05
+
+    # Run reference simulation
+    n_nodes = 100
+    s_ref = np.linspace(0, L_ref, n_nodes)
+    I_ref = generate_bimodal_gaussian_field(s_ref, L_ref)
+    grad_I_ref = np.gradient(I_ref, s_ref)
+    E_ref = E0 * (1.0 + chi_E * I_ref)
+    dist_load = rho * A * g
+
+    # Active
+    theta_active, kappa_active = solve_beam_static(
+        s=s_ref,
+        kappa_target=chi_ref * grad_I_ref,
+        E_field=E_ref,
+        M_active=np.zeros_like(s_ref),
+        I_moment=I_moment,
+        P_load=0.0,
+        distributed_load=dist_load
+    )
+    # Passive
+    theta_pass, kappa_pass = solve_beam_static(
+        s=s_ref,
+        kappa_target=np.zeros_like(s_ref),
+        E_field=E_ref,
+        M_active=np.zeros_like(s_ref),
+        I_moment=I_moment,
+        P_load=0.0,
+        distributed_load=dist_load
+    )
+
+    P_ref = eta_a * rho * A * g * (L_ref**2) * np.mean((kappa_active - kappa_pass)**2)
     S_0 = P_ref
-    print(f"Reference P_counter (S_0) at L={L_ref}, chi={chi_kappa_ref}: {S_0:.4e}")
+    print(f"Calibration Complete: S_0 = {S_0:.6e} at L={L_ref}, chi={chi_ref}")
 
-    # Parameter Sweep Grid
-    # High resolution for smooth heatmap
-    n_L = 20
-    n_chi = 20
-
-    L_values = np.linspace(0.10, 0.60, n_L)
-    chi_values = np.linspace(0.01, 0.20, n_chi)
-
+    # --- Sweep Loop ---
     results = []
-
-    # Pre-compute P_counter for grid
-    print(f"Running sweep: {n_L}x{n_chi} = {n_L*n_chi} points...")
 
     for chi in chi_values:
         for L in L_values:
-            P_cost = compute_p_counter(L, chi)
+            s = np.linspace(0, L, n_nodes)
+            I_field = generate_bimodal_gaussian_field(s, L)
+            grad_I = np.gradient(I_field, s)
+            E_field = E0 * (1.0 + chi_E * I_field)
 
-            # Proprioceptive Supply: S(L) ~ L^0.7
-            # S_proprio(L) = S_0 * (L / L_ref)^0.7
-            S_supply = S_0 * (L / L_ref)**0.7
+            # Active Simulation
+            theta_iec, kappa_iec = solve_beam_static(
+                s=s,
+                kappa_target=chi * grad_I,
+                E_field=E_field,
+                M_active=np.zeros_like(s),
+                I_moment=I_moment,
+                P_load=0.0,
+                distributed_load=rho * A * g
+            )
 
-            # Energy Deficit Ratio R = Cost / Supply
-            # R > 1 implies Deficit
-            R_deficit = P_cost / S_supply
+            # Passive Simulation
+            theta_pas, kappa_pas = solve_beam_static(
+                s=s,
+                kappa_target=np.zeros_like(s),
+                E_field=E_field,
+                M_active=np.zeros_like(s),
+                I_moment=I_moment,
+                P_load=0.0,
+                distributed_load=rho * A * g
+            )
+
+            # Cost P_counter
+            mean_sq_diff = np.mean((kappa_iec - kappa_pas)**2)
+            P_counter = eta_a * rho * A * g * (L**2) * mean_sq_diff
+
+            # Supply S_proprio (sublinear scaling alpha=0.5)
+            S_proprio = S_0 * (L / L_ref)**0.5
+
+            # Deficit Ratio
+            ratio = P_counter / S_proprio if S_proprio > 0 else 0
 
             results.append({
                 'chi_kappa': chi,
                 'L': L,
-                'P_cost': P_cost,
-                'S_supply': S_supply,
-                'R_deficit': R_deficit,
-                'In_Deficit': R_deficit > 1.0
+                'P_counter': P_counter,
+                'S_proprio': S_proprio,
+                'Deficit_Ratio': ratio,
+                'In_Deficit': ratio > 1.0
             })
 
     df = pd.DataFrame(results)
 
-    # Save Results
+    # --- Save Data ---
     output_dir = 'outputs/thermodynamic_cost'
     os.makedirs(output_dir, exist_ok=True)
-    csv_path = os.path.join(output_dir, 'energy_deficit_bifurcation.csv')
+    csv_path = os.path.join(output_dir, 'phase_diagram_energy_deficit.csv')
     df.to_csv(csv_path, index=False)
     print(f"Saved simulation data to {csv_path}")
 
-    # Plotting Phase Diagram
-    # Pivot for heatmap
-    pivot_table = df.pivot(index='chi_kappa', columns='L', values='R_deficit')
+    # --- Plotting ---
+    output_fig_dir = 'outputs/figures'
+    os.makedirs(output_fig_dir, exist_ok=True)
+    os.makedirs('manuscript/figures', exist_ok=True)
 
-    # Setup figure
-    fig_dir = 'manuscript/figures'
-    os.makedirs(fig_dir, exist_ok=True)
-    fig_path = os.path.join(fig_dir, 'energy_deficit_bifurcation.png')
+    # Pivot for heatmap
+    pivot_table = df.pivot(index='chi_kappa', columns='L', values='Deficit_Ratio')
 
     plt.figure(figsize=(10, 8))
 
-    # Create Heatmap using imshow
-    # We use log scale for color since R can vary widely? Maybe just linear with robust max.
-    # Let's cap R at 3.0 for visualization
+    # Use log scale for color to handle wide range of ratios, centered at 1 (Ratio=1 -> Log=0)
+    # Actually, simpler to just map Ratio with specific levels
+    # Let's use a diverging map centered at 1
 
-    # Check orientation: pivot index is chi (rows), columns is L
-    # pivot_table index is ascending chi_kappa (0.01..0.20) -> Rows
-    # pivot_table columns is ascending L (0.1..0.6) -> Columns
+    # Custom levels contour plot might be cleaner than heatmap for "wedge"
+    X, Y = np.meshgrid(pivot_table.columns, pivot_table.index)
     Z = pivot_table.values
 
-    # Plot extent [L_min, L_max, chi_min, chi_max]
-    extent = [L_values[0], L_values[-1], chi_values[0], chi_values[-1]]
+    # Contourf for colored regions
+    # Levels: Safe (<1), Transition (1-2), High Risk (>2)
+    # But let's do a continuous map
 
-    plt.imshow(Z, cmap='RdYlBu_r', vmin=0.0, vmax=3.0, origin='lower',
-               extent=extent, aspect='auto')
+    plt.contourf(X, Y, Z, levels=50, cmap='RdYlBu_r', alpha=0.8, vmin=0, vmax=3)
+    cbar = plt.colorbar()
+    cbar.set_label('Energy Deficit Ratio ($P_{counter} / S_{proprio}$)')
 
-    plt.colorbar(label='Energy Deficit Ratio (Cost/Supply)')
-
-    # Draw Contour line at R=1.0
-    # Need meshgrid for contour matching extent
-    # X corresponds to columns (L), Y to rows (chi)
-    cnt = plt.contour(L_values, chi_values, Z, levels=[1.0],
-                      colors='black', linewidths=2, linestyles='--')
-    plt.clabel(cnt, inline=True, fontsize=10, fmt='R=1.0')
+    # Thick line at Ratio = 1.0
+    cs = plt.contour(X, Y, Z, levels=[1.0], colors='black', linewidths=2.5, linestyles='dashed')
+    plt.clabel(cs, fmt={1.0: 'Onset Threshold'}, inline=True, fontsize=12)
 
     plt.xlabel('Spinal Length L (m)')
-    plt.ylabel(r'Curvature Sensitivity $\chi_\kappa$')
-    plt.title('Phase Diagram: Energy Deficit Window\n(Red = Deficit, Blue = Stable)')
+    plt.ylabel(r'Coupling Strength $\chi_{\kappa}$')
+    plt.title('Phase Diagram: Energy Deficit Bifurcation')
 
-    # Annotate regions
-    # Find a point in deficit and stable using data coordinates
-    # Deficit is at High chi, Low L (R > 1)
-    # Stability is at Low chi, High L (R < 1)
+    # Annotations
+    plt.text(0.25, 0.02, 'Safe Zone\n(Supply > Cost)', color='blue', fontweight='bold', ha='center')
+    plt.text(0.50, 0.12, 'Vulnerability Wedge\n(Cost > Supply)', color='darkred', fontweight='bold', ha='center')
 
-    # Coordinates: L (x), chi (y)
-    x_def = L_values[int(n_L*0.2)]
-    y_def = chi_values[int(n_chi*0.8)]
+    fig_path = os.path.join(output_fig_dir, 'phase_diagram_energy_deficit.png')
+    manu_path = os.path.join('manuscript/figures', 'phase_diagram_energy_deficit.png')
 
-    x_stab = L_values[int(n_L*0.8)]
-    y_stab = chi_values[int(n_chi*0.2)]
-
-    plt.text(x_def, y_def, 'Energy Deficit\n(Vulnerable)', color='maroon',
-             fontweight='bold', ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
-
-    plt.text(x_stab, y_stab, 'Metabolic Stability\n(Safe)', color='navy',
-             fontweight='bold', ha='center', va='center', bbox=dict(facecolor='white', alpha=0.5))
-
-    plt.tight_layout()
     plt.savefig(fig_path, dpi=300)
+    plt.savefig(manu_path, dpi=300)
     print(f"Saved phase diagram to {fig_path}")
 
 if __name__ == "__main__":
