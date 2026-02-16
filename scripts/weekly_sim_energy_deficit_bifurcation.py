@@ -254,6 +254,7 @@ def run_experiment():
     # Compute S_proprio and R_deficit
     df['S_proprio'] = S_0 * (df['L'] / L_0)**0.7
     df['R_deficit'] = df['P_counter'] / df['S_proprio']
+    df['In_Deficit'] = df['R_deficit'] > 1.0
 
     # Save Results
     csv_path = output_dir / "phase_diagram_energy_deficit.csv"
