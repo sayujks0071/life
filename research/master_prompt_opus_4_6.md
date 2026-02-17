@@ -1,63 +1,71 @@
-# Master Prompt for Claude Opus 4.6: The Holographic Spine Project
+# Master Prompt for Claude Opus 4.6: The Thermodynamic Shift in Scoliosis
 
-**Role:** You are an expert Theoretical Biophysicist and Simulation Engineer, specializing in soft matter physics, control theory, and developmental biology. You are deeply familiar with the "Anti-Geodesic" framework of life and the "Holographic Principle" applied to morphogenesis.
+**Role:** You are an expert Theoretical Biophysicist and Simulation Engineer, specializing in non-equilibrium thermodynamics and developmental biology. You are deeply familiar with the "Energy Deficit" mechanism of scoliosis, where rapid growth creates a metabolic bottleneck.
 
-## Context: The Grand Unified Theory of Scoliosis
+## Context: The Thermodynamic Shift
 
-You are inheriting a research project that models Adolescent Idiopathic Scoliosis (AIS) as a **spatiotemporal symmetry-breaking instability** of the neuro-osseous control system. The core theoretical pillars are:
-
-1.  **Gravitational Paradox:** Life is an "anti-geodesic engine" that locally modifies the effective spacetime metric to resist gravitational collapse.
-2.  **Control Instability:** Rapid growth ($\dot{L}$) coupled with neural delay ($\tau$) creates a feedback instability ($K \cdot \dot{L} \cdot \tau > \text{threshold}$).
-3.  **Twist-Bend Coupling:** A circadian phase shift ("Spinal Jetlag") between left/right growth plates creates a torsional pre-stress, converting planar buckling into a 3D helical deformity.
-4.  **Holographic Biology:** The 3D spine shape (bulk) is a holographic projection of a 2D boundary (neural map/epithelium). Scoliosis is a "reconstruction error" where the bulk outpaces the boundary update.
+You are inheriting a research project that models Adolescent Idiopathic Scoliosis (AIS) as a control system failure. The key insight is that **scoliosis is a thermodynamic crisis**:
+-   **Mechanosensory Proteins ($P_{mech}$):** (e.g., Piezo2, Integrins, YAP) require high ATP flux for continuous turnover and cytoskeletal tension to maintain high-fidelity error correction (Gain $K$).
+-   **Growth Proteins ($P_{grow}$):** (e.g., Collagen, Aggrecan) require massive ATP investment for synthesis and deposition during the adolescent growth spurt ($\dot{L}$).
+-   **The Shift:** During rapid growth, the demand for $P_{grow}$ spikes. If the total metabolic power supply ($P_{metabolic}$) is limited (e.g., by mitochondrial capacity or nutrient transport), the system must "rob Peter to pay Paul," cannibalizing the ATP budget of $P_{mech}$.
+-   **The Result:** A temporary drop in mechanosensory gain $K(t)$ just as the mechanical load ($\dot{L}$) peaks, opening a "Thermodynamic Instability Window" where curvature errors are amplified.
 
 ## Current State of the Codebase
 
--   **Theory:** Strong theoretical derivation in `research/scoliosis_theoretical_framework.md` and `research/biophysical_origins_scoliosis.md`.
--   **Simulation Engine:** `src/spinalmodes/countercurvature/pyelastica_bridge.py` implements a Cosserat rod model with "Information Fields" (IEC) modulating stiffness and curvature.
--   **Experiments:** `scripts/experiments/experiment_spinal_jetlag.py` attempts to model the circadian phase shift effect.
--   **Identified Gap:** The current simulation results (`outputs/parameter_map_results.csv`) show **zero torsion** and **zero Cobb angle** in many cases.
-    -   **Root Cause:** In `scripts/experiments/experiment_spinal_jetlag.py`, the torsional coupling parameter `chi_tau` is explicitly set to `0.0` in the `run_jetlag_cycle` function, disabling the critical "Twist-Bend Coupling" mechanism.
-    -   **Missing Metric:** The "Holographic Reconstruction Error" is defined theoretically but not implemented as a quantitative metric in the simulation output.
+-   **Theory:** `research/IEC_Theoretical_Expansion_Ready.md` (Sections 1.2, 1.3, 4.5) outlines the coupled kinetic equations for protein pools under energy constraint.
+-   **Static Analysis:** `scripts/experiments/experiment_thermodynamic_cost_proteins.py` maps specific proteins (PIEZO2, COL1A1) to thermodynamic terms but does not simulate their dynamics.
+-   **Missing Link:** There is no *dynamic simulation* that implements the differential equations for $P_{mech}$ and $P_{grow}$ and couples them to the spinal growth velocity $\dot{L}(t)$.
 
 ## Your Mission
 
-Your goal is to advance this research from "theoretical framework" to "computational proof-of-concept" and prepare the manuscript for publication. You have full creative freedom to solve the problems, but you must address the following key objectives:
+Your goal is to build a **computational model of the Thermodynamic Shift** to demonstrate how the competition for ATP leads to a loss of spinal stability.
 
-### 1. Fix the "Twist-Bend Coupling" in Simulation
-The current implementation of `experiment_spinal_jetlag.py` forces `chi_tau=0.0`, rendering the "Spinal Jetlag" hypothesis untestable.
--   **Action:** Modify `experiment_spinal_jetlag.py` (and `pyelastica_bridge.py` if necessary) to introduce a non-zero `chi_tau`.
--   **Hypothesis:** `chi_tau` should likely be a function of the circadian phase shift (`phi`) or a distinct coupling constant derived from the "Twist-Bend Coupling" operator $\alpha_{TB}$.
--   **Goal:** Demonstrate that a phase shift ($\phi \neq 0$) leads to non-zero torsion ($\tau \neq 0$) and 3D helical buckling.
+### 1. Implement the Coupled Kinetics Simulation
+Create a new script (e.g., `scripts/experiments/experiment_energy_deficit_dynamics.py`) that solves the following system (derived from `IEC_Theoretical_Expansion_Ready.md`):
 
-### 2. Implement "Holographic Error" Metric
-Translate the abstract AdS/CFT analogy into a concrete, calculable metric.
--   **Theory:** $\mathcal{E}_{reconstruction} \approx \int |\kappa_{actual} - \kappa_{target}|^2 ds$.
--   **Implementation:** Add a method to `SimulationResult` or `compute_scoliosis_metrics` in `pyelastica_bridge.py` to calculate this error.
--   **Interpretation:** This metric should spike during the "instability window" when growth outpaces adaptation.
+$$
+\frac{dP_{mech}}{dt} = \alpha_m(E_{mech}) - \delta_m P_{mech}
+$$
+$$
+\frac{dP_{grow}}{dt} = \alpha_g(E_{grow}) - \delta_g P_{grow}
+$$
 
-### 3. Run the "Grand Simulation"
-Once the code is fixed:
--   Run a parameter sweep (e.g., varying Phase Shift $\phi$ vs. Growth Rate $\dot{L}$ or Stiffness $B$).
--   Generate a **Phase Diagram** showing the transition from "Stable/Straight" to "Scoliotic/Helical".
--   Save the results to `outputs/`.
+**Constraints:**
+-   $E_{total}(t) = E_{mech} + E_{grow} + E_{basal} \le E_{max}(t)$
+-   $E_{grow}$ is driven by an external growth signal (e.g., Growth Hormone pulse).
+-   $P_{mech}$ determines the Control Gain $K(t)$ (or $\chi_\kappa$).
+-   $P_{grow}$ determines the Growth Velocity $\dot{L}(t)$.
+
+### 2. Define the Instability Criterion
+Implement the "Vulnerability Ratio" $R(t)$:
+$$
+R(t) = \frac{v_{growth}(t)}{v_{adapt}(t)} \approx \frac{\dot{P}_{grow}}{P_{mech}}
+$$
+Identify the condition where $R(t) > R_{crit}$ (the "Instability Window").
+
+### 3. Generate the "Energy Deficit Time Course"
+-   Simulate a "Growth Spurt" event (e.g., a Gaussian pulse of growth demand).
+-   Plot the trajectories of $P_{mech}$, $P_{grow}$, and $R(t)$ over time (e.g., ages 10-16).
+-   Show how a limited $E_{max}$ causes a dip in $P_{mech}$ during peak growth.
+-   **Goal:** Reproduce **Figure 7** described in `IEC_Theoretical_Expansion_Ready.md`.
 
 ### 4. Update the Manuscript
--   Update `manuscript/main.tex` (or relevant sections) with the new findings.
--   Generate a new figure (e.g., `outputs/figures/phase_diagram_jetlag.png`) and reference it.
--   Refine the "Holographic Biology" section to include the quantitative definition of the reconstruction error.
+-   Update `manuscript/main.tex` (or a new section) with the mathematical formulation of the thermodynamic shift.
+-   Insert the generated figure (e.g., `outputs/figures/energy_deficit_dynamics.png`).
+-   Discuss the "Metabolic Switch" hypothesis: does the system switch from high-fidelity maintenance to low-fidelity bulk growth to survive?
 
 ## Guidelines
 
--   **Be Bold:** Do not be afraid to refactor code or propose new theoretical connections if they strengthen the argument.
--   **Be Rigorous:** Verify your simulation results. If the rod buckles, ensure it's physical and not a numerical artifact.
--   **Be Holistic:** Connect the molecular (clock genes), mechanical (stiffness), and geometric (curvature) levels in your analysis.
+-   **Focus on Dynamics:** The key is the *time-dependent* trade-off. Static parameters won't show the shift.
+-   **Be Quantitative:** Use realistic timescales (protein half-lives ~hours/days, growth spurt ~years) but scaled appropriately for simulation.
+-   **Explore Parameters:** What happens if we increase $E_{max}$ (mitochondrial support)? What if we increase the half-life of $P_{mech}$ (stabilization)?
+-   **Connect to Geometry:** If possible, link the output $K(t)$ to a simple 1D stability check ($K < K_{crit} \implies$ buckling).
 
 ## Tools Available
 
--   `src/spinalmodes/countercurvature/` (Physics Engine)
--   `scripts/experiments/` (Simulation Scripts)
+-   `research/IEC_Theoretical_Expansion_Ready.md` (Theory Source)
+-   `scripts/experiments/experiment_thermodynamic_cost_proteins.py` (Protein Data)
 -   `manuscript/` (LaTeX Source)
--   `outputs/` (Data & Figures)
+-   Standard Python libraries (`numpy`, `scipy.integrate`, `matplotlib`)
 
-You are the lead scientist now. Good luck.
+You are exploring the metabolic price of shape. Make it count.
