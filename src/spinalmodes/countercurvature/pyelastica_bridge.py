@@ -15,9 +15,10 @@ Key Concepts:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING, Type, Dict, Any
+from typing import Optional, TYPE_CHECKING, Type, Dict, Any, Union
 import time
 import tracemalloc
+import math
 
 import numpy as np
 from numpy.typing import NDArray
@@ -83,6 +84,21 @@ except ImportError:
         class PositionVerlet: pass
         @staticmethod
         def integrate(*args, **kwargs): pass
+
+@dataclass
+class CircadianParams:
+    """Parameters for circadian modulation of curvature coupling.
+
+    Attributes:
+        period: Clock period in seconds (default 24h).
+        amplitude: Relative amplitude of oscillation A (0 to 1).
+        phase: Phase offset phi in radians.
+        gravity_period: External gravity cycle period. If None, matches `period`.
+    """
+    period: float = 24.0 * 3600.0
+    amplitude: float = 0.5
+    phase: float = 0.0
+    gravity_period: Optional[float] = None
 
 @dataclass
 class SimulationResult:
@@ -250,7 +266,8 @@ class CounterCurvatureRodSystem:
         rod: ea.CosseratRod,
         info_field: InfoField1D,
         params: CounterCurvatureParams,
-        active_torques: Optional[ArrayF64] = None
+        active_torques: Optional[ArrayF64] = None,
+        kappa_gen: Optional[ArrayF64] = None
     ):
         self.rod = rod
         self.info_field = info_field
@@ -258,6 +275,7 @@ class CounterCurvatureRodSystem:
         self.n_elements = rod.n_elems
         self.length = np.sum(rod.rest_lengths)
         self.active_torques = active_torques
+        self.kappa_gen = kappa_gen
 
     @classmethod
     def from_iec(
@@ -276,7 +294,7 @@ class CounterCurvatureRodSystem:
         base_position: tuple[float, float, float] = (0.0, 0.0, 0.0),
         base_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
         normal: tuple[float, float, float] = (0.0, 1.0, 0.0),
-        stiffness_anisotropy: float = 1.0,
+        stiffness_anisotropy: Union[float, ArrayF64] = 1.0,
     ) -> "CounterCurvatureRodSystem":
         _check_pyelastica()
 
@@ -326,66 +344,110 @@ class CounterCurvatureRodSystem:
         # In this setup (d1=X), this resists Sagittal bending (Y-Z plane).
         # bend_matrix[1, 1] corresponds to stiffness about d2 (Binormal).
         # In this setup (d2=Y), this resists Lateral bending (X-Z plane).
-        if stiffness_anisotropy != 1.0:
-            rod.bend_matrix[0, 0, :] *= stiffness_anisotropy
+        # Handle scalar or array anisotropy
+        anisotropy_arr = None
+        if isinstance(stiffness_anisotropy, (float, int)):
+            if stiffness_anisotropy != 1.0:
+                rod.bend_matrix[0, 0, :] *= stiffness_anisotropy
+        else:
+            # Assume array-like
+            aniso = np.asarray(stiffness_anisotropy, dtype=float)
+            if aniso.ndim != 1:
+                raise ValueError("Stiffness anisotropy array must be 1D.")
 
-        # Set rest curvature
-        # kappa_rest is now (3, n_points)
-        kappa_rest = compute_rest_curvature(info, params, kappa_gen if kappa_gen is not None else 0.0)
+            # Interpolate to internal nodes (Voronoi domains) if size mismatch
+            # bend_matrix is (3, 3, n_elements - 1)
+            target_size = n_elements - 1
+            if aniso.shape[0] != target_size:
+                # Map input grid (assumed 0 to L) to internal nodes
+                # s_internal defined earlier: midpoints of internal nodes
+                # s_rod is linspace(0, L, n_elements + 1)
+                # s_internal = s_rod[1:-1]
+                s_source = np.linspace(0, length, aniso.shape[0])
+                anisotropy_arr = np.interp(s_internal, s_source, aniso)
+            else:
+                anisotropy_arr = aniso
 
-        # PyElastica stores rest_kappa at Voronoi domains (internal nodes)
-        # We need to map kappa_rest (defined on info.s) to s_internal
-        # We need to interpolate each component: (3, n_points) -> (3, n_elements-1)
+            # Apply array anisotropy to bend_matrix[0, 0, :]
+            rod.bend_matrix[0, 0, :] *= anisotropy_arr
+
+        # Create instance to use update_rest_curvature
+        # We pass kappa_gen=None initially to constructor, then set it.
+        # But we need active_torques first.
         
-        rest_kappa = np.zeros((3, n_elements - 1))
-        for i in range(3):
-            rest_kappa[i, :] = np.interp(s_internal, info.s, kappa_rest[i, :])
-
-        rod.rest_kappa[:] = rest_kappa
-
         # Compute active moments (scalar field on nodes) if chi_M != 0
         active_torques = None
         if params.chi_M != 0.0:
             M_active_nodes = compute_active_moments(info, params)
-
-            # Interpolate to elements (where external torques are applied)
+            # Interpolate to elements
             M_active_elems = np.interp(s_elements, info.s, M_active_nodes)
-
-            # Create torque vector (3, n_elements)
-            # Bending in sagittal plane (x-z) with normal y: torque around y-axis (index 1)
             active_torques = np.zeros((3, n_elements))
             active_torques[1, :] = M_active_elems
 
-        return cls(rod=rod, info_field=info, params=params, active_torques=active_torques)
+        system = cls(rod=rod, info_field=info, params=params, active_torques=active_torques, kappa_gen=kappa_gen)
+
+        # Initial setting of rest curvature
+        system.update_rest_curvature(params)
+
+        return system
+
+    def update_rest_curvature(self, params: CounterCurvatureParams) -> None:
+        """Update the rod's rest curvature based on current parameters."""
+        kappa_gen_val = self.kappa_gen if self.kappa_gen is not None else 0.0
+        kappa_rest = compute_rest_curvature(self.info_field, params, kappa_gen_val)
+
+        s_rod = np.linspace(0, self.length, self.n_elements + 1)
+        s_internal = s_rod[1:-1]
+
+        rest_kappa = np.zeros((3, self.n_elements - 1))
+        for i in range(3):
+            rest_kappa[i, :] = np.interp(s_internal, self.info_field.s, kappa_rest[i, :])
+
+        self.rod.rest_kappa[:] = rest_kappa
+        self.params = params
 
     def __repr__(self) -> str:
         """Return a string representation of the rod system configuration."""
         # Estimate anisotropy from first element's bend matrix if possible
-        anisotropy = 1.0
+        anisotropy_str = "1.0"
         if hasattr(self.rod, "bend_matrix") and self.rod.bend_matrix.shape[2] > 0:
-            # bend_matrix[0,0] / bend_matrix[1,1]
+            # Check if uniform
+            b00 = self.rod.bend_matrix[0, 0, :]
+            b11 = self.rod.bend_matrix[1, 1, :]
             # Avoid division by zero
-            b00 = self.rod.bend_matrix[0, 0, 0]
-            b11 = self.rod.bend_matrix[1, 1, 0]
-            if b11 != 0:
-                anisotropy = b00 / b11
+            ratio = np.zeros_like(b00)
+            mask = b11 != 0
+            ratio[mask] = b00[mask] / b11[mask]
+
+            if np.allclose(ratio, ratio[0]):
+                anisotropy_str = f"{ratio[0]:.2f}"
+            else:
+                anisotropy_str = f"Range[{np.min(ratio):.2f}-{np.max(ratio):.2f}]"
 
         return (
             f"<CounterCurvatureRodSystem elements={self.n_elements} "
             f"length={self.length:.2f} "
             f"chi_kappa={self.params.chi_kappa:.2f} "
-            f"anisotropy={anisotropy:.2f}>"
+            f"anisotropy={anisotropy_str}>"
         )
 
     def get_configuration(self) -> Dict[str, Any]:
         """Return a dictionary of the system configuration for logging."""
-        # Calculate anisotropy again for the dict
-        anisotropy = 1.0
+        # Calculate anisotropy
+        anisotropy_val = 1.0
         if hasattr(self.rod, "bend_matrix") and self.rod.bend_matrix.shape[2] > 0:
-            b00 = self.rod.bend_matrix[0, 0, 0]
-            b11 = self.rod.bend_matrix[1, 1, 0]
-            if b11 != 0:
-                anisotropy = b00 / b11
+            b00 = self.rod.bend_matrix[0, 0, :]
+            b11 = self.rod.bend_matrix[1, 1, :]
+            # Avoid division by zero
+            ratio = np.zeros_like(b00)
+            mask = b11 != 0
+            ratio[mask] = b00[mask] / b11[mask]
+
+            if np.allclose(ratio, ratio[0]):
+                anisotropy_val = float(ratio[0])
+            else:
+                # Return mean if varying, or keep as array? simpler to return mean for scalar field
+                anisotropy_val = float(np.mean(ratio))
 
         return {
             "n_elements": self.n_elements,
@@ -394,7 +456,7 @@ class CounterCurvatureRodSystem:
             "chi_tau": self.params.chi_tau,
             "chi_E": self.params.chi_E,
             "chi_M": self.params.chi_M,
-            "stiffness_anisotropy": anisotropy
+            "stiffness_anisotropy": anisotropy_val
         }
 
     def run_simulation(
@@ -409,6 +471,7 @@ class CounterCurvatureRodSystem:
         bc_kwargs: Optional[Dict[str, Any]] = None,
         boundary_condition: str = "fixed",
         progress_bar: bool = True,
+        circadian_params: Optional[CircadianParams] = None,
     ) -> SimulationResult:
         _check_pyelastica()
 
@@ -450,7 +513,7 @@ class CounterCurvatureRodSystem:
         # Damping
         system.dampen(self.rod).using(ea.AnalyticalLinearDamper, damping_constant=damping_constant, time_step=dt)
 
-        # Callback
+        # Callback for diagnostics
         class CCCallback(ea.CallBackBaseClass):
             def __init__(self, step_skip, results):
                 super().__init__()
@@ -465,6 +528,37 @@ class CounterCurvatureRodSystem:
 
         results = {"time": [], "centerline": [], "kappa": []}
         system.collect_diagnostics(self.rod).using(CCCallback, step_skip=save_every, results=results)
+
+        # Circadian Callback
+        if circadian_params:
+            class CircadianModulationCallback(ea.CallBackBaseClass):
+                def __init__(self, system_wrapper, c_params, step_skip=1):
+                    super().__init__()
+                    self.system_wrapper = system_wrapper
+                    self.c_params = c_params
+                    self.every = step_skip
+                    self.chi_0 = system_wrapper.params.chi_kappa
+
+                def make_callback(self, system, time, current_step):
+                    if current_step % self.every == 0:
+                        # chi_kappa(t) = chi_0 * (1 + A * cos(omega * t + phi))
+                        omega = 2 * math.pi / self.c_params.period
+                        modulation = 1.0 + self.c_params.amplitude * math.cos(omega * time + self.c_params.phase)
+
+                        # Apply to chi_kappa
+                        # We use _replace on named tuple to get new params
+                        new_chi_kappa = self.chi_0 * modulation
+                        new_params = self.system_wrapper.params._replace(chi_kappa=new_chi_kappa)
+
+                        self.system_wrapper.update_rest_curvature(new_params)
+
+            # Update every step for smooth physics
+            system.collect_diagnostics(self.rod).using(
+                CircadianModulationCallback,
+                system_wrapper=self,
+                c_params=circadian_params,
+                step_skip=1
+            )
 
         system.finalize()
         timestepper = ea.PositionVerlet()
@@ -512,7 +606,7 @@ class CounterCurvatureRodSystem:
 
 
 def run_protein_simulation(
-    anisotropy: float,
+    anisotropy: Union[float, ArrayF64],
     active_curvature: float,
     torsion_drive: float = 0.0,
     stiffness_modulation: float = 0.0,
@@ -521,6 +615,7 @@ def run_protein_simulation(
     length: float = 1.0,
     radius: float = 0.01,
     E0: float = 1e6,
+    rho: float = 1000.0,
     n_elements: int = 50,
     duration: float = 2.0,
     dt: float = 1e-4,
@@ -546,6 +641,7 @@ def run_protein_simulation(
         initial_lateral_defect: Magnitude of initial lateral curvature (perturbation).
         natural_kyphosis: Magnitude of natural sagittal curvature (kyphosis).
         length: Length of the rod (m).
+        rho: Rod density (kg/m^3).
         n_elements: Number of elements in the rod.
         duration: Simulation duration (s).
         dt: Time step (s).
@@ -611,6 +707,7 @@ def run_protein_simulation(
             length=length,
             n_elements=n_elements,
             E0=E0,
+            rho=rho,
             radius=radius,
             kappa_gen=kappa_gen,
             gravity=gravity,
@@ -627,6 +724,13 @@ def run_protein_simulation(
         )
 
         sim_metrics = result.compute_final_metrics()
+
+        # Compute thermodynamic cost metrics
+        energy_metrics = compute_U_CC(
+            result, info, params, gravity=gravity, rho=rho, E0=E0
+        )
+        sim_metrics.update(energy_metrics)
+
         success = True
         error_msg = ""
 
@@ -641,8 +745,13 @@ def run_protein_simulation(
 
     t1 = time.time()
 
+    # Handle array input for anisotropy in output dict
+    anisotropy_out = anisotropy
+    if isinstance(anisotropy, np.ndarray):
+        anisotropy_out = f"Array(mean={np.mean(anisotropy):.2f})"
+
     output = {
-        "input_anisotropy": anisotropy,
+        "input_anisotropy": anisotropy_out,
         "input_active_curvature": active_curvature,
         "mapped_chi_kappa": chi_kappa,
         "mapped_chi_tau": chi_tau,
@@ -656,10 +765,127 @@ def run_protein_simulation(
     return output
 
 
+def compute_U_CC(
+    result: SimulationResult,
+    info: InfoField1D,
+    params: CounterCurvatureParams,
+    gravity: float = 9.81,
+    rho: float = 1000.0,
+    E0: float = 1e6,
+) -> Dict[str, float]:
+    """Compute the Total Potential Energy cost function U_CC.
+
+    The organism minimises U_CC = U_gravity + U_elastic - U_info, where:
+
+    - U_gravity: gravitational potential energy (m * g * h, summed over nodes)
+    - U_elastic: stored elastic energy (bending + shear)
+    - U_info: information-driven energy reduction from active countercurvature
+
+    The information energy term U_info quantifies the energetic benefit of the
+    information-driven curvature programme.  It is computed as the integral of
+    the information field weighted by the curvature correction:
+
+        U_info = chi_kappa * integral( |grad I| * |kappa_info| ds )
+
+    This captures the idea that stronger information gradients coupled with
+    larger curvature corrections yield greater energetic benefit (i.e. the
+    organism "gains" energy by aligning its shape with the genetic programme).
+
+    Parameters
+    ----------
+    result : SimulationResult
+        Completed simulation result containing centerline, kappa, and energies.
+    info : InfoField1D
+        Information field used in the simulation.
+    params : CounterCurvatureParams
+        Coupling parameters (chi_kappa, chi_E, chi_M, etc.).
+    gravity : float
+        Gravitational acceleration (m/s^2).
+    rho : float
+        Rod density (kg/m^3).
+    E0 : float
+        Baseline Young's modulus (Pa).
+
+    Returns
+    -------
+    dict
+        Dictionary containing:
+        - U_gravity: Gravitational potential energy
+        - U_elastic: Total elastic energy (bending + shear)
+        - U_info: Information-driven energy reduction
+        - U_CC: Total cost function (U_gravity + U_elastic - U_info)
+        - U_kinetic: Translational + rotational kinetic energy
+        - info_gain_ratio: U_info / (U_gravity + U_elastic), dimensionless
+    """
+    if len(result.time) == 0:
+        return {
+            "U_gravity": 0.0, "U_elastic": 0.0, "U_info": 0.0,
+            "U_CC": 0.0, "U_kinetic": 0.0, "info_gain_ratio": 0.0,
+        }
+
+    energies = result.final_energies or {}
+
+    # --- U_gravity ---
+    U_gravity = energies.get("gravitational_energy", 0.0)
+
+    # --- U_elastic ---
+    U_bending = energies.get("bending_energy", 0.0)
+    U_shear = energies.get("shear_energy", 0.0)
+    U_elastic = U_bending + U_shear
+
+    # --- U_kinetic ---
+    U_trans = energies.get("translational_energy", 0.0)
+    U_rot = energies.get("rotational_energy", 0.0)
+    U_kinetic = U_trans + U_rot
+
+    # --- U_info ---
+    # The information energy benefit: integral of chi_kappa * |grad I| * |kappa|
+    # weighted by the effective stiffness scaling.
+    s = info.s
+    grad_I = np.abs(info.dIds)
+
+    # Final curvature magnitude (bending components)
+    kappa_final = result.kappa[-1]  # (n_nodes, 3)
+    # Bending magnitude at internal nodes
+    n_nodes = kappa_final.shape[0]
+    bending_mag = np.linalg.norm(kappa_final[:, :2], axis=1)
+
+    # Interpolate bending magnitude to match info field grid
+    s_kappa = np.linspace(s[0], s[-1], n_nodes)
+    bending_interp = np.interp(s, s_kappa, bending_mag)
+
+    # Effective stiffness modulation
+    E_eff = compute_effective_stiffness(info, params, E0)
+    E_ratio = E_eff / E0
+
+    # U_info = chi_kappa * integral( E_ratio * |grad I| * |kappa| ds )
+    # This represents the energy the organism "saves" by pre-programming curvature
+    integrand = E_ratio * grad_I * bending_interp
+    U_info = float(abs(params.chi_kappa) * np.trapz(integrand, s))
+
+    # --- U_CC ---
+    U_CC = U_gravity + U_elastic - U_info
+
+    # --- Info Gain Ratio ---
+    denom = abs(U_gravity) + abs(U_elastic)
+    info_gain_ratio = U_info / denom if denom > 1e-15 else 0.0
+
+    return {
+        "U_gravity": float(U_gravity),
+        "U_elastic": float(U_elastic),
+        "U_info": float(U_info),
+        "U_CC": float(U_CC),
+        "U_kinetic": float(U_kinetic),
+        "info_gain_ratio": float(info_gain_ratio),
+    }
+
+
 __all__ = [
     "CounterCurvatureRodSystem",
     "SimulationResult",
     "PYELASTICA_AVAILABLE",
     "ActiveMuscleTorques",
     "run_protein_simulation",
+    "compute_U_CC",
+    "CircadianParams",
 ]

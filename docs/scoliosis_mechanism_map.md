@@ -297,12 +297,6 @@ The map categorizes the system into four layers:
 
 ---
 
-## Figure
-
-The visual representation of these pathways can be found in `docs/figures/scoliosis_mechanism_map.mmd`.
-
----
-
 ### 20. The Melatonin Gain Control Pathway
 
 **Arc Added**: `MELATONIN` $\rightarrow$ `MT2` $\rightarrow$ `Gi_cAMP` $\rightarrow$ `Gain`.
@@ -454,3 +448,69 @@ The visual representation of these pathways can be found in `docs/figures/scolio
 **Citations**:
 *   *Ramli, et al. (2024). Piezo1 mutant zebrafish as a model of idiopathic scoliosis. Frontiers in Genetics, 14, 1321379.* https://doi.org/10.3389/fgene.2023.1321379
 *   *Zhu, et al. (2021). Piezo1 in nucleus pulposus and osteoblasts to spinal degeneration.*
+
+---
+
+### 27. The Centriolar Splint Pathway (POC5)
+
+**Arc Added**: `POC5` $\rightarrow$ `Ciliary_Splint` $\rightarrow$ `Gain`.
+
+*   **Source**: `POC5` (Centriolar Protein).
+*   **Mechanism**: **Structural Stiffening of the Antenna**.
+    1.  **Scaffold Assembly**: POC5 is essential for the elongation and structural integrity of the distal portion of centrioles, which form the base of the primary cilium.
+    2.  **Antenna Stiffness**: A functional POC5 scaffold creates a rigid "splint" that allows the cilium to maintain its shape and stiffness.
+    3.  **Signal Transmission**: This stiffness enables the cilium to effectively transmit small gravitational shear forces to the cell body (Mechanotransduction).
+*   **Property**: **Feedback Gain ($G_{mech}$)**.
+*   **Role**: **Signal-to-Noise Ratio**. The spine's counter-curvature control loop requires a high-fidelity gravity signal. POC5 ensures the "antenna" is stiff enough to detect this signal above the noise floor.
+    *   **The Defect**: In POC5 mutants (AIS), the centriole is truncated or unstable. The cilium becomes "flaccid," failing to transmit the gravity vector. The control system perceives this as a loss of signal (Gain = 0) and drifts into instability.
+*   **Evidence**: Adalat et al. (2014) identified POC5 mutations in familial AIS cases and demonstrated that these mutations cause ciliary defects and scoliosis in zebrafish models.
+*   **Counter-Curvature Implication**: The body cannot grow *against* gravity if it cannot *feel* gravity. POC5 provides the physical rigidity required for that sensation.
+
+> **Hypothesis**: The "Splint" is the sensor. A soft sensor cannot detect a soft force.
+
+**Citations**:
+*   *Adalat, R., et al. (2014). POC5 ciliary protein mutations in adolescent idiopathic scoliosis. The Journal of Clinical Investigation, 124(11), 4899-4903.* https://doi.org/10.1172/JCI70597
+
+---
+
+### 28. The Hydrostatic Skeleton Pathway (DSTYK/TFEB)
+
+**Arc Added**: `DSTYK` $\rightarrow$ `TFEB` $\rightarrow$ `Vacuole_Biogenesis` $\rightarrow$ `Stiffness`.
+
+*   **Source**: `DSTYK` (Dual Serine/Threonine and Tyrosine Protein Kinase).
+*   **Mechanism**: **Vacuole Inflation**.
+    1.  **Kinase Control**: `DSTYK` regulates the mTORC1 signaling pathway.
+    2.  **TFEB Translocation**: Suppression of mTORC1 allows `TFEB` to translocate to the nucleus.
+    3.  **Biogenesis**: `TFEB` drives the expression of genes required for the biogenesis of large, fluid-filled vacuoles in notochord cells.
+    4.  **Inflation**: These vacuoles inflate, generating high turgor pressure that straightens the notochord sheath.
+*   **Property**: **Stiffness ($EI$)** and **Rest Curvature ($\kappa_0$)**.
+*   **Role**: **Hydrostatic Straightening**. The developing spine acts as a "Hydrostatic Skeleton." It relies on internal pressure to resist buckling and maintain a straight axis during elongation. **In the context of Counter-Curvature, this hydrostatic pressure provides the initial "stiffness" required for the spine to resist gravity before bone mineralization occurs.**
+    *   **The Defect**: In `DSTYK` mutants, vacuoles fail to inflate (Sun et al., 2020). The notochord becomes flaccid and "wavy," leading to congenital scoliosis.
+*   **Evidence**: Sun et al. (2020) demonstrated that `DSTYK` mutation leads to congenital scoliosis-like vertebral malformations in zebrafish via dysregulated mTORC1/TFEB pathway control of notochord vacuole biogenesis.
+
+> **Hypothesis**: The spine is a "Water Column" before it is a "Bone Column." Loss of hydraulic pressure leads to geometric collapse.
+
+**Citations**:
+*   *Sun, X., et al. (2020). Dstyk mutation leads to congenital scoliosis-like vertebral malformations in zebrafish via dysregulated mTORC1/TFEB pathway. Nature Communications, 11(1), 479.* https://doi.org/10.1038/s41467-019-14169-z
+
+---
+
+### 29. The Piezo-Cilia Stress Lock
+
+**Arc Added**: `PIEZO1` $\rightarrow$ `Ciliary_Tuning` (Disassembly) and `Ciliary_Tuning` $\rightarrow$ `Osteogenesis`.
+
+*   **Source**: `PIEZO1` (Mechanosensitive Channel), `Ciliary_Tuning` (Antenna Length/Stability).
+*   **Mechanism**: **Stress-Induced Disassembly**.
+    1.  **Overload**: High compressive stress activates Piezo1 channels localized to the primary cilium.
+    2.  **Calcium Flood**: This triggers a massive influx of Calcium ($Ca^{2+}$) into the ciliary compartment.
+    3.  **Disassembly**: The calcium surge destabilizes the axoneme, causing the primary cilium to shorten or disassemble completely.
+    4.  **Osteogenic Derepression**: The primary cilium normally represses osteogenic differentiation (via Gli3 repressor). Its loss "unlocks" the osteogenic program.
+*   **Property**: **Feedback Gain ($G_{mech}$)** and **Tissue Mineral Density (TMD)**.
+*   **Role**: **The Kill Switch**. This mechanism explains why "Compression leads to Bone." The sensor (cilium) is designed to be destroyed by high loads, converting a "Soft/Sensing" cell into a "Hard/Structural" cell.
+    *   **The Trap**: In scoliosis, asymmetric compression on the concave side constantly destroys cilia, locking those cells into a permanent bone-forming state (Heuter-Volkmann effect), while the convex side remains soft.
+*   **Evidence**: Chen et al. (2025) demonstrated that pharmacological blockade of Piezo1 (GsMTx4) prevents stress-induced ciliary disassembly and halts premature ossification in growth plate chondrocytes.
+
+> **Hypothesis**: The **Counter-Curvature** response fails because the concave side is deaf. Having lost its "ears" (cilia), it can only "harden" (scalar response) rather than "steer" (vector response), preventing the active realignment required to oppose gravity.
+
+**Citations**:
+*   *Chen, F., et al. (2025). PIEZO1-Primary Cilia Axis Mediates Compressive Stress-Induced Growth Plate Degeneration and Ossification in Adolescent Idiopathic Scoliosis. JOR Spine, 8(4), e70133.* https://doi.org/10.1002/jsp2.70133

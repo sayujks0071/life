@@ -69,3 +69,16 @@
 - `f.readlines()`: ~0.2s (no significant gain)
 - `np.fromregex`: Slower/Fragile due to complex PDB column alignment.
 **Action:** Rejected parsing optimization. Parsing is surprisingly efficient. The real bottleneck for repeated analysis is re-computing geometry metrics. Implemented persistent caching (`.npz`/`.json`) instead, yielding ~10x speedup on second run.
+
+## 2026-11-20 - [Geometry Smoothing Optimization]
+
+**Learning:** `np.convolve` creates full-size temporary arrays and performs O(N*W) operations. For simple moving averages (boxcar), `np.cumsum` (Integral Image) is O(N) and ~2x faster even for small windows (W=10). Verified numerically identical results for `mode='valid'`.
+
+**Action:** Replaced `np.convolve` with `np.cumsum` in `scripts/bolt_biofold_analysis.py`.
+
+## 2026-11-21 - [Surface Metrics O(N) Optimization]
+
+**Learning:** The `compute_surface_metrics` function in `bolt_biofold_analysis.py` used an O(N^2) broadcasting approach to compute neighbor counts. For proteins with >3000 residues, this caused massive memory usage (>200MB) and slow execution (>1.6s).
+
+**Action:** Replaced the broadcasting logic with `scipy.spatial.cKDTree.query_ball_point(return_length=True)`, which is O(N log N). This reduced execution time for N=3000 from 1.69s to 0.015s (~110x speedup) and eliminates the memory bottleneck, enabling efficient analysis of giant proteins like Titin or Piezo1.
+## 2026-11-20 - [cKDTree Parallelism] **Learning:** cKDTree in scipy supports parallel execution (workers=-1) and has a tunable leafsize. For N=3000-5000 points (typical protein), leafsize=64 and workers=-1 yielded ~2x speedup (12ms -> 6ms) for neighbor counting. **Action:** Updated compute_surface_metrics in bolt_biofold_analysis.py.

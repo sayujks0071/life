@@ -25,6 +25,9 @@ graph TD
         MELATONIN[MELATONIN<br/>Pineal Hormone]
         MT2[MTNR1B<br/>Melatonin Receptor]
         HIF1A[HIF1A<br/>Hypoxia Inducible Factor]
+        POC5[POC5<br/>Centriolar Splint]
+        DSTYK[DSTYK<br/>Kinase]
+        TFEB[TFEB<br/>Transcription Factor]
     end
 
     subgraph Processes [Cellular & Developmental Processes]
@@ -54,6 +57,8 @@ graph TD
         Ciliary_Tuning[Ciliary Tuning<br/>Antenna Gain]
         Hypoxia[Hypoxia<br/>O2 Deficit]
         Osteogenesis[Osteogenesis<br/>Bone Formation]
+        Ciliary_Splint[Ciliary Splint<br/>Antenna Stiffness]
+        Vacuole_Biogenesis[Vacuole Biogenesis<br/>Hydrostatic Inflation]
     end
 
     subgraph Tissue [Tissue Mechanics & Properties]
@@ -213,7 +218,21 @@ graph TD
     Osteogenesis --> TMD
     TMD --> Stiffness
 
-    class HOX,COL,PIEZO1,PIEZO2,CILIA,LBX1,ADGRG6,PTK7,YAP,PKD2L1,MMP,URP,UTS2R,GFAP,VIM,LAMIN,BMAL1,RUNX3,METTL3,ESR1,MELATONIN,MT2,HIF1A gene;
-    class Region,ECM_Assembly,Mech_Trans,Sym_Break,Neur_Diff,Muscle_Diff,Disc_Maint,PCP_Sig,Nucl_Shuttle,CSF_Sensing,Degradation,Astrogliosis,mtROS,Adipogenesis,Hydraulic_Congestion,Immune_Infilt,Circadian_Entrain,Proprio_Maint,H3K9me3,VCL_Stasis,Glymphatic_Stasis,Vestibular_Input,Gi_cAMP,Ciliary_Tuning,Hypoxia,Osteogenesis process;
+    %% NEW ARC: Centriolar Splint (POC5)
+    POC5 --> Ciliary_Splint
+    Ciliary_Splint --> Gain
+
+    %% NEW ARC: Hydrostatic Skeleton (DSTYK/TFEB)
+    DSTYK --> TFEB
+    TFEB --> Vacuole_Biogenesis
+    Vacuole_Biogenesis --> Stiffness
+    Vacuole_Biogenesis --> Region
+
+    %% NEW ARC: Piezo-Cilia Stress Lock (Chen et al., 2025)
+    PIEZO1 -- "Stress Disassembly" --> Ciliary_Tuning
+    Ciliary_Tuning -- "Loss = Derepression" --> Osteogenesis
+
+    class HOX,COL,PIEZO1,PIEZO2,CILIA,LBX1,ADGRG6,PTK7,YAP,PKD2L1,MMP,URP,UTS2R,GFAP,VIM,LAMIN,BMAL1,RUNX3,METTL3,ESR1,MELATONIN,MT2,HIF1A,POC5,DSTYK,TFEB gene;
+    class Region,ECM_Assembly,Mech_Trans,Sym_Break,Neur_Diff,Muscle_Diff,Disc_Maint,PCP_Sig,Nucl_Shuttle,CSF_Sensing,Degradation,Astrogliosis,mtROS,Adipogenesis,Hydraulic_Congestion,Immune_Infilt,Circadian_Entrain,Proprio_Maint,H3K9me3,VCL_Stasis,Glymphatic_Stasis,Vestibular_Input,Gi_cAMP,Ciliary_Tuning,Hypoxia,Osteogenesis,Ciliary_Splint,Vacuole_Biogenesis process;
     class Rest_Kappa,Stiffness,Torsional_Stiffness,Gain,Torsion,Muscle_Tone,Anisotropy,TMD tissue;
     class S_Curve,Stability,Scoliosis outcome;
