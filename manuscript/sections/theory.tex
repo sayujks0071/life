@@ -25,31 +25,39 @@ This unifying hypothesis generates three testable predictions that distinguish i
 \subsection{Rod Geometry and Kinematic Parameterization}
 
 We represent the human spine as a Cosserat rod, defined by a centerline curve $\mathbf{r}(s,t) \in \mathbb{R}^3$ parameterized by arc length $s \in [0, L]$. To each point $s$, we attach an orthonormal material frame $\{\mathbf{d}_1(s,t), \mathbf{d}_2(s,t), \mathbf{d}_3(s,t)\}$ describing the cross-sectional orientation~\cite{goriely2017mathematics, gazzola2018forward}. The director $\mathbf{d}_3(s,t)$ aligns with the tangent to the centerline in the absence of shear, while $\mathbf{d}_1(s,t)$ and $\mathbf{d}_2(s,t)$ define the principal axes of the vertebral cross-section. The kinematics are governed by the evolution equations:
+
 \begin{align}
-\mathbf{r}'(s) &= \mathbf{v}(s) = \mathbf{d}_3(s) + \boldsymbol{\varepsilon}(s), \\
-\mathbf{d}_i'(s) &= \mathbf{u}(s) \times \mathbf{d}_i(s),
-\label{eq:cosserat_kinematics}
+    \mathbf{r}'(s) &= \mathbf{v}(s) = \mathbf{d}_3(s) + \boldsymbol{\varepsilon}(s), \\
+    \mathbf{d}_i'(s) &= \mathbf{u}(s) \times \mathbf{d}_i(s),
+    \label{eq:cosserat_kinematics}
 \end{align}
+
 where $\mathbf{v}(s)$ is the tangent vector, $\boldsymbol{\varepsilon}(s)$ represents shear and extension strains, and $\mathbf{u}(s) = \kappa_1 \mathbf{d}_1 + \kappa_2 \mathbf{d}_2 + \tau \mathbf{d}_3$ is the Darboux vector encoding the flexural curvature components $\kappa_{1,2}$ and torsional twist $\tau$. Physically, we identify $s=0$ with the sacrum (clamped boundary condition: $\mathbf{r}(0)=\mathbf{0}, \mathbf{d}_i(0)=\mathbf{e}_i$) and $s=L$ with the cranium (free boundary condition), representing the aggregate mechanical axis of the vertebral column.
 
 \subsection{Developmental Information Fields from Morphogenetic Patterning}
 
 We introduce a scalar information field $I(s, t) \in [0, 1]$ representing the coarse-grained expression level of anterior-posterior patterning morphogens (e.g., HOX genes). Following the bimodal Gaussian parameterization (Methods Eq.~\ref{eq:info_field_spinal}), we model $I(s)$ with peaks at the cervical ($A_c=0.5, s_c=0.80$) and lumbar ($A_l=0.7, s_l=0.25$) enlargements, corresponding to regions of high vertebral identity specification. The spatial gradient $\nabla I$ acts as a "curvature generator" via the geometric coupling $\chi_\kappa$:
+
 \begin{equation}
-\boldsymbol{\kappa}_{\mathrm{rest}}(s) = \boldsymbol{\kappa}_{\mathrm{gen}} + \chi_\kappa \nabla I(s).
-\label{eq:kappa_rest}
+    \boldsymbol{\kappa}_{\mathrm{rest}}(s) = \boldsymbol{\kappa}_{\mathrm{gen}} + \chi_\kappa \nabla I(s).
+    \label{eq:kappa_rest}
 \end{equation}
+
 Simultaneously, the field exerts a stiffness via the morphomechanical coupling $\chi_M$, generating the active biological moment $\mathbf{M}_{bio}$ to oppose gravity:
+
 \begin{equation}
-\mathbf{M}_{bio} = \chi_M (\mathbf{\Lambda} \cdot \nabla I).
-\label{eq:active_moment}
+    \mathbf{M}_{bio} = \chi_M (\mathbf{\Lambda} \cdot \nabla I).
+    \label{eq:active_moment}
 \end{equation}
+
 Stability is quantified by the Bio-Gravitational Number $\mathcal{B}_g$:
+
 \begin{equation}
-\mathcal{B}_g = \frac{\chi_M \langle |\nabla I| \rangle}{\rho A g L^2}.
-\label{eq:bg_number}
+    \mathcal{B}_g = \frac{\chi_M \langle |\nabla I| \rangle}{\rho A g L^2}.
+    \label{eq:bg_number}
 \end{equation}
-When $\mathcal{B}_g > 1$, the organism dominates gravity. This framework is physically grounded in the structural specificity of HOX proteins. For example, AlphaFold analysis of HOXC8 (UniProt P31273) and HOXB13 (UniProt Q92826) demonstrates that these proteins possess rigid DNA-binding domains capable of enforcing the sharp identity boundaries necessary for this parameterization.
+
+When $\mathcal{B}_g > 1$, the organism dominates gravity. This framework is physically grounded in the structural specificity of HOX proteins (e.g., HOXC8, HOXB13), as confirmed by AlphaFold structural analysis which reveals rigid DNA-binding domains capable of enforcing sharp identity boundaries.
 
 \subsection{The Information--Cosserat Manifold Framework}
 The Human spine is modeled as a one-dimensional Cosserat rod embedded in three-dimensional Euclidean space. However, in the IEC framework, we treat the rod's reference configuration not as a flat segment, but as a manifold whose intrinsic geometry is warped by a developmental information field $I(s)$. We draw a formal analogy to General Relativity (GR), where the geometry of spacetime $g_{\mu\nu}$ is determined by the mass-energy distribution $T_{\mu\nu}$. This conceptual bridge builds upon recent theoretical proposals\footnote{A preliminary exploration of this concept, proposing a cosmological "Information Term" $I_{\mu\nu}$ in Einstein's field equations, was introduced in \cite{krishnan2025consciousness}. The present work translates this speculative cosmological hypothesis into a rigorous, experimentally testable framework for biological morphogenesis, where $I(s)$ modifies the effective material metric rather than the vacuum spacetime metric.} suggesting that information may play a geometric role in physical systems.
@@ -156,11 +164,11 @@ where $\langle \cdot \rangle$ denotes the spatial average over the rod length. I
 
 \paragraph{Molecular grounding via AlphaFold structural analysis.} The three dissipation terms are not abstract---each maps to specific molecular players whose AlphaFold-predicted structures reveal how they bear the thermodynamic cost of countercurvature. We analyzed 16 proteins across the three terms using structural metrics from the AlphaFold Protein Structure Database~\cite{jumper2021alphafold, varadi2022alphafold}, focusing on anisotropy ratio (shape elongation), radius of gyration, per-residue confidence (pLDDT), and hinge candidates (refer to Table \ref{tab:thermodynamic_cost_proteins}).
 
-The \emph{proprioceptive feedback term} $\eta_p$ is borne by five proteins: the vector mechanosensor PIEZO2 (anisotropy~4.44, fibrous/extended morphology), the scalar sensor PIEZO1 (anisotropy~3.90, 2521~residues), the spindle-maintenance transcription factor EGR3 (anisotropy~3.76, 64\% intrinsically disordered), the proprioceptive master regulator RUNX3 (56\% disordered, 12~hinge candidates), and the survival receptor NTRK3 (9~hinge candidates). Their mean anisotropy of 3.22 reflects the extended, orientation-dependent structures required for directional sensing---structures that are intrinsically expensive to maintain in proper alignment.
+The \emph{proprioceptive feedback term} $\eta_p$ is borne by three proteins: the vector mechanosensor PIEZO2 (anisotropy~4.44, fibrous/extended morphology), the scalar sensor PIEZO1 (anisotropy~3.90, 2521~residues), and the spindle-maintenance transcription factor EGR3 (anisotropy~3.76, 64\% intrinsically disordered). Their high anisotropy reflects the extended, orientation-dependent structures required for directional sensing---structures that are intrinsically expensive to maintain in proper alignment.
 
-The \emph{active moment term} $\eta_a$ is borne by the molecular machines that generate tonic contraction: the intermediate filament Vimentin (VIM; anisotropy~7.47, the highest in the dataset), Lamin~A/C (LMNA; anisotropy~4.75), Caveolin-1 (CAV1; anisotropy~3.98), Filamin~A (FLNA; 116~hinge candidates across 2647~residues), and the AIS-associated transcription factor LBX1~\cite{kou2013lbx1} (61\% disordered). Their mean anisotropy of 4.19---the highest of the three terms---reflects the extreme structural cost of the cytoskeletal-nuclear axis that transmits gravitational loads.
+The \emph{active moment term} $\eta_a$ is borne by the molecular machines that generate tonic contraction: the intermediate filament Vimentin (VIM; anisotropy~7.47, the highest in the dataset), Lamin~A/C (LMNA; anisotropy~4.75), Caveolin-1 (CAV1), Filamin~A (FLNA), and the AIS-associated transcription factor LBX1~\cite{kou2013lbx1}, alongside the contractile regulators Myosin Light Chain Kinase (MYLK) and Dystrophin (DMD). Their mean anisotropy reflects the extreme structural cost of the cytoskeletal-nuclear axis that transmits gravitational loads.
 
-The \emph{basal maintenance term} $\Gamma_m$ is borne by structurally more compact proteins: Type~I collagen (COL1A1; 67\% disordered in monomeric prediction, reflecting the triple-helix assembly requirement), the disc matrix protein COMP (pLDDT~88.1, the most confidently predicted), the metabolic sensor SIRT1 (47\% disordered), the growth plate driver SOX9, the morphogen SHH, and the growth arrest signal p21/CDKN1A. Their mean anisotropy of 2.11---significantly lower than the demand-side proteins---confirms that the energy supply apparatus is structurally cheaper than the mechanotransduction apparatus it must power.
+The \emph{basal maintenance term} $\Gamma_m$ is borne by structurally more compact proteins involved in metabolic supply and growth signaling: Type~I collagen (COL1A1), the growth plate driver SOX9, the Growth Hormone Receptor (GHR), the circadian clock regulator BMAL1 (ARNTL), the mitochondrial master regulator PPARGC1A, and the IGF-1 Receptor (IGF1R). Their lower mean anisotropy compared to the demand-side proteins confirms that the energy supply apparatus is structurally cheaper than the mechanotransduction apparatus it must power.
 
 This structural asymmetry (demand anisotropy $\gg$ supply anisotropy) provides the molecular basis for the energy deficit window: the most expensive proteins to maintain are precisely those whose function must scale with $L$, while the supply-side regulators that must detect and respond to this increasing demand are compact sensors operating near their detection limits.
 

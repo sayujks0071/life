@@ -312,6 +312,37 @@ $$ \frac{d(\text{TMD})}{dt} = \Gamma_{PO} \langle S_{scalar} \rangle - \delta \c
 *   **Mechanism**: Piezo1 activation $\to$ Ca2+ influx $\to$ Calcineurin/NFAT $\to$ Osteoblast differentiation (Ramli et al., 2024).
 *   **Measurable Proxy**: The slope of the regression line between local bone mineral density (BMD) and computationally estimated hydrostatic pressure in the vertebral centrum.
 
+### 2.21. The Bastien Number ($\mathcal{B}_{osc}$)
+
+We define a dimensionless number governing the bifurcation from stable straight growth to oscillatory (scoliotic) instability, derived from the Bastien et al. (2013) gravitropic oscillator model.
+
+$$ \mathcal{B}_{osc} = \frac{\beta L}{\gamma} $$
+
+*   **Symbols**:
+    *   $\beta$: Gravitropic sensitivity (rate of curvature change per unit angle) $[L^{-1}T^{-1}]$.
+    *   $\gamma$: Proprioceptive straightening gain (rate of curvature decay) $[T^{-1}]$.
+    *   $L$: Characteristic length $[L]$.
+*   **Physical Interpretation**:
+    *   $\mathcal{B}_{osc} < \mathcal{B}_{crit}$: Stable convergence to vertical.
+    *   $\mathcal{B}_{osc} > \mathcal{B}_{crit}$: Spontaneous "hunting" oscillations (S-shape formation).
+*   **Measurable Proxy**: The ratio of the overshoot amplitude to the damping rate in a postural perturbation test (sway ratio).
+
+### 2.22. The Ciliary-Osteogenic Locking Number ($\mathcal{L}_{CO}$)
+
+We define a dimensionless number representing the bistable competition between ciliary-mediated repression of osteogenesis (active during growth) and Piezo1-mediated promotion of osteogenesis (active during loading/ossification).
+
+$$ \mathcal{L}_{CO} = \frac{\Gamma_{Piezo} \cdot \sigma_{eff}}{K_{Cilia} \cdot L_{cil}} $$
+
+*   **Symbols**:
+    *   $\Gamma_{Piezo}$: Piezo1-mediated osteogenic gain (sensitivity to stress) $[M^{-1} L T^2]$.
+    *   $\sigma_{eff}$: Effective compressive stress $[ML^{-1}T^{-2}]$.
+    *   $K_{Cilia}$: Repressive sensitivity per unit cilium length $[L^{-1}]$.
+    *   $L_{cil}$: Primary cilium length $[L]$.
+*   **Physical Interpretation**:
+    *   $\mathcal{L}_{CO} < 1$: **Growth Mode**. Low stress allows long cilia ($L_{cil} \uparrow$), which repress Runx2/Osterix. The growth plate remains cartilaginous.
+    *   $\mathcal{L}_{CO} > 1$: **Locked Mode**. High stress shortens cilia ($L_{cil} \downarrow$) and activates Piezo1, driving a positive feedback loop of ossification and stiffening. This describes the "Stress-Lock" leading to vertebral wedging.
+*   **Measurable Proxy**: The ratio of nuclear YAP/TAZ intensity (osteogenic driver) to ciliary Arl13b intensity (repressive state) in chondrocytes at the vertebral growth plate.
+
 ## 3. The Tissue Anisotropy Tensor ($\mathbf{\Lambda}$)
 
 The tensor $\mathbf{\Lambda}$ is a rank-2, dimensionless operator representing the statistical alignment of Planar Cell Polarity (PCP) vectors and ECM fiber orientation within the vertebral cross-section.
@@ -555,6 +586,26 @@ The theory makes specific predictions about the relationship between genetic ani
 *   **Data Needed**: Time course of TMD loss in astronauts (or tail-suspended rats) treated with Yoda1 (Piezo1 agonist).
 *   **Refutation**: If Yoda1 fails to rescue bone density in unloading, then stimulating the sensor is insufficient (downstream metabolic block). (Reference: Sun et al., 2019).
 
+### Test AO: The Egr3 Bifurcation
+*   **Hypothesis**: Egr3-/- mice (low $\gamma$) should exhibit oscillatory curvature dynamics (wavy spine) that fits the Bastien solution for $\mathcal{B}_{osc} > \mathcal{B}_{crit}$.
+*   **Data Needed**: Longitudinal radiographic tracking of spinal curvature in Egr3-/- mice from P7 to P60, fitted to the Bastien oscillator equation.
+*   **Refutation**: If curvature is static/monotonic (buckling) rather than oscillatory (hunting), the proprioceptive gain hypothesis is falsified. (Reference: Blecher et al., 2017).
+
+### Test AP: The Frequency-Gain Lock
+*   **Hypothesis**: Artificially increasing $\beta$ (e.g., hyper-gravity via centrifuge) in a system with fixed $\gamma$ should induce oscillation (scoliosis) in wild-type organisms.
+*   **Data Needed**: Spinal geometry of zebrafish larvae raised in 3g centrifuge vs 1g.
+*   **Refutation**: If hyper-gravity causes only compression (shorter spine) without lateral oscillation, the graviceptive gain $\beta$ is not the driver of instability. (Reference: Bastien et al., 2013).
+
+### Test AQ: The Locking Threshold
+*   **Hypothesis**: The transition from cartilaginous growth to ossification is not linear with stress but exhibits a critical threshold (bifurcation) at $\mathcal{L}_{CO} \approx 1$. Ciliary disassembly should be sharp, not gradual.
+*   **Data Needed**: Step-stress application to vertebral chondrocytes in hydrogels, tracking ciliary length ($L_{cil}$) and Runx2 expression over 24h.
+*   **Refutation**: If Runx2 scales linearly with stress magnitude without a sharp switch-like behavior linked to ciliary loss, the "Lock" concept is incorrect. (Reference: Chen et al., 2025; Li et al., 2023).
+
+### Test AR: The Decoupled Rescue
+*   **Hypothesis**: Stabilizing ciliary length pharmacologically (e.g., via Tubacin) should prevent stress-induced ossification even if Piezo1 is activated (high stress), by maintaining the denominator of $\mathcal{L}_{CO}$.
+*   **Data Needed**: Vertebral growth plate explants under compression treated with Tubacin (HDAC6 inhibitor) vs GsMTx4 (Piezo1 blocker).
+*   **Refutation**: If Tubacin fails to prevent ossification while GsMTx4 does, the mechanism relies solely on Piezo1 activation, not ciliary retraction. (Reference: Chen et al., 2025).
+
 ## 7. References
 
 1.  **Karner, C. M., et al. (2015).** "Gpr126/Adgrg6 gene is essential for Schwann cell myelination and spinal column development." *Science*, 347(6223). (Demonstrates genetic link to stiffness/integrity).
@@ -603,3 +654,7 @@ The theory makes specific predictions about the relationship between genetic ani
 44. **Kang, M., et al. (2025).** "Tension-sensitive HOX gene expression in fibroblasts for differential scar formation." *Journal of Translational Medicine*, 23(1). (Demonstrates that mechanical tension modulates HOX gene expression).
 45. **Wang, N., et al. (2009).** "Mechanotransduction at a distance: mechanically coupling the extracellular matrix with the nucleus." *Nature Reviews Molecular Cell Biology*, 10(1). (Nuclear mechanotransduction mechanism).
 46. **Ramli, R., et al. (2024).** "Piezo1 mutant zebrafish as a model of idiopathic scoliosis." *Frontiers in Genetics*, 14. (Identifies Piezo1 as the scalar stiffness regulator).
+47. **Bastien, R., et al. (2013).** "Unifying model of shoot gravitropism reveals proprioception as a central feature of posture control." *PNAS*, 110(2). (Establishes the proprioceptive oscillator model).
+48. **Blecher, R., et al. (2017).** "New functions for the proprioceptive system in skeletal biology." *Philosophical Transactions B*, 373. (Identifies Egr3/proprioception defects in spinal alignment).
+49. **Chen, F., et al. (2025).** "PIEZO1-Primary Cilia Axis Mediates Compressive Stress-Induced Growth Plate Degeneration and Ossification in Adolescent Idiopathic Scoliosis." *JOR Spine*, 8(4). (Identifies the Piezo1-Primary Cilia axis as the mechanotransduction pathway converting compressive stress into premature ossification).
+50. **Li, X., et al. (2023).** "Piezo1-mediated mechanosensation in bone marrow mesenchymal stem cells regulates bone formation." *Journal of Bone and Mineral Research*, 38(10). (Demonstrates Piezo1 importance in osteogenesis).
