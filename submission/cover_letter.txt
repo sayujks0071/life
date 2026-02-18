@@ -6,6 +6,9 @@ Dear Dr. Skipper,
 
 We submit for your consideration our Article entitled "Active metabolic countercurvature of the growing spine."
 
+**Target Editorial Section:**
+Given the interdisciplinary nature of this work, we request assignment to the **Biophysics** and **Developmental Biology** desks.
+
 **The Grand Challenge:**
 Gravity is the most pervasive physical force on Earth, yet biology lacks a fundamental theory for how living systems maintain complex, non-monotonic geometries (like the S-shaped spine) against it. Current biomechanical models treat the spine as a passive column that buckles under load. This fails to explain why healthy spines do *not* buckle, nor why scoliotic deformity appears specifically during the rapid growth of adolescence.
 
