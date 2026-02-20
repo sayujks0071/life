@@ -26,6 +26,31 @@ seeds:
   ECM:
     - COL11A2
 
+  Week6_Expansion:
+    - SELENON
+    - EMD
+    - TTN
+    - STOML3
+    - AQP4
+    - SSPOP
+    - FAT4
+    - ROCK1
+    - DZIP1
+    - MYLK
+    - PANX3
+    - FBLN5
+    - GDF5
+    - CNNM2
+    - BNC2
+
+  Metabolic_Expansion:
+    - PPARGC1A
+    - IGF1R
+    - GHR
+    - ARNTL
+    - DMD
+    - MYLK
+
   # Optional Expansion Sets
   expansion_modules:
     pass: []

@@ -1,5 +1,4 @@
-import urllib.request
-import urllib.error
+import subprocess
 import json
 import time
 import hashlib
@@ -52,21 +51,30 @@ class AlphaFoldFetcher:
         api_url = f"{ALPHAFOLD_API_BASE}/{uniprot_id}"
 
         try:
-            with urllib.request.urlopen(api_url, timeout=30) as response:
-                data = json.loads(response.read().decode())
+            # Use curl to fetch metadata
+            cmd = ['curl', '-s', api_url]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
 
-                if not data or len(data) == 0:
-                    return None
-
-                # Schema tolerance: API returns a list of entries.
-                # Usually the first one is the main one.
-                entry = data[0]
-                return entry
-        except urllib.error.HTTPError as e:
-            if e.code == 404:
+            if result.returncode != 0:
+                print(f"   ⚠️  curl failed with return code {result.returncode}")
                 return None
-            print(f"   ⚠️  AFDB API Error {e.code}: {e.reason}")
-            return None
+
+            if not result.stdout.strip():
+                return None
+
+            try:
+                data = json.loads(result.stdout)
+            except json.JSONDecodeError:
+                print(f"   ⚠️  Invalid JSON response from {api_url}")
+                return None
+
+            if not data or len(data) == 0:
+                return None
+
+            # Schema tolerance: API returns a list of entries.
+            # Usually the first one is the main one.
+            entry = data[0]
+            return entry
         except Exception as e:
             print(f"   ⚠️  Connection Error: {e}")
             return None
@@ -79,9 +87,14 @@ class AlphaFoldFetcher:
 
         for attempt in range(3):
             try:
-                with urllib.request.urlopen(url, timeout=60) as response, open(dest_path, "wb") as f:
-                    f.write(response.read())
-                return True
+                # Use curl to download file
+                cmd = ['curl', '-L', '-s', '-o', str(dest_path), url]
+                result = subprocess.run(cmd, timeout=60)
+
+                if result.returncode == 0 and dest_path.exists() and dest_path.stat().st_size > 0:
+                    return True
+
+                time.sleep(1 * (attempt + 1))
             except Exception as e:
                 time.sleep(1 * (attempt + 1))
 
@@ -186,12 +199,28 @@ class AlphaFoldFetcher:
         # Remove old entry
         self.manifest = self.manifest[self.manifest['uniprot'] != uniprot]
 
+        # Convert to relative paths
+        # Assume data_dir is research/alphafold_countercurvature/data/raw
+        # Repo root is 4 levels up
+        repo_root = self.data_dir.parent.parent.parent.parent
+        # print(f"DEBUG: data_dir={self.data_dir}, repo_root={repo_root}")
+
+        def make_relative(p_str):
+            if not p_str: return None
+            try:
+                p = Path(p_str)
+                if p.is_absolute():
+                    return str(p.relative_to(repo_root))
+            except ValueError:
+                pass
+            return p_str
+
         new_row = {
             'uniprot': uniprot,
             'gene_symbol': gene,
             'status': status,
-            'pdb_path': pdb_path,
-            'pae_path': pae_path,
+            'pdb_path': make_relative(pdb_path),
+            'pae_path': make_relative(pae_path),
             'sha256_pdb': sha,
             'retrieved_at': time.strftime('%Y-%m-%d %H:%M:%S'),
             'notes': ''

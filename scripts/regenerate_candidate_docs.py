@@ -1,67 +1,98 @@
 import csv
-import os
+import sys
+from pathlib import Path
 
-MASTER_FILE = "data/candidates_master.csv"
-DOC_FILE = "docs/candidate_registry.md"
+CSV_FILE = Path("data/candidates_master.csv")
+DOC_FILE = Path("docs/candidate_registry.md")
+
+def generate_markdown_table(rows):
+    # Filter for score >= 85
+    filtered_rows = []
+    for row in rows:
+        try:
+            score_val = row["priority_score"]
+            # Handle potential spaces
+            if isinstance(score_val, str):
+                score_val = score_val.strip()
+            score = int(score_val)
+        except (ValueError, KeyError):
+            score = 0
+
+        if score >= 85:
+            # Add typed score for sorting
+            row["_sort_score"] = score
+            filtered_rows.append(row)
+
+    # Sort by Score (desc), then Gene Symbol (asc)
+    filtered_rows.sort(key=lambda x: (-x["_sort_score"], x["gene_symbol"].strip().upper()))
+
+    table_lines = []
+    table_lines.append("| Rank | Gene Symbol | Score | Mechanism / Rationale | Gravity/Mechano Link |")
+    table_lines.append("|:----:|:-----------:|:-----:|:----------------------|:---------------------|")
+
+    rank = 1
+    for row in filtered_rows:
+        symbol = row["gene_symbol"]
+        score = row["priority_score"]
+
+        tags = row.get("pathway_tags", "Unknown")
+        if not tags: tags = "Unknown"
+        primary_tag = tags.split(",")[0].strip()
+
+        justification = row.get("justification", "")
+        gravity_link = row.get("gravity_link", "")
+
+        # Format columns
+        col_symbol = f"**{symbol}**"
+        # Escape pipes in justification/gravity_link
+        col_mechanism = f"**{primary_tag}**: {justification}".replace("|", "\\|")
+        col_gravity = f"{gravity_link}".replace("|", "\\|")
+
+        line = f"| {rank} | {col_symbol} | {score} | {col_mechanism} | {col_gravity} |"
+        table_lines.append(line)
+        rank += 1
+
+    return "\n".join(table_lines)
 
 def main():
-    if not os.path.exists(MASTER_FILE):
-        print(f"Error: {MASTER_FILE} not found.")
-        return
+    if not CSV_FILE.exists():
+        print(f"Error: {CSV_FILE} not found.")
+        sys.exit(1)
 
-    candidates = []
-    with open(MASTER_FILE, 'r') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            try:
-                row['priority_score'] = int(row['priority_score'])
-            except ValueError:
-                continue # Skip invalid scores
-            candidates.append(row)
+    if not DOC_FILE.exists():
+        print(f"Error: {DOC_FILE} not found.")
+        sys.exit(1)
 
-    # Filter and Sort
-    priority_candidates = [c for c in candidates if c['priority_score'] >= 85]
-    priority_candidates.sort(key=lambda x: x['priority_score'], reverse=True)
+    rows = []
+    try:
+        with open(CSV_FILE, "r", newline="", encoding="utf-8") as f:
+            # Handle potential whitespace in headers
+            reader = csv.DictReader(f, skipinitialspace=True)
+            for row in reader:
+                rows.append(row)
+    except Exception as e:
+        print(f"Error reading CSV: {e}")
+        sys.exit(1)
 
-    # Generate Markdown
-    with open(DOC_FILE, 'w') as f:
-        f.write("# Candidate Registry\n\n")
-        f.write("****Last Updated:** Week 6 Cycle - Gravity Expansion III (Added NF1, COL1A1, DNAH11, etc.)\n")
-        f.write("**Focus:** Gravity, Mechanotransduction, and Spinal Curvature\n\n")
-        f.write("This registry tracks high-priority gene and protein candidates identified as relevant to the \"Biological Counter-Curvature\" hypothesis. Candidates are scored based on their relevance to:\n")
-        f.write("1.  **Gravity/Mechanotransduction**: Ability to sense or resist physical forces.\n")
-        f.write("2.  **Spinal Curvature**: Genetic or experimental links to scoliosis or vertebral defects.\n")
-        f.write("3.  **Developmental Role**: Involvement in key spinal formation pathways (Somites, PCP, Cilia).\n\n")
+    new_table = generate_markdown_table(rows)
 
-        f.write("## Priority Candidates (Score >= 85)\n\n")
-        f.write("| Rank | Gene Symbol | Score | Mechanism / Rationale | Gravity/Mechano Link |\n")
-        f.write("|:----:|:-----------:|:-----:|:----------------------|:---------------------|\n")
+    with open(DOC_FILE, "r", encoding="utf-8") as f:
+        content = f.read()
 
-        for i, c in enumerate(priority_candidates, 1):
-            # Parse tags to find primary mechanism
-            tags = c['pathway_tags'].split(',')
-            mechanism = tags[0].strip() if tags else "Unknown"
+    start_marker = "## Priority Candidates (Score >= 85)\n\n"
+    end_marker = "\n\n## Selection Methodology"
 
-            # Format rationale with mechanism bolded
-            rationale_text = f"**{mechanism}**: {c['justification']}"
+    start_idx = content.find(start_marker)
+    end_idx = content.find(end_marker)
 
-            f.write(f"| {i} | **{c['gene_symbol']}** | {c['priority_score']} | {rationale_text} | {c['gravity_link']} |\n")
-
-        f.write("\n## Selection Methodology\n\n")
-        f.write("Candidates were selected based on a \"Gravity x Curvature\" cross-referencing strategy:\n")
-        f.write("*   **Seed Categories**: Mechanotransduction, Cilia/PCP, Somite Segmentation, Growth Plate.\n")
-        f.write("*   **Expansion Criteria**: Direct literature evidence connecting the gene to both mechanical sensing/response and spinal alignment defects (Scoliosis, Kyphosis, AIS).\n")
-        f.write("*   **Scoring**:\n")
-        f.write("    *   **90-100**: Proven causative gene for Scoliosis with direct mechanotransduction role.\n")
-        f.write("    *   **80-89**: Strong association with Scoliosis and clear mechanobiological function.\n")
-        f.write("    *   **70-79**: Pathway member with experimental links to spine development or gravity response.\n\n")
-
-        f.write("## Next Steps\n\n")
-        f.write("1.  **AlphaFold Analysis**: Run the \"Bolt-BioFold\" pipeline on the top new candidates (NF1, COL1A1) to assess structural anisotropy.\n")
-        f.write("2.  **Simulation**: Investigate the role of FLNA/Actin-mediated cytoskeletal stiffness in the `pyelastica` rod models.\n")
-        f.write("3.  **Literature Review**: Deep dive into the \"Cilia Motility\" mechanism for DNAH11 and GAS8.\n")
-
-    print(f"Successfully regenerated {DOC_FILE}")
+    if start_idx != -1 and end_idx != -1:
+        new_content = content[:start_idx + len(start_marker)] + new_table + content[end_idx:]
+        with open(DOC_FILE, "w", encoding="utf-8") as f:
+            f.write(new_content)
+        print(f"Successfully updated {DOC_FILE} with {len(new_table.splitlines())-2} candidates.")
+    else:
+        print("Error: Could not find the table section in the markdown file.")
+        print(f"Start index: {start_idx}, End index: {end_idx}")
 
 if __name__ == "__main__":
     main()

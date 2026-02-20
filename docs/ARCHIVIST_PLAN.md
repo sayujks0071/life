@@ -12,7 +12,7 @@ This document tracks the daily incremental refactor of the repository towards pu
 
 - [x] **Consolidate Legacy Folders**: Move `biology_research`, `life`, `life-1`, `life-paper`, `research_repo` into `archive/`. These appear to be duplicate or older versions of the project.
 - [x] **Fix Typos**: Rename any clearly typoed directories (e.g., `biology_research`) if they are kept or archived.
-- [ ] **Standardize Source Layout**:
+- [x] **Standardize Source Layout**:
     - [x] Decide on the canonical source location (likely `src/`).
     - [x] Move top-level packages (`alphafold_analysis`, `countercurvature`) into `src/` or `research/` as appropriate.
         - *Decision*: Moved to `archive/` as they were legacy versions. Active code is in `src/` and `research/alphafold_countercurvature`.
@@ -22,24 +22,36 @@ This document tracks the daily incremental refactor of the repository towards pu
     - [x] Move root-level python scripts (`02_validate_solvers.py`, `benchmark_analysis.py`, etc.) to `scripts/` or `tests/`.
     - [x] Consolidate configuration files where possible.
 - [x] **Data Organization**: Ensure `data/` has a clear structure and `README`.
-- [ ] **Archive Redundant Content**: Identify and move unused code to `archive/`.
+- [x] Archive Redundant Content: Identify and move unused code to `archive/`.
 
 ## Phase 2: Documentation (Medium Priority)
 
-- [ ] **Create Repo-Level README**: Rewrite root `README.md` to point to correct components (`src`, `research`, `docs`).
-- [ ] **Documentation Index**: Ensure `docs/index.md` is up-to-date with new paths.
-- [ ] **Style Guide**: Create `docs/CONTRIBUTING.md` or `docs/STYLE_GUIDE.md`.
-- [ ] **Audit Docstrings**: Ensure public modules have docstrings.
+- [x] **Create Repo-Level README**: Rewrite root `README.md` to point to correct components (`src`, `research`, `docs`).
+- [x] **Documentation Index**: Ensure `docs/index.md` is up-to-date with new paths.
+- [x] **Style Guide**: Create `docs/CONTRIBUTING.md` or `docs/STYLE_GUIDE.md`.
+- [x] **Audit Docstrings**: Ensure public modules have docstrings.
 
 ## Phase 3: Code Quality & Testing (Medium Priority)
 
-- [ ] **Unify Requirements**: Audit `requirements.txt` vs `pyproject.toml` vs `envs/`.
-- [ ] **CI/CD Fixes**: Update GitHub workflows to reflect path changes.
-- [ ] **Linter Setup**: Ensure `flake8` or `ruff` config is valid and running.
-- [ ] **Test Discovery**: Ensure `pytest` can find all tests in the new structure.
+- [x] **Unify Requirements**: Audit `requirements.txt` vs `pyproject.toml` vs `envs/`.
+- [x] **CI/CD Fixes**: Update GitHub workflows to reflect path changes.
+- [x] **Linter Setup**: Ensure `flake8` or `ruff` config is valid and running.
+- [x] **Test Discovery**: Ensure `pytest` can find all tests in the new structure.
 
 ## Phase 4: Final Polish (Low Priority)
 
-- [ ] **Version Bump**: Establish versioning strategy.
-- [ ] **Citation**: Ensure `CITATION.cff` is accurate.
-- [ ] **License**: Verify `LICENSE` applicability to all components.
+- [x] **Version Bump**: Establish versioning strategy.
+- [x] **Citation**: Ensure `CITATION.cff` is accurate.
+- [x] **License**: Verify `LICENSE` applicability to all components.
+
+## Phase 5: Scripts & Experiments Organization (Medium Priority)
+
+- [x] **Organize `scripts/`**: Group scripts into logical subdirectories (`experiments/`, `pipeline/`, `data_management/`) to reduce clutter.
+- [x] **Fix Script Imports**: Ensure moved scripts can still import `src` correctly (sys.path or package install).
+- [x] **Standardize Experiment Interface**: Ensure all experiment scripts have a standard CLI or main function. (Created `experiment_utils.py` and refactored key scripts).
+
+## Phase 6: Reproducibility & QA (High Priority)
+
+- [x] **Add Reproducibility Guide**: Create `docs/reproducibility.md` explaining how to run the full pipeline.
+- [x] **Verify Example Scripts**: Ensure examples in `README.md` and `docs/` are runnable.
+- [ ] **Automated Pipeline Test**: Create a test or script that runs a minimal version of the full pipeline (AlphaFold -> CounterCurvature -> Analysis).

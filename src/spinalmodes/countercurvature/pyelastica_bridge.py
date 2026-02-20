@@ -5,12 +5,20 @@ curvature, stiffness and active moments are modulated by information fields.  Th
 follows the biological countercurvature hypothesis: information gradients act as local
 corrections to the mechanical metric, effectively biasing the rod against gravity-driven
 modes.
+
+Key Concepts:
+- Vector Signal: Stiffness Anisotropy (ECM alignment).
+- Scalar Signal: Active Growth/Curvature (Piezo/Ion flux).
+- Mismatch: When Vector and Scalar signals dissociate (e.g. Microgravity).
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional, TYPE_CHECKING, Type, Dict, Any
+from typing import Optional, TYPE_CHECKING, Type, Dict, Any, Union
+import time
+import tracemalloc
+import math
 
 import numpy as np
 from numpy.typing import NDArray
@@ -32,21 +40,65 @@ try:
     PYELASTICA_AVAILABLE = True
 except ImportError:
     PYELASTICA_AVAILABLE = False
-    # Dummy classes
+    # Dummy classes for testing/mocking
+    class MockRod:
+        def __init__(self, n_elements, length):
+            self.n_elems = n_elements
+            self.rest_lengths = np.ones(n_elements) * (length / n_elements)
+            self.shear_matrix = np.zeros((3, 3, n_elements))
+            self.bend_matrix = np.zeros((3, 3, n_elements - 1))
+            self.rest_kappa = np.zeros((3, n_elements - 1))
+            self.position_collection = np.zeros((3, n_elements + 1))
+            self.velocity_collection = np.zeros((3, n_elements + 1))
+            self.kappa = np.zeros((3, n_elements - 1))
+            self.mass = np.ones(n_elements + 1) # Dummy mass
+
+        def compute_bending_energy(self): return 0.0
+        def compute_shear_energy(self): return 0.0
+        def compute_translational_energy(self): return 0.0
+        def compute_rotational_energy(self): return 0.0
+
     class ea:
-        class CosseratRod: pass
+        class CosseratRod:
+            @staticmethod
+            def straight_rod(n_elements, base_length, **kwargs):
+                return MockRod(n_elements, base_length)
         class NoForces: pass
         class CallBackBaseClass: pass
+        class ConstraintBase: pass
         class OneEndFixedBC: pass
         class GravityForces: pass
         class AnalyticalLinearDamper: pass
-        class BaseSystemCollection: pass
+        class BaseSystemCollection:
+            def append(self, *args, **kwargs): pass
+            def constrain(self, *args, **kwargs): return self
+            def using(self, *args, **kwargs): return self
+            def add_forcing_to(self, *args, **kwargs): return self
+            def dampen(self, *args, **kwargs): return self
+            def collect_diagnostics(self, *args, **kwargs): return self
+            def finalize(self): pass
         class Constraints: pass
         class Forcing: pass
         class Damping: pass
         class CallBacks: pass
         class PositionVerlet: pass
-        class integrate: pass
+        @staticmethod
+        def integrate(*args, **kwargs): pass
+
+@dataclass
+class CircadianParams:
+    """Parameters for circadian modulation of curvature coupling.
+
+    Attributes:
+        period: Clock period in seconds (default 24h).
+        amplitude: Relative amplitude of oscillation A (0 to 1).
+        phase: Phase offset phi in radians.
+        gravity_period: External gravity cycle period. If None, matches `period`.
+    """
+    period: float = 24.0 * 3600.0
+    amplitude: float = 0.5
+    phase: float = 0.0
+    gravity_period: Optional[float] = None
 
 @dataclass
 class SimulationResult:
@@ -54,6 +106,7 @@ class SimulationResult:
     centerline: ArrayF64
     kappa: ArrayF64
     info_field: InfoField1D
+    final_energies: Optional[Dict[str, float]] = None
 
     @property
     def curvature(self) -> ArrayF64:
@@ -79,6 +132,7 @@ class SimulationResult:
                 - S_lat: Lateral scoliosis index (from scoliosis_metrics).
                 - cobb_angle: Cobb-like angle (from scoliosis_metrics).
                 - z_tip: Tip deflection in Z (vertical).
+                - ... energies ...
         """
         if len(self.time) == 0:
             return {}
@@ -107,7 +161,7 @@ class SimulationResult:
 
         scol_metrics = compute_scoliosis_metrics(z_coord, x_coord)
 
-        return {
+        metrics = {
             "max_curvature": max_curvature,
             "max_torsion": max_torsion,
             "end_to_end_distance": float(end_to_end),
@@ -118,13 +172,50 @@ class SimulationResult:
             "y_tip": float(pos[-1, 1]),
         }
 
+        if self.final_energies:
+            metrics.update(self.final_energies)
+
+        return metrics
+
 def _check_pyelastica() -> None:
+    """Internal check for PyElastica availability."""
     if not PYELASTICA_AVAILABLE:
-        raise ImportError(
-            "PyElastica is not installed. To install:\n"
-            "pip install pyelastica\n"
-            "Or see: https://github.com/GazzolaLab/PyElastica"
+        msg = (
+            "PyElastica is not installed but is required for this module.\n"
+            "Please install it using:\n"
+            "  pip install pyelastica\n"
+            "Or visit: https://github.com/GazzolaLab/PyElastica"
         )
+        raise ImportError(msg)
+    else:
+        # Consistency check with scripts/check_pyelastica.py
+        # Ensure we can access basic attributes to verify full load
+        try:
+            _ = getattr(ea, "__version__", "unknown")
+        except AttributeError:
+            pass # Older versions or specific builds might not expose this
+
+
+def verify_pyelastica_installation(exit_on_fail: bool = True) -> bool:
+    """
+    Public utility to verify PyElastica installation for scripts.
+
+    Args:
+        exit_on_fail: If True, prints error and exits with sys.exit(1).
+                      If False, returns False on failure.
+
+    Returns:
+        bool: True if installed, False otherwise.
+    """
+    try:
+        _check_pyelastica()
+        return True
+    except ImportError as e:
+        if exit_on_fail:
+            print(f"ERROR: {e}")
+            import sys
+            sys.exit(1)
+        return False
 
 class ActiveMuscleTorques(ea.NoForces):
     """Applies a static distributed active moment (muscle torque)."""
@@ -159,12 +250,27 @@ class PinnedBC(ea.ConstraintBase):
             rod.velocity_collection[..., 0] = 0.0
 
 class CounterCurvatureRodSystem:
+    """
+    A PyElastica-based rod system configured for biological counter-curvature simulations.
+
+    This class bridges the information-field theory (IEC) to the Cosserat rod physics engine.
+    It maps biological inputs (protein concentrations, ECM organization) to mechanical
+    properties like stiffness anisotropy and rest curvature.
+
+    Coordinate System (Vertical Rod):
+    - Rod aligns with Z-axis (d3 = Tangent = Z).
+    - Normal (d1) aligns with Y-axis. Bending about d1 is in X-Z plane (Lateral Bending).
+      Therefore, kappa[0] (d1 curvature) corresponds to Lateral Curvature (Scoliosis).
+    - Binormal (d2) aligns with -X-axis. Bending about d2 is in Y-Z plane (Sagittal Bending).
+      Therefore, kappa[1] (d2 curvature) corresponds to Sagittal Curvature (Kyphosis/Lordosis).
+    """
     def __init__(
         self,
         rod: ea.CosseratRod,
         info_field: InfoField1D,
         params: CounterCurvatureParams,
-        active_torques: Optional[ArrayF64] = None
+        active_torques: Optional[ArrayF64] = None,
+        kappa_gen: Optional[ArrayF64] = None
     ):
         self.rod = rod
         self.info_field = info_field
@@ -172,6 +278,7 @@ class CounterCurvatureRodSystem:
         self.n_elements = rod.n_elems
         self.length = np.sum(rod.rest_lengths)
         self.active_torques = active_torques
+        self.kappa_gen = kappa_gen
 
     @classmethod
     def from_iec(
@@ -190,7 +297,7 @@ class CounterCurvatureRodSystem:
         base_position: tuple[float, float, float] = (0.0, 0.0, 0.0),
         base_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
         normal: tuple[float, float, float] = (0.0, 1.0, 0.0),
-        stiffness_anisotropy: float = 1.0,
+        stiffness_anisotropy: Union[float, ArrayF64] = 1.0,
     ) -> "CounterCurvatureRodSystem":
         _check_pyelastica()
 
@@ -236,39 +343,124 @@ class CounterCurvatureRodSystem:
             rod.bend_matrix[..., k] *= scaling_bend[k]
 
         # Apply stiffness anisotropy
-        # bend_matrix[0, 0] corresponds to lateral stiffness (rotation about d1)
-        # bend_matrix[1, 1] corresponds to sagittal stiffness (rotation about d2)
-        if stiffness_anisotropy != 1.0:
-            rod.bend_matrix[0, 0, :] *= stiffness_anisotropy
+        # bend_matrix[0, 0] corresponds to stiffness about d1 (Normal).
+        # In this setup (d1=X), this resists Sagittal bending (Y-Z plane).
+        # bend_matrix[1, 1] corresponds to stiffness about d2 (Binormal).
+        # In this setup (d2=Y), this resists Lateral bending (X-Z plane).
+        # Handle scalar or array anisotropy
+        anisotropy_arr = None
+        if isinstance(stiffness_anisotropy, (float, int)):
+            if stiffness_anisotropy != 1.0:
+                rod.bend_matrix[0, 0, :] *= stiffness_anisotropy
+        else:
+            # Assume array-like
+            aniso = np.asarray(stiffness_anisotropy, dtype=float)
+            if aniso.ndim != 1:
+                raise ValueError("Stiffness anisotropy array must be 1D.")
 
-        # Set rest curvature
-        # kappa_rest is now (3, n_points)
-        kappa_rest = compute_rest_curvature(info, params, kappa_gen if kappa_gen is not None else 0.0)
+            # Interpolate to internal nodes (Voronoi domains) if size mismatch
+            # bend_matrix is (3, 3, n_elements - 1)
+            target_size = n_elements - 1
+            if aniso.shape[0] != target_size:
+                # Map input grid (assumed 0 to L) to internal nodes
+                # s_internal defined earlier: midpoints of internal nodes
+                # s_rod is linspace(0, L, n_elements + 1)
+                # s_internal = s_rod[1:-1]
+                s_source = np.linspace(0, length, aniso.shape[0])
+                anisotropy_arr = np.interp(s_internal, s_source, aniso)
+            else:
+                anisotropy_arr = aniso
 
-        # PyElastica stores rest_kappa at Voronoi domains (internal nodes)
-        # We need to map kappa_rest (defined on info.s) to s_internal
-        # We need to interpolate each component: (3, n_points) -> (3, n_elements-1)
+            # Apply array anisotropy to bend_matrix[0, 0, :]
+            rod.bend_matrix[0, 0, :] *= anisotropy_arr
+
+        # Create instance to use update_rest_curvature
+        # We pass kappa_gen=None initially to constructor, then set it.
+        # But we need active_torques first.
         
-        rest_kappa = np.zeros((3, n_elements - 1))
-        for i in range(3):
-            rest_kappa[i, :] = np.interp(s_internal, info.s, kappa_rest[i, :])
-
-        rod.rest_kappa[:] = rest_kappa
-
         # Compute active moments (scalar field on nodes) if chi_M != 0
         active_torques = None
         if params.chi_M != 0.0:
             M_active_nodes = compute_active_moments(info, params)
-
-            # Interpolate to elements (where external torques are applied)
+            # Interpolate to elements
             M_active_elems = np.interp(s_elements, info.s, M_active_nodes)
-
-            # Create torque vector (3, n_elements)
-            # Bending in sagittal plane (x-z) with normal y: torque around y-axis (index 1)
             active_torques = np.zeros((3, n_elements))
             active_torques[1, :] = M_active_elems
 
-        return cls(rod=rod, info_field=info, params=params, active_torques=active_torques)
+        system = cls(rod=rod, info_field=info, params=params, active_torques=active_torques, kappa_gen=kappa_gen)
+
+        # Initial setting of rest curvature
+        system.update_rest_curvature(params)
+
+        return system
+
+    def update_rest_curvature(self, params: CounterCurvatureParams) -> None:
+        """Update the rod's rest curvature based on current parameters."""
+        kappa_gen_val = self.kappa_gen if self.kappa_gen is not None else 0.0
+        kappa_rest = compute_rest_curvature(self.info_field, params, kappa_gen_val)
+
+        s_rod = np.linspace(0, self.length, self.n_elements + 1)
+        s_internal = s_rod[1:-1]
+
+        rest_kappa = np.zeros((3, self.n_elements - 1))
+        for i in range(3):
+            rest_kappa[i, :] = np.interp(s_internal, self.info_field.s, kappa_rest[i, :])
+
+        self.rod.rest_kappa[:] = rest_kappa
+        self.params = params
+
+    def __repr__(self) -> str:
+        """Return a string representation of the rod system configuration."""
+        # Estimate anisotropy from first element's bend matrix if possible
+        anisotropy_str = "1.0"
+        if hasattr(self.rod, "bend_matrix") and self.rod.bend_matrix.shape[2] > 0:
+            # Check if uniform
+            b00 = self.rod.bend_matrix[0, 0, :]
+            b11 = self.rod.bend_matrix[1, 1, :]
+            # Avoid division by zero
+            ratio = np.zeros_like(b00)
+            mask = b11 != 0
+            ratio[mask] = b00[mask] / b11[mask]
+
+            if np.allclose(ratio, ratio[0]):
+                anisotropy_str = f"{ratio[0]:.2f}"
+            else:
+                anisotropy_str = f"Range[{np.min(ratio):.2f}-{np.max(ratio):.2f}]"
+
+        return (
+            f"<CounterCurvatureRodSystem elements={self.n_elements} "
+            f"length={self.length:.2f} "
+            f"chi_kappa={self.params.chi_kappa:.2f} "
+            f"anisotropy={anisotropy_str}>"
+        )
+
+    def get_configuration(self) -> Dict[str, Any]:
+        """Return a dictionary of the system configuration for logging."""
+        # Calculate anisotropy
+        anisotropy_val = 1.0
+        if hasattr(self.rod, "bend_matrix") and self.rod.bend_matrix.shape[2] > 0:
+            b00 = self.rod.bend_matrix[0, 0, :]
+            b11 = self.rod.bend_matrix[1, 1, :]
+            # Avoid division by zero
+            ratio = np.zeros_like(b00)
+            mask = b11 != 0
+            ratio[mask] = b00[mask] / b11[mask]
+
+            if np.allclose(ratio, ratio[0]):
+                anisotropy_val = float(ratio[0])
+            else:
+                # Return mean if varying, or keep as array? simpler to return mean for scalar field
+                anisotropy_val = float(np.mean(ratio))
+
+        return {
+            "n_elements": self.n_elements,
+            "length": self.length,
+            "chi_kappa": self.params.chi_kappa,
+            "chi_tau": self.params.chi_tau,
+            "chi_E": self.params.chi_E,
+            "chi_M": self.params.chi_M,
+            "stiffness_anisotropy": anisotropy_val
+        }
 
     def run_simulation(
         self,
@@ -281,6 +473,8 @@ class CounterCurvatureRodSystem:
         bc_cls: Optional[Type] = None,
         bc_kwargs: Optional[Dict[str, Any]] = None,
         boundary_condition: str = "fixed",
+        progress_bar: bool = True,
+        circadian_params: Optional[CircadianParams] = None,
     ) -> SimulationResult:
         _check_pyelastica()
 
@@ -322,7 +516,7 @@ class CounterCurvatureRodSystem:
         # Damping
         system.dampen(self.rod).using(ea.AnalyticalLinearDamper, damping_constant=damping_constant, time_step=dt)
 
-        # Callback
+        # Callback for diagnostics
         class CCCallback(ea.CallBackBaseClass):
             def __init__(self, step_skip, results):
                 super().__init__()
@@ -338,9 +532,40 @@ class CounterCurvatureRodSystem:
         results = {"time": [], "centerline": [], "kappa": []}
         system.collect_diagnostics(self.rod).using(CCCallback, step_skip=save_every, results=results)
 
+        # Circadian Callback
+        if circadian_params:
+            class CircadianModulationCallback(ea.CallBackBaseClass):
+                def __init__(self, system_wrapper, c_params, step_skip=1):
+                    super().__init__()
+                    self.system_wrapper = system_wrapper
+                    self.c_params = c_params
+                    self.every = step_skip
+                    self.chi_0 = system_wrapper.params.chi_kappa
+
+                def make_callback(self, system, time, current_step):
+                    if current_step % self.every == 0:
+                        # chi_kappa(t) = chi_0 * (1 + A * cos(omega * t + phi))
+                        omega = 2 * math.pi / self.c_params.period
+                        modulation = 1.0 + self.c_params.amplitude * math.cos(omega * time + self.c_params.phase)
+
+                        # Apply to chi_kappa
+                        # We use _replace on named tuple to get new params
+                        new_chi_kappa = self.chi_0 * modulation
+                        new_params = self.system_wrapper.params._replace(chi_kappa=new_chi_kappa)
+
+                        self.system_wrapper.update_rest_curvature(new_params)
+
+            # Update every step for smooth physics
+            system.collect_diagnostics(self.rod).using(
+                CircadianModulationCallback,
+                system_wrapper=self,
+                c_params=circadian_params,
+                step_skip=1
+            )
+
         system.finalize()
         timestepper = ea.PositionVerlet()
-        ea.integrate(timestepper, system, final_time, int(final_time/dt))
+        ea.integrate(timestepper, system, final_time, int(final_time/dt), progress_bar=progress_bar)
 
         # Pad kappa to match n_nodes (n_elems + 1)
         # kappa is (time, n_elems-1, 3)
@@ -350,14 +575,391 @@ class CounterCurvatureRodSystem:
             n_time, n_internal, n_dim = kappa_raw.shape
             padded_kappa = np.zeros((n_time, n_internal + 2, n_dim))
             padded_kappa[:, 1:-1, :] = kappa_raw
+            # Edge padding: repeat first/last valid values to avoid zero artifacts
+            padded_kappa[:, 0, :] = kappa_raw[:, 0, :]
+            padded_kappa[:, -1, :] = kappa_raw[:, -1, :]
         else:
             padded_kappa = np.empty((0, self.n_elements + 1, 3))
+
+        # Compute final energies
+        final_energies = {}
+        if hasattr(self.rod, "compute_bending_energy"):
+            final_energies["bending_energy"] = float(self.rod.compute_bending_energy())
+        if hasattr(self.rod, "compute_shear_energy"):
+            final_energies["shear_energy"] = float(self.rod.compute_shear_energy())
+        if hasattr(self.rod, "compute_translational_energy"):
+            final_energies["translational_energy"] = float(self.rod.compute_translational_energy())
+        if hasattr(self.rod, "compute_rotational_energy"):
+            final_energies["rotational_energy"] = float(self.rod.compute_rotational_energy())
+
+        # Gravitational Potential Energy
+        if hasattr(self.rod, "mass") and hasattr(self.rod, "position_collection"):
+            # Potential Energy = m * g * h
+            # Gravity is in -Z direction usually for gravity vector (0,0,-g), so U = m*g*z
+            z_pos = self.rod.position_collection[2, :]
+            final_energies["gravitational_energy"] = float(np.sum(self.rod.mass * gravity * z_pos))
 
         return SimulationResult(
             time=np.array(results["time"]),
             centerline=np.array(results["centerline"]),
             kappa=padded_kappa,
-            info_field=self.info_field
+            info_field=self.info_field,
+            final_energies=final_energies
         )
 
-__all__ = ["CounterCurvatureRodSystem", "SimulationResult", "PYELASTICA_AVAILABLE", "ActiveMuscleTorques"]
+
+def run_protein_simulation(
+    anisotropy: Union[float, ArrayF64],
+    active_curvature: float,
+    torsion_drive: float = 0.0,
+    stiffness_modulation: float = 0.0,
+    initial_lateral_defect: float = 0.0,
+    natural_kyphosis: float = 2.0,
+    length: float = 1.0,
+    radius: float = 0.01,
+    E0: float = 1e6,
+    rho: float = 1000.0,
+    n_elements: int = 50,
+    duration: float = 2.0,
+    dt: float = 1e-4,
+    gravity: float = 9.81,
+    boundary_condition: str = "fixed",
+    show_progress: bool = True,
+    scale_factor_kappa: float = 5.0,
+    scale_factor_tau: float = 5.0,
+    scale_factor_E: float = 0.5,
+) -> Dict[str, Any]:
+    """
+    Run a mechanical simulation driven by protein-derived metrics.
+
+    This function serves as a high-level entry point for simulating "virtual proteins" or
+    tissue patches. It maps abstract structural metrics to concrete mechanical parameters
+    of the CounterCurvatureRodSystem.
+
+    Args:
+        anisotropy: Degree of stiffness anisotropy (1.0 = isotropic).
+        active_curvature: Magnitude of active curvature drive (scalar signal).
+        torsion_drive: Magnitude of active torsion drive.
+        stiffness_modulation: Degree of stiffness modulation (blockiness).
+        initial_lateral_defect: Magnitude of initial lateral curvature (perturbation).
+        natural_kyphosis: Magnitude of natural sagittal curvature (kyphosis).
+        length: Length of the rod (m).
+        rho: Rod density (kg/m^3).
+        n_elements: Number of elements in the rod.
+        duration: Simulation duration (s).
+        dt: Time step (s).
+        gravity: Gravitational acceleration (m/s^2).
+        boundary_condition: "fixed" or "pinned".
+        show_progress: Whether to show the PyElastica progress bar.
+        scale_factor_kappa: Scaling factor for active_curvature -> chi_kappa.
+        scale_factor_tau: Scaling factor for torsion_drive -> chi_tau.
+        scale_factor_E: Scaling factor for stiffness_modulation -> chi_E.
+
+    Returns:
+        Dictionary containing simulation results (geometry, scoliosis metrics)
+        and performance metrics (runtime, memory).
+    """
+    if not PYELASTICA_AVAILABLE:
+        return {
+            "error": "PyElastica not available.",
+            "success": False
+        }
+
+    # Map inputs to model parameters
+    chi_kappa = active_curvature * scale_factor_kappa
+    chi_tau = torsion_drive * scale_factor_tau
+    chi_E = stiffness_modulation * scale_factor_E
+
+    tracemalloc.start()
+    t0 = time.time()
+
+    try:
+        if n_elements < 2:
+            raise ValueError("n_elements must be at least 2")
+
+        # 1. Setup Information Field
+        # Use a generic Gaussian info field representing a localized signal
+        s = np.linspace(0, length, n_elements + 1)
+        # Center bump
+        info_center = 0.5 * length
+        info_width = 0.1 * length
+        I = 0.5 + 0.5 * np.exp(-0.5 * ((s - info_center) / info_width)**2)
+        dIds = np.gradient(I, s)
+        info = InfoField1D(s=s, I=I, dIds=dIds)
+
+        # 2. Setup Parameters
+        params = CounterCurvatureParams(
+            chi_kappa=chi_kappa,
+            chi_tau=chi_tau,
+            chi_E=chi_E,
+            chi_M=0.0,
+            scale_length=length
+        )
+
+        # 3. Create System with constant intrinsic curvature base
+        kappa_gen = np.zeros((3, n_elements + 1))
+        # Sagittal Kyphosis (Index 1: Normal curvature, Y-Z plane bending)
+        kappa_gen[1, :] = natural_kyphosis
+        # Lateral Defect (Index 0: Binormal curvature, X-Z plane bending)
+        if initial_lateral_defect != 0.0:
+            kappa_gen[0, :] = initial_lateral_defect
+
+        rod_system = CounterCurvatureRodSystem.from_iec(
+            info=info,
+            params=params,
+            length=length,
+            n_elements=n_elements,
+            E0=E0,
+            rho=rho,
+            radius=radius,
+            kappa_gen=kappa_gen,
+            gravity=gravity,
+            stiffness_anisotropy=anisotropy
+        )
+
+        # 4. Run Simulation
+        result = rod_system.run_simulation(
+            final_time=duration,
+            dt=dt,
+            save_every=max(1, int(duration/dt/10)),
+            boundary_condition=boundary_condition,
+            progress_bar=show_progress
+        )
+
+        sim_metrics = result.compute_final_metrics()
+
+        # Compute thermodynamic cost metrics
+        energy_metrics = compute_U_CC(
+            result, info, params, gravity=gravity, rho=rho, E0=E0,
+            radius=radius, anisotropy=anisotropy
+        )
+        sim_metrics.update(energy_metrics)
+
+        success = True
+        error_msg = ""
+
+    except Exception as e:
+        success = False
+        error_msg = str(e)
+        sim_metrics = {}
+
+    finally:
+        current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+
+    t1 = time.time()
+
+    # Handle array input for anisotropy in output dict
+    anisotropy_out = anisotropy
+    if isinstance(anisotropy, np.ndarray):
+        anisotropy_out = f"Array(mean={np.mean(anisotropy):.2f})"
+
+    output = {
+        "input_anisotropy": anisotropy_out,
+        "input_active_curvature": active_curvature,
+        "mapped_chi_kappa": chi_kappa,
+        "mapped_chi_tau": chi_tau,
+        "runtime_sec": t1 - t0,
+        "peak_memory_mb": peak / (1024 * 1024),
+        "success": success,
+        "error": error_msg,
+    }
+    output.update(sim_metrics)
+
+    return output
+
+
+def compute_U_CC(
+    result: SimulationResult,
+    info: InfoField1D,
+    params: CounterCurvatureParams,
+    gravity: float = 9.81,
+    rho: float = 1000.0,
+    E0: float = 1e6,
+    radius: float = 0.01,
+    anisotropy: Union[float, ArrayF64] = 1.0,
+) -> Dict[str, float]:
+    """Compute the Total Potential Energy cost function U_CC.
+
+    The organism minimises U_CC = U_gravity + U_elastic_straight - U_info, where:
+
+    - U_gravity: gravitational potential energy (m * g * h, summed over nodes)
+    - U_elastic_straight: elastic energy required to bend the rod from a straight
+      configuration to the current shape (penalizing deformation).
+    - U_info: energy reduction achieved by aligning curvature with the information field.
+      Specifically, the coupling term: integral( B * kappa * kappa_rest_info ds ).
+
+    This formulation explicitly separates the "Cost of Deformation" (U_elastic_straight)
+    from the "Benefit of Alignment" (U_info).
+
+    Parameters
+    ----------
+    result : SimulationResult
+        Completed simulation result containing centerline, kappa, and energies.
+    info : InfoField1D
+        Information field used in the simulation.
+    params : CounterCurvatureParams
+        Coupling parameters (chi_kappa, chi_E, chi_M, etc.).
+    gravity : float
+        Gravitational acceleration (m/s^2).
+    rho : float
+        Rod density (kg/m^3).
+    E0 : float
+        Baseline Young's modulus (Pa).
+    radius : float
+        Rod radius (m), used to compute area moment of inertia.
+    anisotropy : float or ArrayF64
+        Stiffness anisotropy factor applied to lateral bending mode.
+
+    Returns
+    -------
+    dict
+        Dictionary containing:
+        - U_gravity: Gravitational potential energy
+        - U_elastic: PyElastica's computed elastic energy (relative to rest curvature)
+        - U_elastic_straight: Elastic energy relative to straight configuration
+        - U_info: Information alignment energy benefit
+        - U_CC: Total cost function (U_gravity + U_elastic_straight - U_info)
+        - U_kinetic: Translational + rotational kinetic energy
+        - info_gain_ratio: U_info / (U_gravity + U_elastic_straight), dimensionless
+    """
+    if len(result.time) == 0:
+        return {
+            "U_gravity": 0.0, "U_elastic": 0.0, "U_info": 0.0,
+            "U_CC": 0.0, "U_kinetic": 0.0, "info_gain_ratio": 0.0,
+        }
+
+    energies = result.final_energies or {}
+
+    # --- U_gravity ---
+    U_gravity = energies.get("gravitational_energy", 0.0)
+
+    # --- U_elastic (PyElastica) ---
+    U_pyelastica = energies.get("bending_energy", 0.0) + energies.get("shear_energy", 0.0)
+
+    # --- U_kinetic ---
+    U_trans = energies.get("translational_energy", 0.0)
+    U_rot = energies.get("rotational_energy", 0.0)
+    U_kinetic = U_trans + U_rot
+
+    # --- Construct Stiffness Field ---
+    s = info.s
+
+    # 1. Effective Young's Modulus
+    E_eff = compute_effective_stiffness(info, params, E0) # (n_nodes,)
+
+    # 2. Area Moment of Inertia I = pi * r^4 / 4
+    I_area = np.pi * (radius**4) / 4.0
+
+    # 3. Base Bending Stiffness B = E_eff * I_area
+    B_base = E_eff * I_area # (n_nodes,)
+
+    # 4. Handle Anisotropy
+    anisotropy_arr = np.ones_like(B_base)
+    if isinstance(anisotropy, (float, int)):
+        anisotropy_arr[:] = float(anisotropy)
+    else:
+        # Interpolate array anisotropy if needed
+        aniso_input = np.asarray(anisotropy, dtype=float)
+        if aniso_input.shape != s.shape:
+             # simple linear interp if sizes differ
+             s_input = np.linspace(s[0], s[-1], aniso_input.shape[0])
+             anisotropy_arr = np.interp(s, s_input, aniso_input)
+        else:
+             anisotropy_arr = aniso_input
+
+    # Stiffness Matrix Components (Diagonal approximation)
+    # B_11 (about d1, Lateral bending) = B_base * anisotropy
+    B_11 = B_base * anisotropy_arr
+    # B_22 (about d2, Sagittal bending) = B_base
+    B_22 = B_base
+    # B_33 (torsion) = GJ = E*I/(1+nu). Assuming nu=0.5
+    nu = 0.5
+    B_33 = B_base / (1.0 + nu)
+
+    # 5. Get Curvature (n_nodes, 3)
+    kappa = result.kappa[-1] # Final step
+
+    # 6. Compute U_elastic_straight (Energy relative to straight rod)
+    # Integral 0.5 * (B11*k0^2 + B22*k1^2 + B33*k2^2) ds
+    # kappa indices: 0=Lateral(d1), 1=Sagittal(d2), 2=Torsion(d3)
+    energy_density_straight = 0.5 * (
+        B_11 * kappa[:, 0]**2 +
+        B_22 * kappa[:, 1]**2 +
+        B_33 * kappa[:, 2]**2
+    )
+    U_elastic_straight = np.trapz(energy_density_straight, s)
+
+    # 7. Compute U_info_coupling
+    # Need kappa_rest_info (rest curvature due solely to information)
+    # compute_rest_curvature returns (3, n_nodes). We need (n_nodes, 3)
+    kappa_rest_info_arr = compute_rest_curvature(info, params, kappa_gen=0.0)
+    kappa_rest_info = kappa_rest_info_arr.T
+
+    # Energy density = B * kappa * kappa_rest (interaction term)
+    energy_density_info = (
+        B_11 * kappa[:, 0] * kappa_rest_info[:, 0] +
+        B_22 * kappa[:, 1] * kappa_rest_info[:, 1] +
+        B_33 * kappa[:, 2] * kappa_rest_info[:, 2]
+    )
+    U_info_coupling = np.trapz(energy_density_info, s)
+
+    # --- U_CC ---
+    # U_CC = U_gravity + U_elastic_straight - U_info_coupling
+    U_CC = U_gravity + U_elastic_straight - U_info_coupling
+
+    # --- Info Gain Ratio ---
+    denom = abs(U_gravity) + abs(U_elastic_straight)
+    info_gain_ratio = U_info_coupling / denom if denom > 1e-15 else 0.0
+
+    return {
+        "U_gravity": float(U_gravity),
+        "U_elastic": float(U_pyelastica),
+        "U_elastic_straight": float(U_elastic_straight),
+        "U_info": float(U_info_coupling),
+        "U_CC": float(U_CC),
+        "U_kinetic": float(U_kinetic),
+        "info_gain_ratio": float(info_gain_ratio),
+    }
+
+
+__all__ = [
+    "CounterCurvatureRodSystem",
+    "SimulationResult",
+    "PYELASTICA_AVAILABLE",
+    "ActiveMuscleTorques",
+    "run_protein_simulation",
+    "compute_U_CC",
+    "CircadianParams",
+]
+
+if __name__ == "__main__":
+    print(">>> PyElastica Bridge: Running Self-Test...")
+    if not PYELASTICA_AVAILABLE:
+        print("SKIPPED: PyElastica not available.")
+    else:
+        try:
+            # Run a quick, low-res simulation
+            print("    Initializing minimal protein simulation (N=20, T=0.1s)...")
+            res = run_protein_simulation(
+                anisotropy=2.0,
+                active_curvature=1.0,
+                n_elements=20,
+                duration=0.1,
+                show_progress=False
+            )
+
+            if res.get("success"):
+                print("PASSED: Simulation completed successfully.")
+                print(f"    Metrics: Cobb={res.get('cobb_angle',0):.2f}, MaxCurv={res.get('max_curvature',0):.4f}")
+                print(f"    Runtime: {res.get('runtime_sec',0):.4f}s")
+            else:
+                print(f"FAILED: {res.get('error')}")
+                import sys
+                sys.exit(1)
+        except Exception as e:
+            print(f"CRITICAL FAILURE: {e}")
+            import traceback
+            traceback.print_exc()
+            import sys
+            sys.exit(1)

@@ -3,7 +3,8 @@ graph TD
     subgraph Genetics [Genetic & Molecular Layer]
         HOX[HOX Cluster<br/>HOXA10, HOXD11]
         COL[COL2A1<br/>Collagen Type II]
-        PIEZO[PIEZO1<br/>Mechanosensor]
+        PIEZO1[PIEZO1<br/>Scalar Stiffness]
+        PIEZO2[PIEZO2<br/>Vector Alignment]
         CILIA[DNAH5/PKD1L1<br/>Cilia Motility]
         LBX1[LBX1<br/>Transcription Factor]
         ADGRG6[ADGRG6/GPR126<br/>Adhesion GPCR]
@@ -16,6 +17,18 @@ graph TD
         GFAP[GFAP<br/>Glial Activation]
         VIM[VIM<br/>Vimentin]
         LAMIN[LAMIN<br/>Lamin A/C]
+        BMAL1[BMAL1/CLOCK<br/>Circadian Rhythm]
+        RUNX3[RUNX3/EGR3<br/>Proprioceptive Identity]
+        METTL3[METTL3<br/>m6A Methyltransferase]
+        ESR1[ESR1<br/>Estrogen Receptor Alpha]
+        AQP4[AQP4<br/>Aquaporin-4]
+        MELATONIN[MELATONIN<br/>Pineal Hormone]
+        MT2[MTNR1B<br/>Melatonin Receptor]
+        HIF1A[HIF1A<br/>Hypoxia Inducible Factor]
+        POC5[POC5<br/>Centriolar Splint]
+        DSTYK[DSTYK<br/>Kinase]
+        TFEB[TFEB<br/>Transcription Factor]
+        Beta_Catenin[Beta-Catenin<br/>Wnt Effector]
     end
 
     subgraph Processes [Cellular & Developmental Processes]
@@ -33,15 +46,31 @@ graph TD
         Degradation[ECM Degradation<br/>Collagen Breakdown]
         mtROS[mtROS<br/>Mitochondrial ROS]
         Adipogenesis[Adipogenesis<br/>Fatty Infiltration]
+        Hydraulic_Congestion[IVD Swelling<br/>Hydraulic Congestion]
+        Immune_Infilt[Immune Infiltration<br/>Macrophage Entry]
+        Circadian_Entrain[Circadian Entrainment<br/>Loading Zeitgeber]
+        Proprio_Maint[Proprioceptive Maint.<br/>Sensory Survival]
+        H3K9me3[H3K9me3<br/>Heterochromatin Compaction]
+        VCL_Stasis[VCL Stasis<br/>Lymphatic Reflux]
+        Glymphatic_Stasis[Glymphatic Stasis<br/>Toxic Clearance Failure]
+        Vestibular_Input[Vestibular Input<br/>Graviception]
+        Gi_cAMP[Gi/cAMP Signaling<br/>Gain Suppression]
+        Ciliary_Tuning[Ciliary Tuning<br/>Antenna Gain]
+        Hypoxia[Hypoxia<br/>O2 Deficit]
+        Osteogenesis[Osteogenesis<br/>Bone Formation]
+        Ciliary_Splint[Ciliary Splint<br/>Antenna Stiffness]
+        Vacuole_Biogenesis[Vacuole Biogenesis<br/>Hydrostatic Inflation]
     end
 
     subgraph Tissue [Tissue Mechanics & Properties]
         Rest_Kappa[Rest Curvature κ0<br/>Target Geometry]
         Stiffness[Stiffness EI<br/>Material Quality]
+        Torsional_Stiffness[Torsional Stiffness GJ<br/>Rotational Rigidity]
         Gain[Feedback Gain G_mech<br/>Adaptive Growth]
         Torsion[Chiral Torsion ε<br/>Initial Twist]
         Muscle_Tone[Proprioception &<br/>Muscle Tone Balance]
         Anisotropy[Tissue Anisotropy<br/>Directional Order]
+        TMD[Tissue Mineral Density<br/>Bone Quality]
     end
 
     subgraph Outcome [Macroscopic Outcome]
@@ -59,9 +88,14 @@ graph TD
     ECM_Assembly --> Stiffness
     Stiffness --> Stability
 
-    PIEZO --> Mech_Trans
+    PIEZO1 --> Mech_Trans
+    PIEZO2 --> Mech_Trans
     Mech_Trans --> Gain
     Gain --> S_Curve
+
+    %% NEW ARC: Piezo Duality (Vector-Scalar Mismatch)
+    PIEZO1 --> ECM_Assembly
+    PIEZO2 --> Muscle_Tone
 
     CILIA --> Sym_Break
     Sym_Break --> Torsion
@@ -69,9 +103,13 @@ graph TD
 
     LBX1 --> Neur_Diff
     LBX1 --> Muscle_Diff
-    Neur_Diff --> Muscle_Tone
+    Neur_Diff --> Proprio_Maint
+    Proprio_Maint --> Muscle_Tone
     Muscle_Diff --> Muscle_Tone
     Muscle_Tone --> Stability
+
+    %% NEW ARC: Proprioceptive Maintenance
+    RUNX3 --> Proprio_Maint
 
     %% NEW ARC: ADGRG6
     ADGRG6 --> Disc_Maint
@@ -109,10 +147,32 @@ graph TD
     LAMIN --> Adipogenesis
     Adipogenesis --> Muscle_Tone
 
+    %% NEW ARC: Inflamed Torsion
+    Hydraulic_Congestion --> Immune_Infilt
+    Immune_Infilt --> MMP
+    Degradation --> Torsional_Stiffness
+    Torsional_Stiffness --> Stability
+
+    %% NEW ARC: Glymphatic Stasis
+    AQP4 --> Glymphatic_Stasis
+    Glymphatic_Stasis --> Astrogliosis
+
+    %% NEW ARC: Glymphatic-MMP Axis (Chen et al., 2025)
+    Glymphatic_Stasis --> MMP
+
+    %% NEW ARC: Melatonin Gain Control
+    MELATONIN --> MT2
+    MT2 --> Gi_cAMP
+    Gi_cAMP --> Gain
+
+    %% NEW ARC: Vestibular Asymmetry
+    Vestibular_Input --> Muscle_Tone
+
     %% Cross-Talk and Failures
     Stability --> S_Curve
     S_Curve -- "Loss of Control" --> Scoliosis
     Stiffness -- "Too Low" --> Scoliosis
+    Torsional_Stiffness -- "Too Low" --> Scoliosis
     Gain -- "Too Low" --> Scoliosis
     Torsion -- "Randomized" --> Scoliosis
     Muscle_Tone -- "Asymmetry" --> Scoliosis
@@ -123,7 +183,62 @@ graph TD
     classDef tissue fill:#efe,stroke:#333,stroke-width:2px;
     classDef outcome fill:#ffd,stroke:#333,stroke-width:4px;
 
-    class HOX,COL,PIEZO,CILIA,LBX1,ADGRG6,PTK7,YAP,PKD2L1,MMP,URP,UTS2R,GFAP,VIM,LAMIN gene;
-    class Region,ECM_Assembly,Mech_Trans,Sym_Break,Neur_Diff,Muscle_Diff,Disc_Maint,PCP_Sig,Nucl_Shuttle,CSF_Sensing,Degradation,Astrogliosis,mtROS,Adipogenesis process;
-    class Rest_Kappa,Stiffness,Gain,Torsion,Muscle_Tone,Anisotropy tissue;
+    %% NEW ARC: Spinal Jetlag
+    BMAL1 --> Circadian_Entrain
+    Mech_Trans --> Circadian_Entrain
+    Circadian_Entrain --> Disc_Maint
+
+    %% NEW ARC: Tunable Antenna (Miyoshi et al., 2024)
+    BMAL1 --> Ciliary_Tuning
+    Ciliary_Tuning --> Mech_Trans
+
+    %% NEW ARC: Epigenetic Asymmetry
+    mtROS --> METTL3
+    METTL3 --> ESR1
+    ESR1 --> Muscle_Tone
+
+    %% NEW ARC: Nuclear Stiffness (Scalar Senescence)
+    LAMIN --> H3K9me3
+    H3K9me3 --> Gain
+
+    %% NEW ARC: Lymphatic Drainage Pathway (VCL)
+    Muscle_Tone -- "Pump Failure" --> VCL_Stasis
+    VCL_Stasis --> Hydraulic_Congestion
+
+    %% NEW ARC: Hypoxic Clock Block (HIF1A)
+    Hydraulic_Congestion --> Hypoxia
+    Hypoxia --> HIF1A
+    HIF1A --> BMAL1
+
+    %% NEW ARC: Tension-Dependent Identity (HOX)
+    Mech_Trans --> HOX
+    HOX --> ECM_Assembly
+
+    %% NEW ARC: Bone Mineralization (Ramli et al., 2024)
+    %% PIEZO1 --> Osteogenesis (Replaced by BMSC Switch below)
+    Osteogenesis --> TMD
+    TMD --> Stiffness
+
+    %% NEW ARC: BMSC Fate Switch (Li et al., 2023)
+    PIEZO1 --> Beta_Catenin
+    Beta_Catenin --> Osteogenesis
+    Beta_Catenin -- "Inhibition" --> Adipogenesis
+
+    %% NEW ARC: Centriolar Splint (POC5)
+    POC5 --> Ciliary_Splint
+    Ciliary_Splint --> Gain
+
+    %% NEW ARC: Hydrostatic Skeleton (DSTYK/TFEB)
+    DSTYK --> TFEB
+    TFEB --> Vacuole_Biogenesis
+    Vacuole_Biogenesis --> Stiffness
+    Vacuole_Biogenesis --> Region
+
+    %% NEW ARC: Piezo-Cilia Stress Lock (Chen et al., 2025)
+    PIEZO1 -- "Stress Disassembly" --> Ciliary_Tuning
+    Ciliary_Tuning -- "Loss = Derepression" --> Osteogenesis
+
+    class HOX,COL,PIEZO1,PIEZO2,CILIA,LBX1,ADGRG6,PTK7,YAP,PKD2L1,MMP,URP,UTS2R,GFAP,VIM,LAMIN,BMAL1,RUNX3,METTL3,ESR1,MELATONIN,MT2,HIF1A,POC5,DSTYK,TFEB,Beta_Catenin gene;
+    class Region,ECM_Assembly,Mech_Trans,Sym_Break,Neur_Diff,Muscle_Diff,Disc_Maint,PCP_Sig,Nucl_Shuttle,CSF_Sensing,Degradation,Astrogliosis,mtROS,Adipogenesis,Hydraulic_Congestion,Immune_Infilt,Circadian_Entrain,Proprio_Maint,H3K9me3,VCL_Stasis,Glymphatic_Stasis,Vestibular_Input,Gi_cAMP,Ciliary_Tuning,Hypoxia,Osteogenesis,Ciliary_Splint,Vacuole_Biogenesis process;
+    class Rest_Kappa,Stiffness,Torsional_Stiffness,Gain,Torsion,Muscle_Tone,Anisotropy,TMD tissue;
     class S_Curve,Stability,Scoliosis outcome;

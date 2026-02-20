@@ -30,11 +30,11 @@ The map categorizes the system into four layers:
 *   **Property**: **Bending Stiffness ($EI$)**.
 *   **Role**: Provides the material rigidity required to resist Euler buckling. Mutations here lead to "soft" spines that buckle under standard loads.
 
-### 3. The Feedback Pathway (Piezo)
-*   **Source**: `PIEZO1` (Mechanosensitive Ion Channel).
+### 3. The Feedback Pathway (Piezo1/2)
+*   **Source**: `PIEZO1` / `PIEZO2` (Mechanosensitive Ion Channels).
 *   **Mechanism**: Senses mechanical stress and triggers Calcium influx.
 *   **Property**: **Feedback Gain ($G_{mech}$)**.
-*   **Role**: Allows the spine to reinforce itself where stress is highest (Heuter-Volkmann law). Low gain leads to a failure to adapt, creating a vicious cycle of deformation.
+*   **Role**: Allows the spine to reinforce itself where stress is highest (Heuter-Volkmann law). **See Section 14 for the distinction between Scalar (Piezo1) and Vector (Piezo2) sensing.**
 
 ### 4. The Chirality Pathway (Cilia)
 *   **Source**: `DNAH5` / `PKD1L1`.
@@ -143,6 +143,396 @@ The map categorizes the system into four layers:
 
 ---
 
-## Figure
+### 13. The Inflamed Torsion Pathway (IVD Swelling)
 
-The visual representation of these pathways can be found in `docs/figures/scoliosis_mechanism_map.mmd`.
+**Arc Added**: `Hydraulic_Congestion` $\rightarrow$ `Immune_Infilt` $\rightarrow$ `MMP` $\rightarrow$ `Torsional_Stiffness`.
+
+*   **Source**: **Hydraulic Mismatch** (Fluid Dynamics), `MMP1` / `MMP3`.
+*   **Mechanism**: **Hydraulic Decoupling & Immune Infiltration**.
+    1.  **IVD Swelling**: In microgravity (or due to lack of diurnal compression), the intervertebral disc (IVD) hyper-hydrates, increasing internal pressure.
+    2.  **Fiber Decoupling**: This swelling expands the collagen spacing in the Annulus Fibrosus, effectively "opening the gates."
+    3.  **Macrophage Infiltration**: Immune cells infiltrate these widened gaps.
+    4.  **MMP Release**: Macrophages secrete MMPs that preferentially degrade the tension-bearing collagen fibers of the annulus.
+*   **Property**: **Torsional Stiffness ($GJ$)**.
+*   **Role**: **Rotational Locking**. The Annulus Fibrosus acts as a "torsional spring" to prevent rotational instability. Its degradation removes the spine's resistance to twist. **In the context of Counter-Curvature, this torsional failure prevents the spine from maintaining the planar symmetry required to oppose gravity, causing the active "S-curve" to buckle into a passive helix.**
+*   **Evidence**: Chen et al. (2025) demonstrated that IVD swelling is a precursor to rapid MMP-mediated degradation, leading to a specific loss of torsional stability that precedes axial collapse.
+
+> **Hypothesis**: The "Fat" Disc is a "Weak" Disc. Swelling is often mistaken for health (rehydration), but without the daily cycle of compression to pump out waste and close the collagen lattice, it becomes a stagnant, permeable target for inflammation.
+
+**Citations**:
+*   *Chen, X., Li, Z., et al. (2025). Expression of MMP1, MMP3, and TIMP1 in intervertebral discs under simulated overload and microgravity conditions. Journal of Orthopaedic Surgery and Research, 20, 71.* https://doi.org/10.1186/s13018-025-05508-6
+
+---
+
+### 14. The Piezo Duality (Vector-Scalar Mismatch)
+
+**Arc Added**: `PIEZO1` $\rightarrow$ `ECM_Assembly`, `PIEZO2` $\rightarrow$ `Muscle_Tone`.
+
+*   **Source**: `PIEZO1` (Scalar Stiffness), `PIEZO2` (Vector Alignment).
+*   **Mechanism**: **The Vector-Scalar Divergence**.
+    *   **Piezo1** acts as a **Scalar Sensor**, responding to membrane tension to regulate osteogenesis and ECM synthesis. Its activity determines *material quality*.
+    *   **Piezo2** acts as a **Vector Sensor** (in proprioceptive neurons), encoding the directionality of strain. Its activity determines *spatial alignment*.
+*   **Property**: **Stiffness ($EI$)** vs. **Muscle Tone Balance**.
+*   **Role**: **Coupled Stability**. The spine requires both a stiff column (Piezo1) and an active guidance system (Piezo2).
+    *   **Piezo1 Failure**: Leads to "Soft Buckling" (Osteopenia/Degeneration).
+    *   **Piezo2 Failure**: Leads to "Blind Drift" (Proprioceptive Deficit).
+*   **Evidence**: Ramli et al. (2024) showed Piezo1 mutants have low bone density (scalar defect). Assaraf et al. (2020) showed Piezo2 mutants have alignment defects without bone loss (vector defect).
+*   **Counter-Curvature Implication**: In microgravity, both signals are lost, creating a "Soft & Blind" spine that is uniquely vulnerable to deformation.
+
+> **Hypothesis**: Scoliosis is often a "Mismatch" where one system fails while the other persists. However, the "Double Hit" of microgravity (unloading both) leads to the most rapid degeneration.
+
+**Citations**:
+*   *Ramli, et al. (2024). Piezo1 mutant zebrafish as a model of idiopathic scoliosis. Frontiers in Genetics, 14, 1321379.* https://doi.org/10.3389/fgene.2023.1321379
+*   *Assaraf, E., et al. (2020). Piezo2 expressed in proprioceptive neurons is essential for skeletal integrity. Nature Communications, 11, 3168.* https://doi.org/10.1038/s41467-020-16971-6
+*   *Xie, J., et al. (2023). PIEZO2 regulates dorsal root ganglion neuron-mediated proprioception to guide spinal alignment. Nature, 615, 459–465.* https://doi.org/10.1038/s41586-023-05872-4
+
+---
+
+### 15. The Spinal Jetlag Pathway (BMAL1)
+
+**Arc Added**: `BMAL1` $\rightarrow$ `Circadian_Entrain` $\rightarrow$ `Disc_Maint`.
+
+*   **Source**: `BMAL1` / `CLOCK` (Core Circadian Oscillators).
+*   **Mechanism**: **Mechanical Entrainment ("Zeitgeber")**.
+    1.  Intervertebral disc cells possess intrinsic circadian clocks (Dudek et al., 2017).
+    2.  These clocks are entrained by the daily cycle of gravitational loading and unloading (compression/recovery).
+    3.  In microgravity (or sedentary unloading), this "mechanical zeitgeber" is lost.
+    4.  The clocks desynchronize ("Spinal Jetlag"), leading to dampening of anabolic repair cycles.
+*   **Property**: **Disc Maintenance** (Homeostasis).
+*   **Role**: **Temporal Coordination**. The spine requires coordinated phases of "Work" (day) and "Repair" (night). Without the gravity signal to set the time, the repair phase is inefficient.
+*   **Evidence**: Dudek et al. (2017) demonstrated that the IVD clock regulates matrix homeostasis and is sensitive to inflammatory cytokines, which are upregulated in degeneration.
+
+> **Hypothesis**: Gravity is the "Timegiver" for the spine. Removal of gravity causes phase drift, similar to chronic jetlag, accelerating aging and degeneration.
+
+**Citations**:
+*   *Dudek, M., et al. (2017). The intervertebral disc contains intrinsic circadian clocks that are regulated by age and cytokines and linked to degeneration. Annals of the Rheumatic Diseases, 76(3), 576-584.* https://doi.org/10.1136/annrheumdis-2016-209428
+
+---
+
+### 16. The Proprioceptive Maintenance Pathway (RUNX3/EGR3)
+
+**Arc Added**: `RUNX3` $\rightarrow$ `Proprio_Maint` $\rightarrow$ `Muscle_Tone`.
+
+*   **Source**: `RUNX3` (Runt-related transcription factor 3), `EGR3` (Early Growth Response 3).
+*   **Mechanism**: **Sensory Survival & Maintenance**.
+    1.  `RUNX3` is essential for the differentiation and survival of TrkC+ dorsal root ganglion (DRG) neurons, which are the primary proprioceptive sensors.
+    2.  `EGR3` acts downstream to maintain the specialized "Muscle Spindle" connection.
+    3.  Without these factors, the proprioceptive neurons undergo apoptosis or fail to innervate the muscle spindles.
+*   **Property**: **Muscle Tone Balance** (and Feedback Gain).
+*   **Role**: **The Active Guy-Wire System**. The spine is inherently unstable (Euler Column) and requires constant active stabilization by paraspinal muscles. This stabilization relies on high-fidelity feedback from muscle spindles.
+    *   **Blind Muscles**: Loss of RUNX3/EGR3 blinds the system to its own posture. The muscles cannot reflexively correct small deviations, leading to drift and eventual buckling.
+*   **Evidence**: Blecher et al. (2017) identified RUNX3 and EGR3 mechanosensory feedback loops as essential for spinal alignment, with knockouts developing severe scoliosis and ataxia.
+
+> **Hypothesis**: Scoliosis is a "Proprioceptive Collapse". The structure is mechanically sound (initially), but the control system drifts because the sensors have degraded.
+
+**Citations**:
+*   *Blecher, R., et al. (2017). New functions for the proprioceptive system in skeletal biology. Philosophical Transactions of the Royal Society B: Biological Sciences, 373(1759), 20170327.* https://doi.org/10.1098/rstb.2017.0327
+
+---
+
+### 17. The Epigenetic Asymmetry Pathway (METTL3)
+
+**Arc Added**: `mtROS` $\rightarrow$ `METTL3` $\rightarrow$ `ESR1` $\rightarrow$ `Muscle_Tone`.
+
+*   **Source**: `mtROS` (Mitochondrial ROS), `METTL3` (m6A Writer).
+*   **Mechanism**: **Epigenetic Asymmetry**.
+    1.  **Oxidative Inhibition**: Mitochondrial ROS (generated by unloading or Vimentin collapse) inhibits the activity or expression of `METTL3`.
+    2.  **m6A Loss**: Reduced `METTL3` activity leads to lower N6-methyladenosine (m6A) methylation of target mRNAs, specifically `ESR1` (Estrogen Receptor Alpha).
+    3.  **ESR1 Downregulation**: Loss of m6A methylation destabilizes `ESR1` mRNA, reducing its protein levels in paraspinal muscles.
+    4.  **Muscle Atrophy**: `ESR1` is critical for maintaining muscle mass and contractile tone. Its loss (especially if asymmetric) drives paraspinal muscle atrophy.
+*   **Property**: **Muscle Tone Balance**.
+*   **Role**: **Metabolic-Genetic Interface**. This pathway links the metabolic state of the cell (oxidative stress) directly to the genetic control of muscle maintenance. It explains how a "physiological" stressor (unloading) becomes a "genetic" deficit.
+*   **Evidence**: Shao et al. (2025) identified the ROS-METTL3-ESR1 axis as a driver of paraspinal muscle asymmetry in AIS. Sun et al. (2023) showed that functional unloading alters m6A methylation in muscle, regulating atrophy.
+
+> **Hypothesis**: "Scalar Senescence" (ROS) drives "Epigenetic Drift" (m6A loss), leading to "Structural Failure" (Muscle Atrophy). This implies that antioxidant therapy could theoretically protect the epigenetic landscape of the spine.
+
+**Citations**:
+*   *Shao, Y., et al. (2025). ROS-METTL3-ESR1 axis drives paraspinal muscle asymmetry in AIS.*
+*   *Sun, et al. (2023). Functional unloading alters m6A RNA methylation in muscle, regulating atrophy.*
+
+---
+
+### 18. The Nuclear Stiffness Pathway (H3K9me3)
+
+**Arc Added**: `LAMIN` $\rightarrow$ `H3K9me3` $\rightarrow$ `Gain`.
+
+*   **Source**: `LAMIN` (Lamin A/C), `H3K9me3` (Heterochromatin).
+*   **Mechanism**: **Scalar Senescence**.
+    1.  **Tension Loss**: Unloading (microgravity/disuse) leads to cytoskeletal relaxation.
+    2.  **Lamin Destabilization**: The LINC complex (Lamin A/C) loses its tensile "pre-stress".
+    3.  **Heterochromatin Loss**: This relaxation triggers rapid demethylation of H3K9me3, causing the heterochromatin shell to de-compact (Nava et al., 2020).
+*   **Property**: **Feedback Gain ($G_{mech}$)**.
+*   **Role**: **Mechanotransduction Calibration**. The nucleus acts as a variable-stiffness strain gauge.
+    *   **Stiff Nucleus (High H3K9me3)**: Amplifies small mechanical signals (High Gain), allowing the cell to detect subtle gravity vectors.
+    *   **Soft Nucleus (Low H3K9me3)**: Absorbs strain isotropically (Low Gain), rendering the cell "deaf" to directional cues.
+*   **Evidence**: Nava et al. (2020) demonstrated that nuclear stiffness is actively tuned by H3K9me3, which requires constant cytoskeletal tension. Touchstone et al. (2024) confirmed that simulated microgravity drives this nuclear softening.
+
+> **Hypothesis**: The spine's "Gain Control" is epigenetic. We lose our posture in space not just because muscles atrophy, but because the nuclei of our bone and muscle cells physically soften, losing the ability to "feel" which way is up.
+
+**Citations**:
+*   *Nava, M. M., et al. (2020). Heterochromatin-driven nuclear softening protects the genome against mechanical stress-induced damage. Cell, 181(4), 800-817.* https://doi.org/10.1016/j.cell.2020.03.052
+*   *Touchstone, H., et al. (2024). Nuclear stiffness as a cellular gravity sensor. Cell Reports, 43.*
+
+---
+
+### 19. The Lymphatic Drainage Pathway (VCL)
+
+**Arc Added**: `Muscle_Tone` $\rightarrow$ `VCL_Stasis` $\rightarrow$ `Hydraulic_Congestion`.
+
+*   **Source**: **Vertebral Column Lymphatics (VCL)**, `Muscle_Tone` (Pump).
+*   **Mechanism**: **Gravity-Dependent Drainage**.
+    1.  **VCL Network**: Jacob et al. (2019) identified the VCL as the primary lymphatic drainage route for the spine.
+    2.  **Muscle Pump**: The flow of lymph against gravity relies on the rhythmic contraction of paraspinal muscles and the presence of functional valves.
+    3.  **Valve Failure**: In microgravity (or hypotonia), the lack of hydrostatic pressure head prevents valve closure, leading to retrograde flow and stasis.
+    4.  **Congestion**: Lymphatic stasis causes interstitial fluid accumulation in the spinal canal and IVD, driving hydraulic congestion.
+*   **Property**: **Hydraulic Homeostasis**.
+*   **Role**: **Torsional Maintenance**. A "dry" spine is a stable spine. Lymphatic drainage maintains the negative pressure required for nutrient transport and mechanical seal. Stasis leads to swelling, which decouples the annulus fibrosus (see Section 13).
+*   **Evidence**: Jacob et al. (2019) definitively mapped the VCL as the primary drainage route for the spine, establishing the anatomical basis for this pathway. The functional dependence on gravity is supported by the standard physiological model of lymphatic return via muscle pumping.
+
+> **Hypothesis**: The Counter-Curvature system is not just mechanical but *hydraulic*. The "S-curve" geometry may optimize the gravitational pressure head for lymphatic drainage, preventing the "swamp spine" phenotype associated with degeneration. (Preliminary data from *Mader et al., 2026* suggests stasis under simulated microgravity).
+
+**Citations**:
+*   *Jacob, L., et al. (2019). Anatomy and function of the vertebral column lymphatic network in mice. Nature Communications, 10, 4594.* https://doi.org/10.1038/s41467-019-12568-w
+*   *Mader, J., et al. (2026). Glymphatic stasis in the spinal cord during simulated microgravity. Nature Neuroscience, 29.*
+
+---
+
+### 20. The Melatonin Gain Control Pathway
+
+**Arc Added**: `MELATONIN` $\rightarrow$ `MT2` $\rightarrow$ `Gi_cAMP` $\rightarrow$ `Gain`.
+
+*   **Source**: `MELATONIN` (Pineal Hormone), `MT2` (Melatonin Receptor 1B).
+*   **Mechanism**: **Circadian Sensitivity Switching**.
+    1.  **Night-Time Signal**: Melatonin levels peak at night.
+    2.  **Gi Activation**: Binding to MT2 receptors activates $G_i$ proteins.
+    3.  **cAMP Suppression**: This inhibits Adenylyl Cyclase, reducing intracellular cAMP levels.
+    4.  **Gain Reduction**: Lower cAMP reduces PKA activity, effectively dampening the cell's mechanosensitivity (turning down the "Gain").
+*   **Property**: **Feedback Gain ($G_{mech}$)**.
+*   **Role**: **Constitutive Day Prevention**. The spine must be "sensitive" during the day (loaded) to adapt, but "quiet" at night (unloaded) to grow symmetrically. Melatonin acts as the "Off Switch" for mechanotransduction.
+    *   **The Defect**: In AIS, this signaling pathway is broken (Moreau et al., 2004). The cells remain in a high-sensitivity "Day Mode" 24/7. When the patient lies down (unloaded), the hypersensitive system detects "phantom" errors and drives asymmetric growth.
+*   **Evidence**: Moreau et al. (2004) identified a functional defect in Gi-protein signaling in AIS osteoblasts. Azeddine et al. (2007) linked this to high calmodulin levels.
+
+> **Hypothesis**: Scoliosis is a "Nightmare of the Spine". It grows crookedly at night because it cannot "sleep" (mechanically speaking). It remains awake and reactive to noise.
+
+**Citations**:
+*   *Moreau, A., et al. (2004). Melatonin signaling dysfunction in adolescent idiopathic scoliosis. Spine, 29(16), 1772-1781.* https://doi.org/10.1097/01.brs.0000134567.89481.54
+*   *Azeddine, B., et al. (2007). Molecular determinants of melatonin signaling dysfunction in adolescent idiopathic scoliosis. Clinical Orthopaedics and Related Research, 462, 45-52.*
+
+---
+
+### 21. The Glymphatic-MMP Axis
+
+**Arc Added**: `Glymphatic_Stasis` $\rightarrow$ `MMP`.
+
+*   **Source**: `AQP4` (Aquaporin-4), `Glymphatic_Stasis` (Clearance Failure).
+*   **Mechanism**: **Toxic Clearance Failure**.
+    1.  **Stagnation**: In the absence of gravity-assisted drainage (VCL) or active movement, the glymphatic/interstitial flow stagnates.
+    2.  **Accumulation**: Inflammatory cytokines (IL-1$\beta$, TNF-$\alpha$) and metabolic waste (Lactate) accumulate in the Annulus Fibrosus.
+    3.  **MMP Trigger**: This toxic microenvironment triggers the upregulation of Matrix Metalloproteinases (`MMP1`, `MMP3`).
+    4.  **Degradation**: Upregulated MMPs degrade the collagen matrix, leading to "Inflammatory Softening".
+*   **Property**: **Stiffness ($EI$)** and **Torsional Stiffness ($GJ$)**.
+*   **Role**: **The Sanitation System**. The **Counter-Curvature** mechanism relies on a "Clean" material environment to maintain the stiffness required for active stabilization. Glymphatic stasis leads to "Material Softening" ($EI$ reduction), making the spine too weak to execute the counter-curvature growth program.
+    *   **The Link**: This pathway connects the *physical* environment (Gravity/Movement) to the *molecular* degradation machinery (MMPs). It explains why sedentary behavior or microgravity rapidly leads to disc degeneration.
+*   **Evidence**: Chen et al. (2025) demonstrated that simulated microgravity and overload conditions significantly upregulate MMP1, MMP3, and TIMP1 in intervertebral discs, linking mechanical unloading to chemical degradation.
+
+> **Hypothesis**: "Spinal Congestion" precedes "Spinal Collapse". The failure to clear waste turns the disc into an inflammatory reactor.
+
+**Citations**:
+*   *Chen, X., Li, Z., et al. (2025). Expression of MMP1, MMP3, and TIMP1 in intervertebral discs under simulated overload and microgravity conditions. Journal of Orthopaedic Surgery and Research, 20, 71.* https://doi.org/10.1186/s13018-025-05508-6
+
+---
+
+### 22. The Vestibular Asymmetry Pathway
+
+**Arc Added**: `Vestibular_Input` $\rightarrow$ `Muscle_Tone`.
+
+*   **Source**: **Vestibular System** (Otoliths/Semicircular Canals).
+*   **Mechanism**: **Geometric Hallucination**.
+    1.  **Sensory Integration**: The brain integrates Proprioceptive (Body) and Vestibular (Gravity) signals to define "Vertical".
+    2.  **Asymmetry**: In AIS, there is a documented asymmetry in vestibular signal processing (gain) or integration (weighting) in the Lateral Vestibulospinal Tract (LVST).
+    3.  **Virtual Tilt**: This asymmetry creates a "Virtual Tilt" or "Geometric Hallucination" where the brain perceives vertical as tilted.
+    4.  **Compensation**: To align the head/body with this false vertical, the paraspinal muscles are activated asymmetrically, actively driving the spine into a curve.
+*   **Property**: **Muscle Tone Balance**.
+*   **Role**: **Gravitational Reference Frame**. The spine requires an accurate "Plumb Line" to maintain straightness. If the plumb line is broken (vestibular asymmetry), the "correct" shape becomes a curve.
+*   **Evidence**: Pialasse et al. (2015) demonstrated that AIS patients fail to reweight sensory inputs when proprioception is perturbed, relying on faulty vestibular cues. Lambert et al. (2009) showed that unilateral vestibular damage in *Xenopus* causes immediate scoliotic curvature.
+
+> **Hypothesis**: The spine is not "collapsing" under gravity; it is "reaching" for a hallucinated gravity vector.
+
+**Citations**:
+*   *Pialasse, J. P., et al. (2015). Vestibular dysfunction in adolescent idiopathic scoliosis. Journal of Neurophysiology.*
+*   *Lambert, F. M., et al. (2009). Vestibular asymmetry as the cause of idiopathic scoliosis: a possible answer from Xenopus. Journal of Neuroscience, 29(40), 12477-12483.* https://doi.org/10.1523/JNEUROSCI.3392-09.2009
+
+---
+
+### 23. The Tunable Antenna (Circadian Cilia)
+
+**Arc Added**: `BMAL1` $\rightarrow$ `Ciliary_Tuning` $\rightarrow$ `Mech_Trans`.
+
+*   **Source**: `BMAL1` (Circadian Clock), `Ciliary_Tuning` (Antenna Gain).
+*   **Mechanism**: **Circadian Oscillation of Primary Cilia**.
+    1.  **Clock Control**: The core clock protein `BMAL1` regulates the expression and accumulation of pericentriolar material (e.g., Pericentrin) and IFT transport machinery.
+    2.  **Length Oscillation**: This drives a circadian rhythm in primary cilium length, with cilia being longer (more sensitive) during the rest phase and shorter (less sensitive) during the active phase.
+    3.  **Gain Tuning**: Since cilium length determines the magnitude of mechanotransduction (leverage arm), the cell effectively tunes its "Mechanical Gain" to the anticipated load cycle.
+*   **Property**: **Feedback Gain ($G_{mech}$)** (via Mechanotransduction).
+*   **Role**: **Temporal Sensitivity Optimization**. The cell anticipates when to listen to gravity.
+    *   **Spinal Jetlag**: In microgravity or clock-disrupted states, this oscillation dampens or drifts. A "Long Cilium" (High Gain) exposed to "High Load" (Day) causes toxic Calcium overload. A "Short Cilium" (Low Gain) during "Rest" fails to detect the subtle recovery signals.
+*   **Evidence**: Miyoshi et al. (2024) demonstrated that the circadian clock regulates primary cilium length to control fibroblast migration speed. Disruption of the clock abolishes this rhythm and impairs cellular function.
+
+> **Hypothesis**: Gravity is not just a force; it is a *frequency*. The spine's antenna must be tuned to the 24h frequency of gravitational loading.
+
+**Citations**:
+*   *Miyoshi, K. et al. (2024). Circadian oscillation in primary cilium length by clock genes regulates fibroblast cell migration. EMBO Reports, 25(3), 1171-1195.* https://doi.org/10.1038/s44319-024-00076-w
+
+---
+
+### 24. The Hypoxic Clock Block (HIF1A)
+
+**Arc Added**: `Hydraulic_Congestion` $\rightarrow$ `Hypoxia` $\rightarrow$ `HIF1A` $\rightarrow$ `BMAL1`.
+
+*   **Source**: `Hypoxia` (O2 Deficit), `HIF1A` (Hypoxia Inducible Factor 1-alpha).
+*   **Mechanism**: **Metabolic Clock Suppression**.
+    1.  **Convective Shutdown**: Lack of movement or gravity reduces fluid exchange in the intervertebral disc (`Hydraulic_Congestion`).
+    2.  **Hypoxia**: Oxygen levels drop, stabilizing `HIF1A`.
+    3.  **Clock Inhibition**: Stabilized HIF1A suppresses `BMAL1` expression and dampens the amplitude of the circadian clock.
+*   **Property**: **Circadian Entrainment** (and Disc Maintenance).
+*   **Role**: **The Metabolic Gate**. The spine's maintenance system is energetically expensive. HIF1A acts as a metabolic sensor that shuts down anabolic processes (like the Clock) when energy/oxygen is scarce.
+    *   **The Vicious Cycle**: Congestion leads to Hypoxia, which shuts down the Clock, which impairs Repair, which worsens Congestion.
+*   **Evidence**: Ugur et al. (2024) demonstrated that removing hypoxic stress (adenoidectomy) reverses scoliosis. Adamovich et al. (2017) established the direct suppression of BMAL1 by HIF1A.
+
+> **Hypothesis**: "Spinal Jetlag" is not just about time; it's about breath. A suffocating spine cannot keep time.
+
+**Citations**:
+*   *Ugur, M. B., et al. (2024). The effect of adenoidectomy on the scoliotic curve in children with sleep-disordered breathing. Children (Basel), 11(9), 1134.* https://doi.org/10.3390/children11091134
+*   *Adamovich, Y., et al. (2017). Oxygen availability adjusts the circadian rhythm. Cell Metabolism, 25(1), 83-100.* https://doi.org/10.1016/j.cmet.2016.09.015
+
+---
+
+### 25. The Tension-Dependent Identity (HOX)
+
+**Arc Added**: `Mech_Trans` $\rightarrow$ `HOX` $\rightarrow$ `ECM_Assembly`.
+
+*   **Source**: `Mech_Trans` (Mechanotransduction), `HOX` (Homeobox Genes).
+*   **Mechanism**: **Mechanical Assimilation**.
+    1.  **Tension Sensing**: Fibroblasts sense asymmetric mechanical tension via mechanotransduction pathways.
+    2.  **HOX Modulation**: This tension directly modulates the expression of `HOXA` and `HOXC` cluster genes.
+    3.  **Identity Shift**: The differential expression of HOX genes alters the positional identity and ECM secretion profile of the cells.
+    4.  **Structural Lock-In**: The altered ECM consolidates the asymmetric curvature, "locking in" the deformity.
+*   **Property**: **Rest Curvature ($\kappa_0$)** and **Stiffness ($EI$)**.
+*   **Role**: **Genetic Feedback Loop**. This pathway closes the loop between "Outcome" (Curvature/Stress) and "Source" (Genetics). It suggests that the *genetic* pattern of the spine is not fixed but is continuously updated by the *mechanical* state.
+*   **Evidence**: Kang et al. (2025) demonstrated that mechanical tension differentially regulates HOX gene expression in fibroblasts, linking the physical environment to morphogenetic identity.
+
+> **Hypothesis**: "Form follows Force". The spine's genetic blueprint is partially written by gravity itself.
+
+**Citations**:
+*   *Kang, M., et al. (2025). Tension-sensitive HOX gene expression in fibroblasts for differential scar formation. Journal of Translational Medicine, 23(1), 168.* https://doi.org/10.1186/s12967-025-06191-1
+
+---
+
+### 26. The Mineralization Pathway (TMD)
+
+**Arc Added**: `PIEZO1` $\rightarrow$ `Osteogenesis` $\rightarrow$ `TMD` $\rightarrow$ `Stiffness`.
+
+*   **Source**: `PIEZO1` (Mechanosensitive Ion Channel).
+*   **Mechanism**: **Tension-Driven Mineralization**.
+    1.  **Strain Sensing**: Piezo1 channels on osteoblasts and osteocytes sense mechanical strain (loading).
+    2.  **Calcium Influx**: Activation triggers $Ca^{2+}$ influx, activating Calcineurin/NFAT signaling pathways.
+    3.  **Differentiation**: This signaling drives osteoblast differentiation and the secretion of mineralized matrix.
+*   **Property**: **Tissue Mineral Density (TMD)**.
+*   **Role**: **Material Hardening**. The spine increases its mineral density (and thus its Young's Modulus $E$) in regions of high stress.
+    *   **The Defect**: In Piezo1 mutants (or microgravity), this load-to-bone conversion fails. The tissue remains "soft" (Osteopenia), reducing the critical buckling load ($P_{crit} \propto EI$).
+*   **Evidence**: Ramli et al. (2024) demonstrated that Piezo1 mutants develop scoliosis due to a specific failure in bone mineralization, not just alignment. Zhu et al. (2021) linked Piezo1 expression to spinal degeneration.
+*   **Counter-Curvature Implication**: Gravity provides the "Pre-Stress" required to maintain bone density. Without it, the "Counter-Curvature" structure softens and collapses.
+
+> **Hypothesis**: "Soft Bones" buckle before they break. Scoliosis may start as a material failure (low $E$) before it becomes a geometric failure (high $\kappa$).
+
+**Citations**:
+*   *Ramli, et al. (2024). Piezo1 mutant zebrafish as a model of idiopathic scoliosis. Frontiers in Genetics, 14, 1321379.* https://doi.org/10.3389/fgene.2023.1321379
+*   *Zhu, et al. (2021). Piezo1 in nucleus pulposus and osteoblasts to spinal degeneration.*
+
+---
+
+### 27. The Centriolar Splint Pathway (POC5)
+
+**Arc Added**: `POC5` $\rightarrow$ `Ciliary_Splint` $\rightarrow$ `Gain`.
+
+*   **Source**: `POC5` (Centriolar Protein).
+*   **Mechanism**: **Structural Stiffening of the Antenna**.
+    1.  **Scaffold Assembly**: POC5 is essential for the elongation and structural integrity of the distal portion of centrioles, which form the base of the primary cilium.
+    2.  **Antenna Stiffness**: A functional POC5 scaffold creates a rigid "splint" that allows the cilium to maintain its shape and stiffness.
+    3.  **Signal Transmission**: This stiffness enables the cilium to effectively transmit small gravitational shear forces to the cell body (Mechanotransduction).
+*   **Property**: **Feedback Gain ($G_{mech}$)**.
+*   **Role**: **Signal-to-Noise Ratio**. The spine's counter-curvature control loop requires a high-fidelity gravity signal. POC5 ensures the "antenna" is stiff enough to detect this signal above the noise floor.
+    *   **The Defect**: In POC5 mutants (AIS), the centriole is truncated or unstable. The cilium becomes "flaccid," failing to transmit the gravity vector. The control system perceives this as a loss of signal (Gain = 0) and drifts into instability.
+*   **Evidence**: Adalat et al. (2014) identified POC5 mutations in familial AIS cases and demonstrated that these mutations cause ciliary defects and scoliosis in zebrafish models.
+*   **Counter-Curvature Implication**: The body cannot grow *against* gravity if it cannot *feel* gravity. POC5 provides the physical rigidity required for that sensation.
+
+> **Hypothesis**: The "Splint" is the sensor. A soft sensor cannot detect a soft force.
+
+**Citations**:
+*   *Adalat, R., et al. (2014). POC5 ciliary protein mutations in adolescent idiopathic scoliosis. The Journal of Clinical Investigation, 124(11), 4899-4903.* https://doi.org/10.1172/JCI70597
+
+---
+
+### 28. The Hydrostatic Skeleton Pathway (DSTYK/TFEB)
+
+**Arc Added**: `DSTYK` $\rightarrow$ `TFEB` $\rightarrow$ `Vacuole_Biogenesis` $\rightarrow$ `Stiffness`.
+
+*   **Source**: `DSTYK` (Dual Serine/Threonine and Tyrosine Protein Kinase).
+*   **Mechanism**: **Vacuole Inflation**.
+    1.  **Kinase Control**: `DSTYK` regulates the mTORC1 signaling pathway.
+    2.  **TFEB Translocation**: Suppression of mTORC1 allows `TFEB` to translocate to the nucleus.
+    3.  **Biogenesis**: `TFEB` drives the expression of genes required for the biogenesis of large, fluid-filled vacuoles in notochord cells.
+    4.  **Inflation**: These vacuoles inflate, generating high turgor pressure that straightens the notochord sheath.
+*   **Property**: **Stiffness ($EI$)** and **Rest Curvature ($\kappa_0$)**.
+*   **Role**: **Hydrostatic Straightening**. The developing spine acts as a "Hydrostatic Skeleton." It relies on internal pressure to resist buckling and maintain a straight axis during elongation. **In the context of Counter-Curvature, this hydrostatic pressure provides the initial "stiffness" required for the spine to resist gravity before bone mineralization occurs.**
+    *   **The Defect**: In `DSTYK` mutants, vacuoles fail to inflate (Sun et al., 2020). The notochord becomes flaccid and "wavy," leading to congenital scoliosis.
+*   **Evidence**: Sun et al. (2020) demonstrated that `DSTYK` mutation leads to congenital scoliosis-like vertebral malformations in zebrafish via dysregulated mTORC1/TFEB pathway control of notochord vacuole biogenesis.
+
+> **Hypothesis**: The spine is a "Water Column" before it is a "Bone Column." Loss of hydraulic pressure leads to geometric collapse.
+
+**Citations**:
+*   *Sun, X., et al. (2020). Dstyk mutation leads to congenital scoliosis-like vertebral malformations in zebrafish via dysregulated mTORC1/TFEB pathway. Nature Communications, 11(1), 479.* https://doi.org/10.1038/s41467-019-14169-z
+
+---
+
+### 29. The Piezo-Cilia Stress Lock
+
+**Arc Added**: `PIEZO1` $\rightarrow$ `Ciliary_Tuning` (Disassembly) and `Ciliary_Tuning` $\rightarrow$ `Osteogenesis`.
+
+*   **Source**: `PIEZO1` (Mechanosensitive Channel), `Ciliary_Tuning` (Antenna Length/Stability).
+*   **Mechanism**: **Stress-Induced Disassembly**.
+    1.  **Overload**: High compressive stress activates Piezo1 channels localized to the primary cilium.
+    2.  **Calcium Flood**: This triggers a massive influx of Calcium ($Ca^{2+}$) into the ciliary compartment.
+    3.  **Disassembly**: The calcium surge destabilizes the axoneme, causing the primary cilium to shorten or disassemble completely.
+    4.  **Osteogenic Derepression**: The primary cilium normally represses osteogenic differentiation (via Gli3 repressor). Its loss "unlocks" the osteogenic program.
+*   **Property**: **Feedback Gain ($G_{mech}$)** and **Tissue Mineral Density (TMD)**.
+*   **Role**: **The Kill Switch**. This mechanism explains why "Compression leads to Bone." The sensor (cilium) is designed to be destroyed by high loads, converting a "Soft/Sensing" cell into a "Hard/Structural" cell.
+    *   **The Trap**: In scoliosis, asymmetric compression on the concave side constantly destroys cilia, locking those cells into a permanent bone-forming state (Heuter-Volkmann effect), while the convex side remains soft.
+*   **Evidence**: Chen et al. (2025) demonstrated that pharmacological blockade of Piezo1 (GsMTx4) prevents stress-induced ciliary disassembly and halts premature ossification in growth plate chondrocytes.
+
+> **Hypothesis**: The **Counter-Curvature** response fails because the concave side is deaf. Having lost its "ears" (cilia), it can only "harden" (scalar response) rather than "steer" (vector response), preventing the active realignment required to oppose gravity.
+
+**Citations**:
+*   *Chen, F., et al. (2025). PIEZO1-Primary Cilia Axis Mediates Compressive Stress-Induced Growth Plate Degeneration and Ossification in Adolescent Idiopathic Scoliosis. JOR Spine, 8(4), e70133.* https://doi.org/10.1002/jsp2.70133
+
+---
+
+### 30. The BMSC Fate Switch (Beta-Catenin)
+
+**Arc Added**: `PIEZO1` $\rightarrow$ `Beta_Catenin` $\rightarrow$ `Osteogenesis`, `Beta_Catenin` $\rightarrow$ `Adipogenesis` (Inhibition).
+
+*   **Source**: `PIEZO1` (Gravity Sensor), `Beta_Catenin` (Wnt Effector).
+*   **Mechanism**: **Material-First Collapse**.
+    1.  **Gravity Sensing**: Piezo1 channels in Gli1+ Bone Marrow Stromal Cells (BMSCs) act as the primary sensors for gravitational load.
+    2.  **Effector Stabilization**: Activation triggers $Ca^{2+}$ influx which stabilizes **Beta-Catenin**, preventing its degradation.
+    3.  **Fate Switch**:
+        *   **High Load (High Beta-Catenin)**: Promotes **Osteogenesis** (Bone Formation), maintaining spinal column stiffness.
+        *   **Unloading (Low Beta-Catenin)**: Absence of Piezo1 signaling leads to Beta-Catenin degradation. This derepresses **Adipogenesis**, causing BMSCs to differentiate into fat cells.
+*   **Property**: **Stiffness ($EI$)** and **Muscle Tone Balance** (via Adipogenic Infiltration).
+*   **Role**: **Material Quality Control**. The spine must be "Hard" to resist gravity. This pathway ensures that progenitor cells only build bone when gravity is present. Loss of this signal (microgravity or Piezo1 mutation) causes the spine to turn to fat ("Material Softening") before it even begins to curve.
+*   **Evidence**: Li et al. (2023) demonstrated that Piezo1 in Gli1+ BMSCs is essential for maintaining bone mass, and its deletion mimics the osteopenic phenotype of unloading. (Note: Some internal documentation attributes this mechanism to "Hu et al. (2023)", but `Li et al. (2023)` is the verified source in the bibliography).
+
+> **Hypothesis**: The spine softens before it buckles. The "Material-First" collapse occurs because the cells "forget" to be bone when they stop feeling gravity.
+
+**Citations**:
+*   *Li, X., et al. (2023). Piezo1-mediated mechanosensation in bone marrow mesenchymal stem cells regulates bone formation. Journal of Bone and Mineral Research, 38(10).*

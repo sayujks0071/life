@@ -21,6 +21,7 @@ repo_root = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.append(str(repo_root))
 
 from research.alphafold_countercurvature.src.afcc.structure import StructureParser
+from research.alphafold_countercurvature.src.afcc.metrics import MetricsAnalyzer
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
@@ -74,6 +75,50 @@ def plot_plddt_profile(plddt_scores, gene, output_path):
     plt.savefig(output_path)
     plt.close()
 
+def plot_curvature_profile(curvature, plddt_scores, gene, output_path, smoothing_window=5):
+    """
+    Plots curvature profile, smoothing it and highlighting high-confidence regions.
+    """
+    if curvature is None or len(curvature) == 0:
+        return
+
+    # Handle NaNs (replace with 0 for smoothing, or just ignore)
+    valid_mask = ~np.isnan(curvature)
+    if np.sum(valid_mask) < smoothing_window:
+        return # Too short
+
+    # 1. Smooth the curvature (simple moving average)
+    window = np.ones(smoothing_window) / smoothing_window
+
+    # Temporary fill for convolution
+    curvature_filled = curvature.copy()
+    curvature_filled[~valid_mask] = 0
+
+    smoothed = np.convolve(curvature_filled, window, mode='same')
+
+    # 2. Plot
+    plt.figure(figsize=(10, 4))
+
+    # Create segments of high confidence (pLDDT >= 70)
+    high_conf_mask = (plddt_scores >= 70)
+
+    # We plot the whole smoothed line in gray/dashed
+    plt.plot(smoothed, color='gray', linestyle='--', alpha=0.5, label='Smoothed (All)')
+
+    # Overlay high confidence segments in bold color
+    smoothed_hc = smoothed.copy()
+    smoothed_hc[~high_conf_mask] = np.nan
+
+    plt.plot(smoothed_hc, color='purple', linewidth=2, label='High Confidence (pLDDT≥70)')
+
+    plt.title(f"Backbone Curvature Profile: {gene} (Window={smoothing_window})")
+    plt.xlabel("Residue Index")
+    plt.ylabel("Curvature (kappa)")
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(output_path)
+    plt.close()
+
 def main():
     if not METRICS_FILE.exists():
         print(f"❌ Metrics file not found: {METRICS_FILE}")
@@ -82,8 +127,33 @@ def main():
     df = pd.read_csv(METRICS_FILE)
     manifest = pd.read_csv(MANIFEST_FILE) if MANIFEST_FILE.exists() else None
 
+    # Filter by bolt_targets.csv (focused) or candidates.csv (general)
+    BOLT_TARGETS_FILE = PROCESSED_DIR / "bolt_targets.csv"
+    CANDIDATES_FILE = PROCESSED_DIR / "candidates.csv"
+
+    filtering_file = None
+    if BOLT_TARGETS_FILE.exists():
+        filtering_file = BOLT_TARGETS_FILE
+        print(f"🎯 Found focused target list: {BOLT_TARGETS_FILE.name}")
+    elif CANDIDATES_FILE.exists():
+        filtering_file = CANDIDATES_FILE
+        print(f"🎯 Using master candidate list: {CANDIDATES_FILE.name}")
+
+    if filtering_file:
+        try:
+            filter_df = pd.read_csv(filtering_file)
+            if 'gene_symbol' in filter_df.columns:
+                target_genes = set(filter_df['gene_symbol'])
+                print(f"🎯 Filtering report for {len(target_genes)} candidates...")
+                df = df[df['gene_symbol'].isin(target_genes)]
+                if df.empty:
+                    print("⚠️ Warning: No metrics found for the current candidate list.")
+        except Exception as e:
+            print(f"⚠️ Error reading filter file {filtering_file.name}: {e}")
+
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
     parser = StructureParser()
+    analyzer = MetricsAnalyzer()
 
     # --- Generate Plots ---
     plot_summary = []
@@ -108,13 +178,20 @@ def main():
                 pdb_path = Path(row.iloc[0]['pdb_path'])
                 pae_path = Path(row.iloc[0]['pae_path']) if not pd.isna(row.iloc[0]['pae_path']) else None
 
-                # Load structure for pLDDT
+                # Load structure for pLDDT and Curvature
                 if pdb_path.exists():
-                     _, plddt, _ = parser.fast_parse_pdb_arrays(pdb_path)
+                     coords, plddt, _ = parser.fast_parse_pdb_arrays(pdb_path)
                      if plddt is not None:
                          p_path = FIGURES_DIR / f"{gene}_plddt.png"
                          plot_plddt_profile(plddt, gene, p_path)
                          plot_summary.append(f"- `{p_path.name}`: pLDDT profile for {gene}")
+
+                     if coords is not None and len(coords) > 2 and plddt is not None:
+                         # Calculate curvature using MetricsAnalyzer
+                         kappa = analyzer.calculate_curvature(coords)
+                         c_path = FIGURES_DIR / f"{gene}_curvature.png"
+                         plot_curvature_profile(kappa, plddt, gene, c_path)
+                         plot_summary.append(f"- `{c_path.name}`: Curvature profile for {gene}")
 
                 # Load PAE
                 if pae_path and pae_path.exists():
@@ -135,6 +212,9 @@ def main():
     col_map = {
         'mean_plddt': 'plddt_mean',
         'plddt_mean': 'plddt_mean',
+        'plddt_median': 'plddt_median',
+        'plddt_fraction_high': 'plddt_fraction_high',
+        'plddt_fraction_ok': 'plddt_fraction_ok',
         'fraction_low_plddt': 'plddt_fraction_low',
         'plddt_fraction_low': 'plddt_fraction_low',
         'pae_mean': 'PAE_mean',
@@ -169,6 +249,9 @@ def main():
         return None
 
     table_df['pLDDT_mean'] = get_col('plddt_mean', 1)
+    table_df['pLDDT_median'] = get_col('plddt_median', 1)
+    table_df['pLDDT_frac_high'] = get_col('plddt_fraction_high', 2)
+    table_df['pLDDT_frac_ok'] = get_col('plddt_fraction_ok', 2)
     table_df['pLDDT_frac_low'] = get_col('plddt_fraction_low', 2)
 
     pae_mean = get_col('PAE_mean', 1)
@@ -226,12 +309,12 @@ def main():
 
             # Check if aniso is NaN (low conf structure)
             if pd.isna(aniso):
-                what_we_see = f"{gene}: pLDDT={plddt:.0f}. **Unstructured/Disordered**. "
+                what_we_see = f"pLDDT={plddt:.0f}. **Unstructured/Disordered**. "
                 why_matters = "Lack of high-confidence structure prevents geometric analysis."
                 next_test = "Investigate IDR function or wait for complex structure."
                 conf_level = "Low"
             else:
-                what_we_see = f"{gene}: Anisotropy={aniso:.1f}, pLDDT={plddt:.0f}. "
+                what_we_see = f"Anisotropy={aniso:.1f}, pLDDT={plddt:.0f}. "
                 if aniso > 3.0:
                     what_we_see += "Highly extended/fibrous. "
                 elif aniso < 1.5:

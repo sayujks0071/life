@@ -119,6 +119,263 @@ $$ \Pi_{RF} = \frac{(\rho_{RF} - \rho_{CSF}) A_{RF} g L_{seg}}{T_{intrinsic}} $$
     *   **Slackening Condition**: If $g \to 0$ (microgravity), $\Pi_{RF} \to 0$. If $T_{intrinsic}$ is not actively maintained, the fiber loses its directional cue, potentially causing "sensory slack" and decoupling Pkd2l1 mechanotransduction.
 *   **Measurable Proxy**: The tortuosity ($\tau$) of the Reissner Fiber imaged in vivo. High $\Pi_{RF}$ corresponds to low tortuosity (straight line).
 
+### 2.9. The Cryptic Exposure Coefficient ($\xi_{crypto}$)
+
+High-blockiness proteins (Cluster 1: FLNA, TLN1) act as "Tension-Gated Signal Integrators." We define $\xi_{crypto}$ as the fraction of cryptic binding sites exposed for signaling.
+
+$$ \xi_{crypto} = \frac{1}{1 + e^{-(F_{tens} - F_{crit})/kT}} $$
+
+*   **Symbols**:
+    *   $F_{tens}$: Local cytoskeletal tension force $[MLT^{-2}]$.
+    *   $F_{crit}$: Critical unfolding force of the protein domain (function of blockiness $B$) $[MLT^{-2}]$.
+    *   $kT$: Thermal energy $[ML^2T^{-2}]$.
+*   **Physical Interpretation**:
+    *   **High Tension ($F_{tens} > F_{crit}$)**: Domains unfold, $\xi_{crypto} \to 1$. "Vector" signaling is active (e.g., Vinculin recruitment).
+    *   **Low Tension ($F_{tens} < F_{crit}$)**: Domains remain folded (globular), $\xi_{crypto} \to 0$. Signaling is silenced.
+*   **Microgravity Implication**: As $g \to 0$, $F_{tens}$ drops below $F_{crit}$ for high-threshold sensors, causing specific silencing of the "Vector" pathway while low-threshold "Scalar" sensors remain active.
+*   **Measurable Proxy**: FRET efficiency of tension sensor constructs (e.g., Talin-FRET) or ratio of antibody binding to cryptic vs. constitutive epitopes.
+
+### 2.10. The Glymphatic Péclet Number ($\text{Pe}_G$)
+
+The spinal cord relies on the "Glymphatic System" for waste clearance, driven by arterial pulsation and respiration-induced CSF flow. We define $\text{Pe}_G$ as the ratio of advective transport (pumping) to diffusive transport (stasis).
+
+$$ \text{Pe}_G = \frac{v_{flow} L_{seg}}{D_{eff}} $$
+
+*   **Symbols**:
+    *   $v_{flow}$: bulk flow velocity of CSF/ISF $[LT^{-1}]$.
+    *   $L_{seg}$: Characteristic length of a spinal segment $[L]$.
+    *   $D_{eff}$: Effective diffusion coefficient of solutes (e.g., Amyloid-$\beta$) in the tortuous ECM $[L^2T^{-1}]$.
+*   **Physical Interpretation**:
+    *   $\text{Pe}_G \gg 1$: Advection dominates. Rapid clearance of toxins (Healthy 1G state).
+    *   $\text{Pe}_G < 1$: Diffusion dominates. The "Stagnant Pool" regime. Metabolic waste accumulates faster than it clears, creating a toxic halo around the ependyma.
+*   **Microgravity Implication**: The loss of hydrostatic pressure gradients and sleep-cycle disruptions reduces $v_{flow}$, driving $\text{Pe}_G \to 0$, triggering inflammatory remodeling (e.g., reactive astrogliosis).
+
+### 2.11. The Mechanical Entrainment Number ($\mathcal{E}_{mech}$)
+
+We posit that gravitational loading acts as the primary Zeitgeber for the intervertebral disc circadian clock. We define $\mathcal{E}_{mech}$ as the ratio of the external mechanical forcing amplitude to the intrinsic phase diffusion of the biological oscillator.
+
+$$ \mathcal{E}_{mech} = \frac{K_{ent} \langle |\dot{\varepsilon}_{grav}| \rangle}{\sigma_{\phi}} $$
+
+*   **Symbols**:
+    *   $K_{ent}$: Entrainment coupling efficiency $[1]$ (Dimensionless).
+    *   $\langle |\dot{\varepsilon}_{grav}| \rangle$: Mean strain rate induced by diurnal gravitational loading $[T^{-1}]$.
+    *   $\sigma_{\phi}$: Intrinsic phase diffusion rate (clock noise) $[T^{-1}]$.
+*   **Physical Interpretation**:
+    *   $\mathcal{E}_{mech} > 1$: The clock is phase-locked to the gravity vector (Entrained).
+    *   $\mathcal{E}_{mech} < 1$: The clock free-runs and desynchronizes (Spinal Jetlag).
+*   **Measurable Proxy**: The amplitude ratio of PER2::LUC bioluminescence oscillations in loaded vs. unloaded disc explants.
+
+### 2.12. The Chromatin-Stiffness Coupling ($\Gamma_{CS}$)
+
+We postulate that heterochromatin (H3K9me3) acts as a "molecular spring" within the nucleus. We define $\Gamma_{CS}$ as the specific stiffness contribution per mole of heterochromatin.
+
+$$ E_{nuc} = E_{basal} + \Gamma_{CS} \cdot [\text{H3K9me3}] $$
+
+*   **Symbols**:
+    *   $E_{nuc}$: Young's modulus of the nucleus $[ML^{-1}T^{-2}]$ (Pa).
+    *   $[\text{H3K9me3}]$: Molar concentration of heterochromatin marks $[N L^{-3}]$ (mol/m³).
+    *   $\Gamma_{CS}$: Coupling constant $[ML^2T^{-2}N^{-1}]$ (J/mol).
+*   **Physical Interpretation**: $\Gamma_{CS}$ represents the stiffening energy provided per mole of heterochromatin compaction. It quantifies the "structural value" of epigenetic silence.
+*   **Microgravity Implication**: If gravity is required to maintain $[\text{H3K9me3}]$ (via mechanotransduction to methyltransferases), then $g \to 0$ leads to a drop in $[\text{H3K9me3}]$, causing $E_{nuc} \to E_{basal}$ (softening).
+*   **Measurable Proxy**: The slope of the regression line between Nuclear stiffness (measured via AFM) and H3K9me3 immunofluorescence intensity across a population of cells.
+
+### 2.13. The Vestibular-to-Proprioceptive Precision Ratio ($\Omega_{VP}$)
+
+We model the spine's alignment controller as a Bayesian integrator combining two noisy inputs: Global Gravity ($g$) detected by the Vestibular system, and Local Curvature ($\kappa$) detected by Proprioception.
+
+$$ \Omega_{VP} = \frac{\pi_V}{\pi_P} = \frac{\sigma_P^2}{\sigma_V^2} $$
+
+*   **Symbols**:
+    *   $\pi_V$: Precision of the global vestibular error signal (inverse variance) $[1]$.
+    *   $\pi_P$: Precision of the local proprioceptive error signal $[1]$.
+    *   $\sigma_V^2$: Variance of vestibular noise on a normalized estimate of global tilt/posture (dimensionless).
+    *   $\sigma_P^2$: Variance of proprioceptive noise on the same normalized latent posture/curvature estimate (dimensionless), so that their ratio $\sigma_P^2 / \sigma_V^2$ is itself dimensionless.
+*   **Physical Interpretation**:
+    *   **High Ratio ($\Omega_{VP} \gg 1$)**: The organism minimizes global error (Gravity). The spine aligns vertically.
+    *   **Low Ratio ($\Omega_{VP} \ll 1$)**: The organism minimizes local error (Proprioception). The spine conforms to intrinsic muscle tone priors, ignoring gravity.
+    *   **Microgravity Limit**: As $g \to 0$, the vestibular signal becomes effectively undetectable relative to noise (vestibular precision $\pi_V$ approaches zero), causing $\Omega_{VP} \to 0$. The spine effectively "hallucinates" a geometry based on noisy local sensors (Geometric Hallucination).
+*   **Measurable Proxy (hypothesis-generating only)**:
+    *   A coarse, circuit-level heuristic is the ratio of Vestibulo-Ocular Reflex (VOR) gain to H-reflex slope. This compares a predominantly vestibular brainstem reflex to a predominantly proprioceptive spinal reflex and thus only **indirectly** tracks $\Omega_{VP}$; it does **not** assume that VOR and H-reflex operate in the same control loop as spinal alignment.
+    *   More direct experimental proxies for $\Omega_{VP}$ would relate specifically to postural control, e.g. the ratio of vestibular vs proprioceptive perceptual thresholds or gains during controlled perturbation paradigms (galvanic/rotational vestibular stimulation vs muscle/tendon vibration or joint angle perturbation).
+
+### 2.14. The Morphogenetic Deborah Number ($\mathcal{D}_{morph}$)
+
+We propose that spinal morphogenesis operates in a viscoelastic regime defined by the competition between volumetric growth and stress relaxation via ECM remodeling. We define $\mathcal{D}_{morph}$ as the ratio of the characteristic stress relaxation time ($\tau_{relax}$) to the characteristic growth time ($\tau_{growth}$).
+
+$$ \mathcal{D}_{morph} = \frac{\tau_{relax}}{\tau_{growth}} = \frac{1/k_{remodel}}{1/\dot{\varepsilon}_g} = \frac{\dot{\varepsilon}_g}{k_{remodel}} $$
+
+*   **Symbols**:
+    *   $\dot{\varepsilon}_g$: Volumetric growth strain rate $[T^{-1}]$.
+    *   $k_{remodel}$: Rate constant of ECM turnover (e.g., MMP-mediated collagen degradation) $[T^{-1}]$.
+*   **Physical Interpretation**:
+    *   $\mathcal{D}_{morph} \ll 1$ (Fluid Limit): Remodeling is fast relative to growth. The tissue relaxes growth-induced stress, conforming plastically to the target geometry specified by $I(s)$.
+    *   $\mathcal{D}_{morph} \gg 1$ (Solid Limit): Growth is faster than remodeling. The tissue accumulates residual stress, behaving elastically. If this stress exceeds critical buckling loads, geometric instability occurs.
+*   **AIS Context**: During the adolescent growth spurt, $\dot{\varepsilon}_g$ spikes. If $k_{remodel}$ (e.g., MMP13 activity) does not increase proportionally, $\mathcal{D}_{morph}$ rises, pushing the spine into a brittle, instability-prone regime.
+*   **Measurable Proxy**: The ratio of Height Velocity (cm/year) to serum markers of Collagen Type II degradation (e.g., CTX-II or C2C).
+
+### 2.15. The Proprioceptive-Metabolic Number ($\mathcal{M}_{prop}$)
+
+We define the stability of the spinal control loop as a ratio between metabolic supply to the neural integrators and the metabolic cost of maintaining the counter-curvature posture.
+
+$$ \mathcal{M}_{prop} = \frac{S_{proprio}(L)}{P_{counter}(L)} $$
+
+*   **Symbols**:
+    *   $S_{proprio}$: Metabolic power supplied to the proprioceptive system (mitochondria in muscle spindles/DRG) $[ML^2T^{-3}]$ (Watts).
+    *   $P_{counter}$: Metabolic power required to maintain the counter-curvature posture against gravity $[ML^2T^{-3}]$ (Watts).
+    *   $L$: Characteristic spinal length $[L]$.
+*   **Scaling Relationships**:
+    *   Supply follows surface-area or diffusive scaling: $S_{proprio} \propto L^{\gamma}$ (e.g., $\gamma \approx 0.5$ for diffusive supply in avascular tissues like IVD, or $\gamma \approx 0.75$ for vascularized tissue).
+    *   Demand follows geometric similarity: $P_{counter} \propto L^0$ (assuming $\kappa \propto L^{-1}$ and $M_{bio} \propto L^3$).
+*   **Physical Interpretation**:
+    *   $\mathcal{M}_{prop} < 1$: **Energy Deficit Window**. The metabolic cost of processing error signals exceeds the supply. The system becomes "conceptually blind" to small errors, allowing drift (scoliosis).
+    *   $\mathcal{M}_{prop} > 1$: Stable operation.
+*   **Implication**: If $\gamma > 0$, the deficit is most acute at small $L$ (embryonic/early post-natal). However, during the adolescent growth spurt, if $\dot{L}$ drives a transient spike in remodeling costs (increasing $P_{counter}$ via plastic terms not captured in static analysis), $\mathcal{M}_{prop}$ may dip below unity.
+*   **Measurable Proxy**: The ratio of local glucose uptake (FDG-PET) in paraspinal muscles to the Cobb angle magnitude during the rapid growth phase.
+
+### 2.16. The Disc Pumping Number ($\mathcal{P}_{disc}$)
+
+We define the ratio of convective solute transport (driven by cyclic compression) to diffusive transport in the intervertebral disc.
+
+$$ \mathcal{P}_{disc} = \frac{f_{load} \cdot \varepsilon_{vol} \cdot H_{disc}^2}{D_{solute}} $$
+
+*   **Symbols**:
+    *   $f_{load}$: Frequency of diurnal/locomotor loading cycles $[T^{-1}]$.
+    *   $\varepsilon_{vol}$: Volumetric strain per cycle (fluid exchange fraction) $[1]$.
+    *   $H_{disc}$: Characteristic height of the disc (diffusion path) $[L]$.
+    *   $D_{solute}$: Effective diffusivity of large solutes (e.g., Glucose, Lactate) in the ECM $[L^2T^{-1}]$.
+*   **Physical Interpretation**:
+    *   $\mathcal{P}_{disc} > 1$: Convection-dominated transport. The "pump" is active, maintaining high $O_2$ and glucose levels deep in the Nucleus Pulposus.
+    *   $\mathcal{P}_{disc} < 1$: Diffusion-dominated transport. The "Convective Shutdown". Solute transport relies on slow diffusion, leading to a hypoxic/acidic core that stabilizes HIF-1$\alpha$ and upregulates MMPs.
+*   **Microgravity Implication**: In $\mu g$, $f_{load}$ decreases and static swelling occurs ($\varepsilon_{vol} \to 0$). $\mathcal{P}_{disc}$ drops, triggering the "Hypoxic Remodeling" cascade.
+*   **Measurable Proxy**: The enhancement of Gadolinium contrast uptake in the IVD Nucleus Pulposus post-exercise vs. resting (Dynamic Contrast-Enhanced MRI).
+
+### 2.17. The Ciliary Gain Factor ($\mathcal{G}_{cil}$)
+
+We formalize the "Tunable Antenna" hypothesis, where the primary cilium oscillates in length (under circadian control) to maximize sensitivity during the active phase and minimize damage/noise during the rest phase.
+
+$$ \mathcal{G}_{cil} = \frac{1}{T} \int_0^T \left( \frac{L_{cil}(t)}{L_0} \right)^3 \cdot \frac{|\sigma_{load}(t)|}{\sigma_0} dt $$
+
+*   **Symbols**:
+    *   $L_{cil}(t)$: Instantaneous length of the primary cilium $[L]$, oscillating with circadian phase.
+    *   $L_0$: Reference (mean) cilium length $[L]$.
+    *   $\sigma_{load}(t)$: Instantaneous mechanical stress magnitude $[ML^{-1}T^{-2}]$.
+    *   $\sigma_0$: Reference physiological stress $[ML^{-1}T^{-2}]$.
+    *   $T$: Period of the circadian cycle (24h).
+*   **Physical Interpretation**:
+    *   $\mathcal{G}_{cil} > 1$: **Constructive Interference**. The cilium is longest when stress is highest, amplifying the signal-to-noise ratio.
+    *   $\mathcal{G}_{cil} < 1$: **Destructive Interference** (Ciliary Deafness). The cilium retracts during loading or extends during rest, leading to poor mechanotransduction efficiency.
+*   **Measurable Proxy**: The Pearson correlation coefficient between ciliary length (measured via Arl13b-GFP time-lapse) and the derivative of the sleep/wake activity cycle (actigraphy).
+
+### 2.18. The Enzymatic Anisotropy Factor ($\mathcal{A}_{enz}$)
+
+We formalize the "Tension-Gated Template Matcher" hypothesis, where high-aspect-ratio enzymes (like PLOD1) exhibit enhanced catalytic efficiency when their principal axis aligns with the substrate's fiber axis (e.g., tensioned collagen).
+
+$$ k_{cat}(\theta) = k_{iso} \left[ 1 + \mathcal{A}_{enz} (\lambda_{enz} - 1) \cos^2 \theta \right] $$
+
+*   **Symbols**:
+    *   $\mathcal{A}_{enz}$: Anisotropy coupling constant $[1]$ (Dimensionless).
+    *   $\lambda_{enz}$: Aspect ratio of the enzyme (Length/Width). For PLOD1, $\lambda_{enz} \approx 3.4$.
+    *   $\theta$: Angle between the enzyme's major axis and the substrate's fiber axis.
+*   **Physical Interpretation**:
+    *   $\mathcal{A}_{enz} > 0$: The enzyme acts as a geometric sensor, preferentially modifying load-bearing (aligned) fibers.
+    *   **Mechanism**: Anisotropic diffusion or "slot-docking" kinetics on the collagen triple helix.
+*   **Measurable Proxy**: The ratio of collagen crosslink density (pyridinoline/deoxypyridinoline) in tensed (tendon) vs. relaxed (skin) tissues, normalized by local PLOD1 concentration.
+
+### 2.19. The Mechanogenetic Coupling Tensor ($\mathbf{\Psi}_{Hox}$)
+
+We formalize the "Tension-Dependent Identity" hypothesis (Kang et al., 2025), where mechanical stress directly modulates the expression of Anterior-Posterior identity genes (HOX). We define $\mathbf{\Psi}_{Hox}$ as a rank-2 tensor mapping the local stress tensor $\boldsymbol{\sigma}$ to a shift in the effective morphogenetic coordinate $s_{eff}$.
+
+$$ s_{eff} = s + \mathbf{\Psi}_{Hox} : \boldsymbol{\sigma} $$
+$$ I(s) \to I(s_{eff}) $$
+
+*   **Symbols**:
+    *   $\boldsymbol{\sigma}$: Cauchy stress tensor $[ML^{-1}T^{-2}]$.
+    *   $\mathbf{\Psi}_{Hox}$: Sensitivity tensor $[M^{-1}L^2T^2]$. (Inverse stiffness * Length).
+*   **Physical Interpretation**:
+    *   **$\Psi_{Hox} \approx 0$**: Genetic identity is hard-coded (Robust).
+    *   **$\Psi_{Hox} > 0$**: High tension "posteriorizes" the cell (shifts identity towards tail).
+    *   **Mechanism**: Chromatin opening via LINC complex tension allowing access to HOX clusters.
+*   **Measurable Proxy**: The shift in the transition boundary between HOX paralogs (e.g., HOXB4/HOXB6) in fibroblasts cultured on soft vs. stiff substrates.
+
+### 2.20. The Piezo-Osteogenic Gain ($\Gamma_{PO}$)
+
+We define $\Gamma_{PO}$ as the sensitivity of Tissue Mineral Density (TMD) accretion to time-averaged hydrostatic stress ($\langle S_{scalar} \rangle$), mediated by Piezo1 channels.
+
+$$ \frac{d(\text{TMD})}{dt} = \Gamma_{PO} \langle S_{scalar} \rangle - \delta \cdot \text{TMD} $$
+
+*   **Symbols**:
+    *   $\text{TMD}$: Tissue Mineral Density $[ML^{-3}]$.
+    *   $\langle S_{scalar} \rangle$: Time-averaged scalar stress (pressure) $[ML^{-1}T^{-2}]$.
+    *   $\delta$: Resorption/decay rate $[T^{-1}]$.
+*   **Dimensions**: $[L^{-2}T]$.
+*   **Physical Interpretation**: A high $\Gamma_{PO}$ means the organism efficiently converts mechanical pressure into structural stiffness (bone/mineral).
+*   **Mechanism**: Piezo1 activation $\to$ Ca2+ influx $\to$ Calcineurin/NFAT $\to$ Osteoblast differentiation (Ramli et al., 2024).
+*   **Measurable Proxy**: The slope of the regression line between local bone mineral density (BMD) and computationally estimated hydrostatic pressure in the vertebral centrum.
+
+### 2.21. The Bastien Number ($\mathcal{B}_{osc}$)
+
+We define a dimensionless number governing the bifurcation from stable straight growth to oscillatory (scoliotic) instability, derived from the Bastien et al. (2013) gravitropic oscillator model.
+
+$$ \mathcal{B}_{osc} = \frac{\beta L}{\gamma} $$
+
+*   **Symbols**:
+    *   $\beta$: Gravitropic sensitivity (rate of curvature change per unit angle) $[L^{-1}T^{-1}]$.
+    *   $\gamma$: Proprioceptive straightening gain (rate of curvature decay) $[T^{-1}]$.
+    *   $L$: Characteristic length $[L]$.
+*   **Physical Interpretation**:
+    *   $\mathcal{B}_{osc} < \mathcal{B}_{crit}$: Stable convergence to vertical.
+    *   $\mathcal{B}_{osc} > \mathcal{B}_{crit}$: Spontaneous "hunting" oscillations (S-shape formation).
+*   **Measurable Proxy**: The ratio of the overshoot amplitude to the damping rate in a postural perturbation test (sway ratio).
+
+### 2.22. The Ciliary-Osteogenic Locking Number ($\mathcal{L}_{CO}$)
+
+We define a dimensionless number representing the bistable competition between ciliary-mediated repression of osteogenesis (active during growth) and Piezo1-mediated promotion of osteogenesis (active during loading/ossification).
+
+$$ \mathcal{L}_{CO} = \frac{\Gamma_{Piezo} \cdot \sigma_{eff}}{K_{Cilia} \cdot L_{cil}} $$
+
+*   **Symbols**:
+    *   $\Gamma_{Piezo}$: Piezo1-mediated osteogenic gain (sensitivity to stress) $[M^{-1} L T^2]$.
+    *   $\sigma_{eff}$: Effective compressive stress $[ML^{-1}T^{-2}]$.
+    *   $K_{Cilia}$: Repressive sensitivity per unit cilium length $[L^{-1}]$.
+    *   $L_{cil}$: Primary cilium length $[L]$.
+*   **Physical Interpretation**:
+    *   $\mathcal{L}_{CO} < 1$: **Growth Mode**. Low stress allows long cilia ($L_{cil} \uparrow$), which repress Runx2/Osterix. The growth plate remains cartilaginous.
+    *   $\mathcal{L}_{CO} > 1$: **Locked Mode**. High stress shortens cilia ($L_{cil} \downarrow$) and activates Piezo1, driving a positive feedback loop of ossification and stiffening. This describes the "Stress-Lock" leading to vertebral wedging.
+*   **Measurable Proxy**: The ratio of nuclear YAP/TAZ intensity (osteogenic driver) to ciliary Arl13b intensity (repressive state) in chondrocytes at the vertebral growth plate.
+
+### 2.23. The Metabolic Gating Factor ($\Psi_{met}$)
+
+We define a dimensionless scaling factor representing the metabolic permissiveness for mechanotransduction. It modulates the effective Morphomechanical Stiffness $\chi_M$ based on local ATP availability.
+
+$$ \chi_M(t) = \Psi_{met}(t) \cdot \chi_{M,0} $$
+$$ \Psi_{met} = \frac{[ATP]}{K_m + [ATP]} $$
+
+*   **Symbols**:
+    *   $\Psi_{met}$: Metabolic gating efficiency $[1]$.
+    *   $[ATP]$: Local intracellular ATP concentration $[N L^{-3}]$.
+    *   $K_m$: Michaelis constant for Myosin II ATPase activity (critical threshold) $[N L^{-3}]$.
+*   **Physical Interpretation**:
+    *   **$\Psi_{met} \approx 1$**: High energy state. Cytoskeletal tension is maintained, and Piezo1 is sensitive to mechanical stress.
+    *   **$\Psi_{met} \to 0$**: Low energy state (Energy Deficit). Actomyosin cortex relaxes, membrane tension drops, and Piezo1 becomes "deaf" to external load, effectively breaking the feedback loop ($\chi_M \to 0$).
+*   **Measurable Proxy**: The ratio of cortical tension (measured via AFM or micropipette aspiration) to intracellular [ATP] (measured via PercevalHR biosensor).
+
+### 2.24. The Anisotropic Crowding Penalty ($\mathcal{P}_{crowd}$)
+
+We posit that the signaling efficiency of high-aspect-ratio proteins (e.g., Piezo1, GHR) is disproportionately sensitive to cytoplasmic crowding compared to globular proteins. We define $\mathcal{P}_{crowd}$ as the sensitivity of the diffusion-limited reaction rate $k_{eff}$ to the volume fraction of macromolecules $\phi$.
+
+$$ k_{eff}(\Lambda) = k_0 \exp\left( - \mathcal{P}_{crowd} \cdot \phi \cdot (\Lambda - 1) \right) $$
+
+*   **Symbols**:
+    *   $\Lambda$: Protein Anisotropy (Aspect Ratio, $L_{major}/L_{minor}$).
+    *   $\phi$: Cytoplasmic volume fraction (increases under compression/dehydration) $[1]$.
+    *   $\mathcal{P}_{crowd}$: Anisotropic crowding coefficient $[1]$.
+*   **Physical Interpretation**:
+    *   $\Lambda \approx 1$ (Globular): The exponential term vanishes. Signaling is robust to crowding.
+    *   $\Lambda \gg 1$ (Elongated): Signaling is exponentially suppressed as $\phi$ increases.
+    *   **Mechanism**: Rotational diffusion hindrance and excluded volume effects are amplified for anisotropic shapes (Minton, 2006).
+*   **Scoliosis Context**: On the concave side of a curve, compressive stress increases cell density and $\phi$. This selectively silences high-$\Lambda$ metabolic sensors (GHR, Anisotropy ~5.13), creating a "Metabolic Blind Spot" that prevents compensatory growth.
+*   **Measurable Proxy**: The ratio of diffusion coefficients ($D_{long}/D_{short}$) for fluorescently tagged nanorods of varying aspect ratios injected into concave vs. convex side vertebral cells.
+
 ## 3. The Tissue Anisotropy Tensor ($\mathbf{\Lambda}$)
 
 The tensor $\mathbf{\Lambda}$ is a rank-2, dimensionless operator representing the statistical alignment of Planar Cell Polarity (PCP) vectors and ECM fiber orientation within the vertebral cross-section.
@@ -134,7 +391,23 @@ Where $b$ is the bending axis and $t$ is the torsion axis.
     Where $\theta_k$ is the angle of the $k$-th fiber relative to the anatomical axis.
 *   **Biological Basis**: $\mathbf{\Lambda}$ is established by the non-canonical Wnt/PCP pathway (e.g., *VANGL2*, *PTK7*). Disruption of these genes introduces off-diagonal terms ($\lambda_{bt} \neq 0$).
 
-## 4. Operational Metric: Counter-Curvature Energy
+## 4. The Anisotropic Growth Tensor ($\mathbf{\Omega}$)
+
+We introduce $\mathbf{\Omega}$ as a rank-2 dimensionless tensor that determines the preferred directions of volumetric addition (growth) in response to scalar metabolic availability. This formalizes the Hueter-Volkmann law in a tensorial framework.
+
+$$ \dot{\boldsymbol{\varepsilon}}_g = \nu_{met} (\mathbf{I} + \gamma_{aniso} \mathbf{\Omega}) $$
+
+*   **Symbols**:
+    *   $\dot{\boldsymbol{\varepsilon}}_g$: Growth strain rate tensor $[T^{-1}]$.
+    *   $\nu_{met}$: Scalar metabolic growth potential (function of nutrition/hormones) $[T^{-1}]$.
+    *   $\mathbf{\Omega}$: Directionality tensor (Trace = 0 for pure shape change, or normalized).
+    *   $\gamma_{aniso}$: Sensitivity to anisotropy.
+*   **Physical Interpretation**:
+    *   **Isotropic Growth**: If $\gamma_{aniso} \to 0$ or $\mathbf{\Omega} \propto \mathbf{I}$, growth is spherical (e.g., "bloating").
+    *   **Anisotropic Elongation**: If $\Omega_{zz} \gg \Omega_{xx}$, the organism elongates against gravity. This aligns with the "Intermediate Anisotropy" simulation results where $\mathbf{\Omega}$ directs the growth vector.
+*   **Measurable Proxy**: The ratio of Longitudinal ($k_L$) to Radial ($k_R$) growth rates in the vertebral body, measured via fluorochrome labeling (calcein/alizarin) intervals.
+
+## 5. Operational Metric: Counter-Curvature Energy
 
 To operationalize the hypothesis, we define the **Counter-Curvature Energy** ($U_{CC}$) as the work done by the organism against the gravitational field to maintain its shape, normalized by the elastic energy.
 
@@ -142,7 +415,7 @@ $$ U_{CC} = \frac{\int_0^L \mathbf{M}_{bio}(s) \cdot (\boldsymbol{\kappa}(s) - \
 
 A higher $U_{CC}$ indicates a stronger "anti-gravity" response driven by information.
 
-## 5. Falsifiable Predictions & Tests
+## 6. Falsifiable Predictions & Tests
 
 The theory makes specific predictions about the relationship between genetic anisotropy, gravity, and spinal geometry.
 
@@ -216,7 +489,177 @@ The theory makes specific predictions about the relationship between genetic ani
 *   **Data Needed**: Spinal geometry and Pkd2l1 activity (GCaMP) in zebrafish larvae raised in a clinostat (simulated $\mu g$) with and without tail-attached magnetic tensioners.
 *   **Refutation**: If axial tension fails to rescue the scoliotic phenotype in the absence of gravity, the mechanism relies on the *vector* of gravity, not just the tension it generates. (Reference: Cantaut-Belarif et al., 2018).
 
-## 6. References
+### Test O: The Blockiness-Tension Scaling
+*   **Hypothesis**: Proteins with high AlphaFold Blockiness scores (e.g., Filamin A) have a higher $F_{crit}$ and thus require higher gravitational load to signal than low-blockiness proteins.
+*   **Data Needed**: Single-molecule magnetic tweezers force-spectroscopy of "Blocky" (Cluster 1) vs. "Rod-like" (Cluster 0) protein domains, measuring the unfolding force distribution.
+*   **Refutation**: If "Blocky" proteins unfold at lower forces than "Rod" proteins, the structural proxy for mechanosensitivity is invalid. (Reference: del Rio et al., 2009).
+
+### Test P: The Microgravity Sequestration
+*   **Hypothesis**: In microgravity, $\xi_{crypto}$ drops effectively to zero for high-threshold integrators, sequestering downstream effectors (e.g., transcription factors) in the cytoplasm.
+*   **Data Needed**: Subcellular localization of cryptic-site binding partners (e.g., Vinculin, FilGAP) in cells cultured in bioreactors (simulated $\mu g$) vs. centrifuge (hypergravity).
+*   **Refutation**: If binding partners remain localized to focal adhesions despite loss of tension, the "Cryptic Exposure" gating mechanism is not the primary transducer. (Reference: Pentikäinen & Ylänne, 2009).
+
+### Test Q: The Stagnant Pool Prediction
+*   **Hypothesis**: In microgravity, the reduction in $\text{Pe}_G$ (clearance rate) correlates linearly with the upregulation of inflammatory markers (TNF-$\alpha$, IL-1$\beta$) in the CSF, preceding structural scoliotic changes.
+*   **Data Needed**: Correlation of intrathecal contrast clearance rates (MRI) with CSF proteomic markers in bed-rest subjects (60-day HLS) or astronauts.
+*   **Refutation**: If inflammation spikes despite maintained clearance ($\text{Pe}_G > 1$), or if low clearance occurs without inflammation, the "Toxic Stasis" model is incorrect. (Reference: Mader et al., 2026; Iliff et al., 2012).
+
+### Test R: The Flow-Curvature Link
+*   **Hypothesis**: Artificially inducing $\text{Pe}_G < 1$ in a 1G environment (e.g., via AQP4 inhibition or cisterna magna obstruction) is sufficient to induce scoliotic curvature even with normal mechanical loading.
+*   **Data Needed**: Spinal geometry tracking of AQP4-/- mice or animals with surgically reduced CSF flow, comparing convex vs. concave inflammatory profiles.
+*   **Refutation**: If flow stasis leads to generalized neurodegeneration but *not* asymmetric curvature, the glymphatic failure is a systemic stressor, not a morphogenetic driver. (Reference: Xie et al., 2013).
+
+### Test S: The Isotropic Collapse
+*   **Hypothesis**: Disruption of PCP genes (*VANGL2*, *PTK7*) reduces the anisotropy of the growth tensor ($\mathbf{\Omega}$), leading to a reduction in the vertebral aspect ratio (height/width) towards unity (spherical).
+*   **Data Needed**: Vertebral aspect ratios measured from lateral X-rays or micro-CT in *Vangl2* or *Ptk7* mutant zebrafish/mice compared to WT siblings.
+*   **Refutation**: If mutants maintain normal vertebral elongation (high aspect ratio) despite loss of planar polarity, the growth directionality is independent of the PCP pathway. (Reference: Goriely, 2017).
+
+### Test T: The Metabolic-Geometric Decoupling
+*   **Hypothesis**: Increasing the scalar metabolic drive ($\nu_{met}$) via growth hormone without a corresponding increase in anisotropy ($\mathbf{\Omega}$) will amplify geometric errors (spherical deformity/buckling) rather than correcting them.
+*   **Data Needed**: Cobb angle progression and vertebral shape analysis in scoliotic animal models treated with Growth Hormone (GH) vs vehicle.
+*   **Refutation**: If GH treatment restores spinal linearity by "pushing" the spine straight, the hypothesis that scalar growth requires vector guidance is falsified. (Reference: Stokes, 2002).
+
+### Test U: The Desynchronization Drift
+*   **Hypothesis**: In the absence of gravitational loading ($g \to 0$, $\mathcal{E}_{mech} \to 0$), the circadian clocks of adjacent vertebral levels will drift out of phase, leading to discordant remodeling and "kinked" growth.
+*   **Data Needed**: Bioluminescence imaging of multi-level spine explants from PER2::LUC mice cultured in free-floating (microgravity) vs. cyclically loaded conditions.
+*   **Refutation**: If adjacent segments maintain phase coherence in the absence of mechanical cues (relying solely on chemical coupling), the "Gravity Zeitgeber" hypothesis is falsified. (Reference: Dudek et al., 2017).
+
+### Test V: The Loading Rescue
+*   **Hypothesis**: Application of cyclic compressive loading at the circadian frequency (24h period) can rescue clock amplitude and phase even in constant dark (DD) conditions.
+*   **Data Needed**: Amplitude of BMAL1 expression in disc cells subjected to cyclic strain in dark conditions compared to static controls.
+*   **Refutation**: If mechanical loading fails to reset the clock phase or boost amplitude, the coupling constant $K_{ent}$ is effectively zero. (Reference: Yang et al., 2017).
+
+### Test W: The Epigenetic Stiffening Law
+*   **Hypothesis**: Depletion of H3K9me3 (via chemical inhibition of SUV39H1) will reduce nuclear stiffness ($E_{nuc}$) with a proportionality constant $\Gamma_{CS}$, independent of Lamin A/C levels.
+*   **Data Needed**: AFM stiffness vs H3K9me3 levels (Chassis/Chaetocin treatment) in myoblasts.
+*   **Refutation**: If stiffness is unaffected by H3K9me3 loss when Lamin A is constant, the chromatin contribution is negligible. (Reference: Nava et al., 2020).
+
+### Test X: The Microgravity-Chromatin Decoupling
+*   **Hypothesis**: Microgravity exposure causes a specific reduction in $[\text{H3K9me3}]$ that correlates with nuclear softening.
+*   **Data Needed**: H3K9me3 ChIP-Seq or IF in spaceflown samples vs ground controls.
+*   **Refutation**: If H3K9me3 levels are stable or increase in microgravity, the "Scalar Senescence" model is falsified. (Reference: Stephens et al., 2017).
+
+### Test Y: The Geometric Hallucination
+*   **Hypothesis**: If $\Omega_{VP}$ falls below a critical threshold due to vestibular ablation (e.g., labyrinthectomy), the spine will develop a curvature determined by the *variance* of local proprioception, not just mechanical load.
+*   **Data Needed**: 3D spinal tracking of bilateral vestibular-deficient mice compared to controls in the dark (removing visual compensation).
+*   **Refutation**: If vestibular loss causes only transient postural instability that averages to zero over time (i.e., random swaying with preserved time-averaged straightness, without permanent structural changes), the Geometric Hallucination (structural drift) hypothesis is falsified. (Reference: Adams et al., 2013).
+
+### Test Z: The Stochastic Resonance Rescue
+*   **Hypothesis**: If microgravity scoliotic drift is due to high vestibular noise ($\sigma_V^2$), adding sub-threshold broad-spectrum vibration (Stochastic Resonance) should restore the signal detectability, effectively increasing $\pi_V$ and restoring $\Omega_{VP}$.
+*   **Data Needed**: Curvature progression in tail-suspended mice with vs. without imperceptible mechanical vibration applied to the skull/mastoid, using a candidate frequency band for stochastic resonance whose optimal range must be determined experimentally.
+*   **Refutation**: If vibration worsens the drift (increases noise) rather than stabilizing it (resonance), the precision-weighted model is incorrect. (Reference: Proske & Gandevia, 2012; Friston, 2010).
+
+### Test AA: The Remodeling Lag
+*   **Hypothesis**: High $\mathcal{D}_{morph}$ predicts curvature progression. Patients with rapid growth ($\dot{\varepsilon}_g \uparrow$) but low ECM turnover ($k_{remodel} \downarrow$) are at highest risk.
+*   **Data Needed**: Longitudinal serum analysis of MMP activity/degradation products vs. height velocity in AIS cohorts.
+*   **Refutation**: If curvature progression is independent of the ratio $\dot{\varepsilon}_g / k_{remodel}$, or if rapid remodelers (low $\mathcal{D}_{morph}$) are *more* unstable (due to softening), the "stress accumulation" model is incorrect. (Reference: Ambrosi et al., 2011).
+
+### Test AB: The Pharmacological Relaxation
+*   **Hypothesis**: Increasing $k_{remodel}$ exogenously (e.g., via Relaxin or MMP upregulation) during the growth spurt should rescue the stability of the spine by lowering $\mathcal{D}_{morph}$.
+*   **Data Needed**: Spinal linearity in rapidly growing animal models treated with Relaxin or general MMP agonists vs vehicle.
+*   **Refutation**: If increased remodeling leads to *more* deformity (due to loss of stiffness $\chi_M$) rather than less (stress relaxation), the dominant failure mode is stiffness loss, not stress accumulation. (Reference: Humphrey, 2002).
+
+### Test AC: The Metabolic Scaling Violation
+*   **Hypothesis**: If AIS is a metabolic failure, the onset of curvature should correspond to a developmental window where spinal cord metabolic demand outpaces supply.
+*   **Data Needed**: Allometric scaling of spinal cord vs. paraspinal muscle metabolic rate (oxygen consumption or ATP turnover) across developmental stages (fetal to adolescent) in a mammalian model.
+*   **Refutation**: If neural metabolic supply scales linearly or super-linearly with length ($L^{\ge 1}$) while demand remains constant, there is no "energy crunch" at larger sizes, falsifying the scaling mismatch hypothesis. (Reference: West et al., 1997; Laughlin, 2001).
+
+### Test AD: The Hypoxic Trigger
+*   **Hypothesis**: Reducing $S_{proprio}$ globally via systemic hypoxia should widen the Energy Deficit Window (increase $L_{crit}$), causing scoliosis to appear at larger body sizes or later developmental stages than predicted by genetics alone.
+*   **Data Needed**: Spinal curvature onset length in zebrafish larvae raised in normoxic vs. hypoxic water (e.g., 50% saturation).
+*   **Refutation**: If hypoxia uniformly stunts growth but does *not* induce curvature (i.e., geometry is preserved despite metabolic stress), the specific link between metabolism and symmetry breaking is falsified. (Reference: Sato et al., 2025; Latimer et al., 2021).
+
+### Test AE: The Frequency-Hypoxia Coupling
+*   **Hypothesis**: The stabilization of HIF-1$\alpha$ in the nucleus pulposus is inversely proportional to the loading frequency $f_{load}$, even if the time-averaged magnitude of load is constant.
+*   **Data Needed**: Nuclear HIF-1$\alpha$ accumulation (immunofluorescence) in IVD explants subjected to static ($f=0$) vs. cyclic ($f=1$ Hz) compression at identical mean stress.
+*   **Refutation**: If HIF-1$\alpha$ levels are determined solely by mean stress magnitude (static compression) and are insensitive to the *rate* of fluid exchange, the convective pumping hypothesis is falsified. (Reference: Huang et al., 2014).
+
+### Test AF: The Small-Molecule Rescue
+*   **Hypothesis**: If the core defect in microgravity is hypoxic upregulation of MMPs due to low $\mathcal{P}_{disc}$, treating unloaded discs with HIF-1$\alpha$ inhibitors (e.g., Digoxin, Echinomycin) should prevent matrix degradation.
+*   **Data Needed**: Aggrecan/Collagen II content in tail-suspended mouse IVDs treated with systemic HIF-1$\alpha$ inhibitors vs. vehicle.
+*   **Refutation**: If MMP upregulation and matrix loss persist despite HIF-1$\alpha$ blockade, the degradation pathway is hypoxia-independent (e.g., purely mechanically gated). (Reference: Sato et al., 2025).
+
+### Test AG: The Ciliary Phase Shift
+*   **Hypothesis**: Shifting the loading phase by 12 hours relative to the ciliary clock (e.g., night-shift worker model) will reduce $\mathcal{G}_{cil}$ and suppress mechanotransductive gene expression (*COL1A1*, *ACAN*).
+*   **Data Needed**: RT-qPCR of anabolic markers in IVD explants loaded in-phase vs. anti-phase with their Bmal1 oscillations.
+*   **Refutation**: If gene expression is independent of the phase relationship between load and clock, the "Tunable Antenna" hypothesis is false. (Reference: Miyoshi et al., 2024).
+
+### Test AH: The Length-Locked Mutant
+*   **Hypothesis**: Mutants with fixed-length cilia (e.g., *Kif3a* overexpression or specific *Cep290* alleles that prevent resorption) will be hypersensitive to noise at rest and fail to adapt gain, leading to aberrant calcification or apoptosis.
+*   **Data Needed**: Stress response curves (Calcium imaging) of fixed-length vs. oscillating-length cilia under variable amplitude vibration.
+*   **Refutation**: If fixed-length cilia provide equivalent or superior signal-to-noise ratio compared to oscillating cilia, the dynamic tuning provides no advantage. (Reference: Spasic & Jacobs, 2017).
+
+### Test AI: The Strain-Dependent Catalysis
+*   **Hypothesis**: PLOD1 activity ($k_{cat}$) increases with substrate strain (alignment) due to $\mathcal{A}_{enz}$.
+*   **Data Needed**: enzymatic activity of purified PLOD1 on collagen hydrogels under variable uniaxial strain ($0\%$ to $10\%$).
+*   **Refutation**: If activity is constant regardless of strain or alignment state ($\mathcal{A}_{enz} \approx 0$), the geometric sensing hypothesis is falsified. (Reference: Pinnell et al., 1972).
+
+### Test AJ: The Geometric Specificity
+*   **Hypothesis**: A truncated PLOD1 mutant with low aspect ratio ($\lambda \approx 1$) will lose its strain-sensitivity compared to Wild-Type.
+*   **Data Needed**: Comparative kinetics of WT vs. Globular-PLOD1 on aligned collagen substrates.
+*   **Refutation**: If the globular mutant shows the same alignment enhancement as the rod-like WT, the geometric anisotropy mechanism is incorrect. (Reference: Ugur et al., 2024).
+
+### Test AK: The Stress-Shifted Boundary
+*   **Hypothesis**: Application of uniaxial stretch to a developing somite boundary should shift the HOX expression domain in the direction of tension if $\mathbf{\Psi}_{Hox} \neq 0$.
+*   **Data Needed**: In-situ hybridization of *Hoxc6* in chick embryos subjected to exogenous tensile loading.
+*   **Refutation**: If HOX boundaries are invariant to mechanical stress, the identity is purely chemical. (Reference: Kang et al., 2025).
+
+### Test AL: The Tension-Null Promoter
+*   **Hypothesis**: Deleting the tension-responsive enhancer element (e.g., specific YAP/TEAD binding sites) within the HOX cluster will abolish the stress sensitivity ($\mathbf{\Psi}_{Hox} \to 0$) without affecting basal expression.
+*   **Data Needed**: Expression levels of *HOXA* genes in fibroblasts from CRISPR-edited lines (enhancer deletion) vs WT under cyclic strain.
+*   **Refutation**: If strain-dependence persists despite enhancer deletion, the coupling is global (e.g., nuclear dilution) rather than specific. (Reference: Wang et al., 2009).
+
+### Test AM: Load-Density Uncoupling
+*   **Hypothesis**: Blocking Piezo1 (e.g., GsMTx4 or KO) reduces $\Gamma_{PO}$ to zero. Even with high loads, TMD will not increase.
+*   **Data Needed**: Micro-CT of Piezo1-cKO mice vertebrae after exercise loading vs sedentary.
+*   **Refutation**: If Piezo1-KO mice still show load-induced cortical thickening (e.g., via LRP5/Wnt alone), then $\Gamma_{PO}$ is not primarily Piezo-dependent. (Reference: Ramli et al., 2024).
+
+### Test AN: The Osteopenic Window
+*   **Hypothesis**: In microgravity, $\langle S_{scalar} \rangle$ drops. If $\Gamma_{PO}$ remains constant, $d(\text{TMD})/dt$ becomes negative (dominated by $\delta$).
+*   **Data Needed**: Time course of TMD loss in astronauts (or tail-suspended rats) treated with Yoda1 (Piezo1 agonist).
+*   **Refutation**: If Yoda1 fails to rescue bone density in unloading, then stimulating the sensor is insufficient (downstream metabolic block). (Reference: Sun et al., 2019).
+
+### Test AO: The Egr3 Bifurcation
+*   **Hypothesis**: Egr3-/- mice (low $\gamma$) should exhibit oscillatory curvature dynamics (wavy spine) that fits the Bastien solution for $\mathcal{B}_{osc} > \mathcal{B}_{crit}$.
+*   **Data Needed**: Longitudinal radiographic tracking of spinal curvature in Egr3-/- mice from P7 to P60, fitted to the Bastien oscillator equation.
+*   **Refutation**: If curvature is static/monotonic (buckling) rather than oscillatory (hunting), the proprioceptive gain hypothesis is falsified. (Reference: Blecher et al., 2017).
+
+### Test AP: The Frequency-Gain Lock
+*   **Hypothesis**: Artificially increasing $\beta$ (e.g., hyper-gravity via centrifuge) in a system with fixed $\gamma$ should induce oscillation (scoliosis) in wild-type organisms.
+*   **Data Needed**: Spinal geometry of zebrafish larvae raised in 3g centrifuge vs 1g.
+*   **Refutation**: If hyper-gravity causes only compression (shorter spine) without lateral oscillation, the graviceptive gain $\beta$ is not the driver of instability. (Reference: Bastien et al., 2013).
+
+### Test AQ: The Locking Threshold
+*   **Hypothesis**: The transition from cartilaginous growth to ossification is not linear with stress but exhibits a critical threshold (bifurcation) at $\mathcal{L}_{CO} \approx 1$. Ciliary disassembly should be sharp, not gradual.
+*   **Data Needed**: Step-stress application to vertebral chondrocytes in hydrogels, tracking ciliary length ($L_{cil}$) and Runx2 expression over 24h.
+*   **Refutation**: If Runx2 scales linearly with stress magnitude without a sharp switch-like behavior linked to ciliary loss, the "Lock" concept is incorrect. (Reference: Chen et al., 2025; Li et al., 2023).
+
+### Test AR: The Decoupled Rescue
+*   **Hypothesis**: Stabilizing ciliary length pharmacologically (e.g., via Tubacin) should prevent stress-induced ossification even if Piezo1 is activated (high stress), by maintaining the denominator of $\mathcal{L}_{CO}$.
+*   **Data Needed**: Vertebral growth plate explants under compression treated with Tubacin (HDAC6 inhibitor) vs GsMTx4 (Piezo1 blocker).
+*   **Refutation**: If Tubacin fails to prevent ossification while GsMTx4 does, the mechanism relies solely on Piezo1 activation, not ciliary retraction. (Reference: Chen et al., 2025).
+
+### Test AS: The ATP-Deafness Test
+*   **Hypothesis**: Depleting intracellular ATP (e.g., via oligomycin or 2-deoxyglucose) below a critical threshold ($K_m$) will silence Piezo1-mediated Ca2+ signaling even in the presence of high mechanical compression, effectively reducing $\chi_M$ to zero.
+*   **Data Needed**: Simultaneous high-speed imaging of [ATP] (PercevalHR) and Calcium influx (GCaMP6) in vertebral chondrocytes under cyclic compression with graded metabolic inhibition.
+*   **Refutation**: If mechanotransduction (Ca2+ spikes) persists at the same magnitude despite significant ATP depletion and loss of cortical tension, the "active gating" hypothesis is false. (Reference: Ridone et al., 2019).
+
+### Test AT: The Cortical Collapse
+*   **Hypothesis**: Specific inhibition of Myosin II (e.g., via Blebbistatin) should mimic the "Energy Deficit" phenotype even in high energy states, causing Piezo1 desensitization and loss of osteogenic gene expression.
+*   **Data Needed**: Piezo1 activation probability (patch clamp or Ca2+ imaging) in Blebbistatin-treated osteoblasts compared to controls under identical stretch.
+*   **Refutation**: If Piezo1 remains fully mechanosensitive despite the collapse of cortical tension, the sensor does not rely on the actomyosin cortex for gating. (Reference: Salbreux et al., 2012).
+
+### Test AU: The Aspect Ratio Filter
+*   **Hypothesis**: Under hyper-osmotic compression (simulating high $\phi$), signaling pathways relying on high-anisotropy receptors (e.g., GHR, $\Lambda \approx 5$) will be inhibited significantly more than those relying on globular receptors (e.g., EGFR, $\Lambda \approx 1.5$), even if ligand availability is constant.
+*   **Data Needed**: Phosphorylation levels of STAT5 (downstream of GHR) vs ERK (downstream of EGFR) in chondrocytes exposed to PEG-induced crowding.
+*   **Refutation**: If inhibition is uniform across receptors regardless of shape, the shape-dependent crowding hypothesis is falsified. (Reference: Minton, 2006).
+
+### Test AV: The Crowding Rescue
+*   **Hypothesis**: Reducing cytoplasmic crowding (e.g., by inhibiting ribosome synthesis via low-dose Rapamycin) should restore the signaling of high-anisotropy sensors in compressed cells, "unblinding" them.
+*   **Data Needed**: Mechanotransduction gain (Piezo1 activity) in compressed cells treated with Rapamycin vs vehicle.
+*   **Refutation**: If "thinning" the cytoplasm fails to restore signaling under compression, the block is not steric/crowding-based. (Reference: Delarue et al., 2018).
+
+## 7. References
 
 1.  **Karner, C. M., et al. (2015).** "Gpr126/Adgrg6 gene is essential for Schwann cell myelination and spinal column development." *Science*, 347(6223). (Demonstrates genetic link to stiffness/integrity).
 2.  **Hayes, M., et al. (2014).** "Ptk7 mutant zebrafish models of congenital and idiopathic scoliosis implicate dysregulated Wnt signalling." *Nature Communications*, 5. (Links PCP signaling to spinal alignment and torsion).
@@ -236,3 +679,39 @@ The theory makes specific predictions about the relationship between genetic ani
 16. **Touchstone, H., et al. (2019).** "Recovery of stem cell proliferation by low intensity vibration under simulated microgravity requires LINC complex." *npj Microgravity*, 5. (Demonstrates vector input rescue).
 17. **Troutwine, B. R., et al. (2020).** "The Reissner fiber is critical for proper spinal alignment in zebrafish." *Current Biology*, 30(12). (Demonstrates RF tension role).
 18. **Cantaut-Belarif, Y., et al. (2018).** "The Reissner fiber in the cerebrospinal fluid controls morphogenesis of the body axis." *Current Biology*, 28(15). (Foundational RF paper).
+19. **Sun, J., et al. (2019).** "Piezo1 channels are inherently mechanosensitive." *eLife*, 8. (Scalar vs Vector sensing).
+20. **del Rio, A., et al. (2009).** "Stretching single talin rod molecules activates vinculin binding." *Science*, 323. (Tension-gated unfolding).
+21. **Iliff, J. J., et al. (2012).** "A paravascular pathway facilitates CSF flow through the brain parenchyma and the clearance of interstitial solutes." *Science Translational Medicine*, 4(147). (Foundational Glymphatics).
+22. **Xie, L., et al. (2013).** "Sleep drives metabolite clearance from the adult brain." *Science*, 342(6156). (Link to sleep/pumping and AQP4).
+23. **Goriely, A. (2017).** "The Mathematics and Mechanics of Biological Growth." *Springer*. (Foundational text on differential growth tensors).
+24. **Stokes, I. A. (2002).** "Mechanical modulation of spinal growth and progression of adolescent scoliosis." *Spine*, 27(22). (Hueter-Volkmann law application).
+25. **Yang, N., et al. (2017).** "Mechanical strain regulates the circadian clock in the intervertebral disc." *Journal of Orthopaedic Research*. (Demonstrates mechanical entrainment).
+26. **Dudek, M., et al. (2017).** "The intervertebral disc contains a functional circadian clock that regulates matrix homeostasis." *Nature Communications*. (Foundational IVD clock paper).
+27. **Nava, M. M., et al. (2020).** "Heterochromatin-driven nuclear softening protects the genome against mechanical stress-induced damage." *Cell*, 181(4). (Establishes the link between H3K9me3 and nuclear stiffness).
+28. **Stephens, A. D., et al. (2017).** "Chromatin histone modifications and rigidity affect nuclear morphology independent of lamins." *Molecular Biology of the Cell*, 28(14). (Separates chromatin contribution from Lamin A/C).
+29. **Adams, R. A., et al. (2013).** "Predictions not commands: active inference in the motor system." *Brain Structure and Function*, 218(3). (Active Inference foundation).
+30. **Proske, U., & Gandevia, S. C. (2012).** "The proprioceptive senses: their roles in signaling body shape, body position and movement, and muscle force." *Physiological Reviews*, 92(4). (Proprioceptive gain).
+31. **Friston, K. (2010).** "The free-energy principle: a unified brain theory?" *Nature Reviews Neuroscience*, 11(2). (Theoretical basis for precision weighting).
+32. **Ambrosi, D., et al. (2011).** "Perspectives on biological growth and remodeling." *Journal of the Mechanics and Physics of Solids*, 59(4). (Theoretical framework for $\mathcal{D}_{morph}$).
+33. **Humphrey, J. D. (2002).** "Continuum biomechanics of soft biological tissues." *Proceedings of the Royal Society of London. Series A*, 459. (Viscoelastic growth foundations).
+34. **West, G. B., et al. (1997).** "A general model for the origin of allometric scaling laws in biology." *Science*, 276. (Metabolic scaling).
+35. **Laughlin, S. B. (2001).** "Energy as a constraint on the coding and processing of sensory information." *Current Opinion in Neurobiology*, 11(4). (Neural energy cost).
+36. **Sato, K., et al. (2025).** "Hypoxia-inducible factor 1α regulates the circadian clock in the intervertebral disc." *Nature Communications*. (Hypoxia/IVD link).
+37. **Latimer, B., et al. (2021).** "The energetic cost of upright posture." *American Journal of Physical Anthropology*. (Energy of posture).
+38. **Urban, J. P., et al. (2004).** "Nutrition of the intervertebral disc." *Spine*, 29(23). (Foundational transport theory).
+39. **Huang, C. Y., et al. (2014).** "Effects of cyclic compression on the biological properties of the intervertebral disc." *The Spine Journal*, 14(9). (Frequency dependence).
+40. **Miyoshi, K., et al. (2024).** "Circadian oscillation in primary cilium length by clock genes regulates fibroblast cell migration." *EMBO Reports*, 25(3). (Demonstrates the tunable antenna mechanism).
+41. **Spasic, M., & Jacobs, C. R. (2017).** "Primary cilia: Cell and molecular mechanosensors of the skeleton." *Bone*, 97. (Review of ciliary mechanics).
+42. **Pinnell, S. R., et al. (1972).** "A heritable disorder of connective tissue: hydroxylysine-deficient collagen disease." *New England Journal of Medicine*, 286(19). (Establishes PLOD1 link to scoliosis).
+43. **Ugur, K., et al. (2024).** "Resolution of Scoliosis Following Treatment of Sleep-Disordered Breathing." *Children*, 11(9). (Supports metabolic/hypoxic driver of scoliosis).
+44. **Kang, M., et al. (2025).** "Tension-sensitive HOX gene expression in fibroblasts for differential scar formation." *Journal of Translational Medicine*, 23(1). (Demonstrates that mechanical tension modulates HOX gene expression).
+45. **Wang, N., et al. (2009).** "Mechanotransduction at a distance: mechanically coupling the extracellular matrix with the nucleus." *Nature Reviews Molecular Cell Biology*, 10(1). (Nuclear mechanotransduction mechanism).
+46. **Ramli, R., et al. (2024).** "Piezo1 mutant zebrafish as a model of idiopathic scoliosis." *Frontiers in Genetics*, 14. (Identifies Piezo1 as the scalar stiffness regulator).
+47. **Bastien, R., et al. (2013).** "Unifying model of shoot gravitropism reveals proprioception as a central feature of posture control." *PNAS*, 110(2). (Establishes the proprioceptive oscillator model).
+48. **Blecher, R., et al. (2017).** "New functions for the proprioceptive system in skeletal biology." *Philosophical Transactions B*, 373. (Identifies Egr3/proprioception defects in spinal alignment).
+49. **Chen, F., et al. (2025).** "PIEZO1-Primary Cilia Axis Mediates Compressive Stress-Induced Growth Plate Degeneration and Ossification in Adolescent Idiopathic Scoliosis." *JOR Spine*, 8(4). (Identifies the Piezo1-Primary Cilia axis as the mechanotransduction pathway converting compressive stress into premature ossification).
+50. **Li, X., et al. (2023).** "Piezo1-mediated mechanosensation in bone marrow mesenchymal stem cells regulates bone formation." *Journal of Bone and Mineral Research*, 38(10). (Demonstrates Piezo1 importance in osteogenesis).
+51. **Ridone, P., et al. (2019).** "Piezo1 mechanosensitivity is modulated by membrane cholesterol and tension." *Nature Communications*, 10. (Establish tension dependence of Piezo1).
+52. **Salbreux, G., et al. (2012).** "Actin cortex mechanics and cellular morphogenesis." *Trends in Cell Biology*, 22(10). (Links ATP/Myosin to cortical tension).
+53. **Minton, A. P. (2006).** "How can biochemical reactions within cells differ from those in test tubes?" *Journal of Cell Science*, 119. (Crowding theory).
+54. **Delarue, M., et al. (2018).** "mTORC1 controls phase separation and the biophysical properties of the cytoplasm by tuning crowding." *Cell*, 174. (Crowding control).
