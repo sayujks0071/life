@@ -389,7 +389,9 @@ class MetricsAnalyzer:
                 min_i, max_i = block_bounds[i]
                 sq_norms_i = sq_norms[i_start:i_end, np.newaxis]
 
-                for j in range(num_blocks):
+                # Bolt Optimization 2026-01-21: Exploit symmetry (j >= i)
+                # Reduces pairwise block checks by ~50%
+                for j in range(i, num_blocks):
                     # Pruning check: bounding box distance
                     min_j, max_j = block_bounds[j]
 
@@ -414,8 +416,16 @@ class MetricsAnalyzer:
                     sq_norms_j = sq_norms[j_start:j_end]
                     dists_sq = sq_norms_i + sq_norms_j[np.newaxis, :] - 2 * block_dot
 
-                    # Accumulate neighbors
-                    cn[i_start:i_end] += np.sum(dists_sq < threshold_sq, axis=1)
+                    # Count neighbors
+                    mask = (dists_sq < threshold_sq)
+
+                    # Accumulate neighbors for i (from j)
+                    cn[i_start:i_end] += np.sum(mask, axis=1)
+
+                    if i != j:
+                        # Accumulate neighbors for j (from i) - symmetric
+                        # Note: dists_sq is (i_size, j_size). Summing axis 0 gives j_size counts.
+                        cn[j_start:j_end] += np.sum(mask, axis=0)
 
             # Subtract 1 to exclude self (since self distance is 0 < 100)
             cn -= 1
