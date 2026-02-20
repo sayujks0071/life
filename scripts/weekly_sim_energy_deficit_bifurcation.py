@@ -52,122 +52,128 @@ def generate_bimodal_I(s, L):
     return term_c + term_l + I_0
 
 def run_simulation():
-    # Parameter Sweep
-    # χ_κ: 0.01 to 0.10 in 20 steps
-    chi_kappa_values = np.linspace(0.01, 0.10, 20)
-    # L: 0.25 to 0.55 m in 20 steps
-    L_values = np.linspace(0.25, 0.55, 20)
-
-    results = []
-
     # Prepare output directory
     output_dir = Path("outputs/thermodynamic_cost")
     output_dir.mkdir(parents=True, exist_ok=True)
     figure_dir = Path("outputs/figures")
     figure_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Starting 2D sweep: {len(chi_kappa_values)}x{len(L_values)} = {len(chi_kappa_values)*len(L_values)} points")
-
-    for chi_kappa in chi_kappa_values:
-        for L in L_values:
-            # Derived geometric props
-            I_moment = (A_VAL**2) / (4 * np.pi)  # m^4 (cylindrical approx)
-
-            # Distributed load (Gravity acting transversely in 1D beam model approximation)
-            distributed_load = RHO * A_VAL * G_GRAVITY  # N/m
-
-            # Spatial grid
-            s = np.linspace(0, L, 100)
-
-            # --- 1. Compute P_counter (Sagittal) ---
-
-            # Generate Information Field
-            I_field = generate_bimodal_I(s, L)
-            grad_I = np.gradient(I_field, s)
-
-            # Active Curvature (Sagittal)
-            kappa_target_active = 0.0 + chi_kappa * grad_I
-
-            # Passive Curvature (Gravity Only, chi_kappa=0)
-            kappa_target_passive = np.zeros_like(s)
-
-            # Constant E field (chi_E = 0 for this sweep)
-            E_field = np.full_like(s, E0)
-            M_active = np.zeros_like(s) # chi_f = 0
-
-            # Solve Active
-            theta_active, kappa_active = solve_beam_static(
-                s=s,
-                kappa_target=kappa_target_active,
-                E_field=E_field,
-                M_active=M_active,
-                I_moment=I_moment,
-                P_load=0.0,
-                distributed_load=distributed_load
-            )
-
-            # Solve Passive
-            theta_passive, kappa_passive = solve_beam_static(
-                s=s,
-                kappa_target=kappa_target_passive,
-                E_field=E_field,
-                M_active=M_active,
-                I_moment=I_moment,
-                P_load=0.0,
-                distributed_load=distributed_load
-            )
-
-            # Compute P_counter
-            # P_counter ~ eta_a * rho * A * g * L^2 * <|kappa_active - kappa_passive|^2>
-            # Assuming eta_a = 1.0
-            mse_kappa = np.mean((kappa_active - kappa_passive)**2)
-            P_counter = 1.0 * RHO * A_VAL * G_GRAVITY * (L**2) * mse_kappa
-
-            # D_geo
-            d_geo = np.sqrt(mse_kappa)
-
-            # --- 2. Compute Cobb Angle (Lateral) ---
-
-            # Lateral Asymmetry Perturbation (ε_asym = 0.03)
-            epsilon_asym = 0.03
-            kappa_target_lat = np.full_like(s, epsilon_asym)
-
-            # Solve Lateral (assuming same mechanics, orthogonal plane)
-            theta_lat, kappa_lat = solve_beam_static(
-                s=s,
-                kappa_target=kappa_target_lat,
-                E_field=E_field,
-                M_active=M_active,
-                I_moment=I_moment,
-                P_load=0.0,
-                distributed_load=distributed_load
-            )
-
-            cobb_angle = compute_amplitude(theta_lat)
-
-            # --- 3. Compute R_deficit ---
-            S_proprio = S_0_SUPPLY * (L / L_0_SUPPLY)**0.7
-            R_deficit = P_counter / S_proprio
-            in_deficit = R_deficit > 1.0
-
-            results.append({
-                "chi_kappa": chi_kappa,
-                "L": L,
-                "P_counter": P_counter,
-                "Cobb_angle": cobb_angle,
-                "D_geo": d_geo,
-                "S_proprio": S_proprio,
-                "R_deficit": R_deficit,
-                "In_Deficit": in_deficit
-            })
-
-    # Convert to DataFrame
-    df = pd.DataFrame(results)
-
-    # Save CSV
     csv_path = output_dir / "phase_diagram_energy_deficit.csv"
-    df.to_csv(csv_path, index=False)
-    print(f"Saved results to {csv_path}")
+
+    # Check if data already exists to avoid duplication
+    if csv_path.exists():
+        print(f"Loading existing data from {csv_path}...")
+        df = pd.read_csv(csv_path)
+    else:
+        # Parameter Sweep
+        # χ_κ: 0.01 to 0.10 in 20 steps
+        chi_kappa_values = np.linspace(0.01, 0.10, 20)
+        # L: 0.25 to 0.55 m in 20 steps
+        L_values = np.linspace(0.25, 0.55, 20)
+
+        results = []
+
+        print(f"Starting 2D sweep: {len(chi_kappa_values)}x{len(L_values)} = {len(chi_kappa_values)*len(L_values)} points")
+
+        for chi_kappa in chi_kappa_values:
+            for L in L_values:
+                # Derived geometric props
+                I_moment = (A_VAL**2) / (4 * np.pi)  # m^4 (cylindrical approx)
+
+                # Distributed load (Gravity acting transversely in 1D beam model approximation)
+                distributed_load = RHO * A_VAL * G_GRAVITY  # N/m
+
+                # Spatial grid
+                s = np.linspace(0, L, 100)
+
+                # --- 1. Compute P_counter (Sagittal) ---
+
+                # Generate Information Field
+                I_field = generate_bimodal_I(s, L)
+                grad_I = np.gradient(I_field, s)
+
+                # Active Curvature (Sagittal)
+                kappa_target_active = 0.0 + chi_kappa * grad_I
+
+                # Passive Curvature (Gravity Only, chi_kappa=0)
+                kappa_target_passive = np.zeros_like(s)
+
+                # Constant E field (chi_E = 0 for this sweep)
+                E_field = np.full_like(s, E0)
+                M_active = np.zeros_like(s) # chi_f = 0
+
+                # Solve Active
+                theta_active, kappa_active = solve_beam_static(
+                    s=s,
+                    kappa_target=kappa_target_active,
+                    E_field=E_field,
+                    M_active=M_active,
+                    I_moment=I_moment,
+                    P_load=0.0,
+                    distributed_load=distributed_load
+                )
+
+                # Solve Passive
+                theta_passive, kappa_passive = solve_beam_static(
+                    s=s,
+                    kappa_target=kappa_target_passive,
+                    E_field=E_field,
+                    M_active=M_active,
+                    I_moment=I_moment,
+                    P_load=0.0,
+                    distributed_load=distributed_load
+                )
+
+                # Compute P_counter
+                # P_counter ~ eta_a * rho * A * g * L^2 * <|kappa_active - kappa_passive|^2>
+                # Assuming eta_a = 1.0
+                mse_kappa = np.mean((kappa_active - kappa_passive)**2)
+                P_counter = 1.0 * RHO * A_VAL * G_GRAVITY * (L**2) * mse_kappa
+
+                # D_geo
+                d_geo = np.sqrt(mse_kappa)
+
+                # --- 2. Compute Cobb Angle (Lateral) ---
+
+                # Lateral Asymmetry Perturbation (ε_asym = 0.03)
+                epsilon_asym = 0.03
+                kappa_target_lat = np.full_like(s, epsilon_asym)
+
+                # Solve Lateral (assuming same mechanics, orthogonal plane)
+                theta_lat, kappa_lat = solve_beam_static(
+                    s=s,
+                    kappa_target=kappa_target_lat,
+                    E_field=E_field,
+                    M_active=M_active,
+                    I_moment=I_moment,
+                    P_load=0.0,
+                    distributed_load=distributed_load
+                )
+
+                cobb_angle = compute_amplitude(theta_lat)
+
+                # --- 3. Compute R_deficit ---
+                S_proprio = S_0_SUPPLY * (L / L_0_SUPPLY)**0.7
+                R_deficit = P_counter / S_proprio
+                in_deficit = R_deficit > 1.0
+
+                results.append({
+                    "chi_kappa": chi_kappa,
+                    "L": L,
+                    "P_counter": P_counter,
+                    "Cobb_angle": cobb_angle,
+                    "D_geo": d_geo,
+                    "S_proprio": S_proprio,
+                    "R_deficit": R_deficit,
+                    "In_Deficit": in_deficit
+                })
+
+        # Convert to DataFrame
+        df = pd.DataFrame(results)
+
+        # Save CSV
+        df.to_csv(csv_path, index=False)
+        print(f"Saved results to {csv_path}")
 
     # Generate Plots
     generate_plots(df, figure_dir)
