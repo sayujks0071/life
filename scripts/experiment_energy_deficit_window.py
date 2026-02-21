@@ -18,6 +18,8 @@ import sys
 os.makedirs("outputs/thermodynamic_cost", exist_ok=True)
 os.makedirs("outputs/figures", exist_ok=True)
 
+# Verified for Energy Deficit Window simulation (Manuscript Fig 6)
+
 # --- Parameters ---
 RHO = 1100.0  # kg/m^3
 A_REF = 0.001 # m^2 (Reference area at L_REF)
