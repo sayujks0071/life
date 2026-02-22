@@ -3,41 +3,6 @@ import os
 from pathlib import Path
 import numpy as np
 import pandas as pd
-from scipy.integrate import solve_bvp
-import os
-import sys
-
-# Ensure outputs directories exist
-os.makedirs("outputs/thermodynamic_cost", exist_ok=True)
-os.makedirs("outputs/figures", exist_ok=True)
-
-# Verified for Energy Deficit Window simulation (Manuscript Fig 6)
-
-# --- Parameters ---
-RHO = 1100.0  # kg/m^3
-A_REF = 0.001 # m^2 (Reference area at L_REF)
-L_REF = 0.4   # m (Reference length for scaling)
-G = 9.81      # m/s^2
-E0 = 1.0e9    # Pa (1.0 GPa)
-
-# IEC Parameters (Bimodal Gaussian)
-A_c = 0.5; s_c = 0.80; sigma_c = 0.08
-A_l = 0.7; s_l = 0.25; sigma_l = 0.10
-I_0 = 0.3
-
-# Simulation Parameters
-L_MIN = 0.25
-L_MAX = 0.55
-N_STEPS = 30
-ETA_A = 1.0
-
-def get_information_field(s, L):
-    """
-    Computes the bimodal Gaussian information field I(s).
-    s: array of spatial coordinates [0, L]
-    L: total length
-    """
-    s_norm = s / L
 import matplotlib.pyplot as plt
 
 # Ensure src is in path to import spinalmodes
@@ -67,6 +32,10 @@ def gaussian_grad(s_norm, A, center, width, L):
 def run_experiment():
     print("Starting Energy Deficit Window Experiment...")
 
+    # Ensure output directories exist
+    Path("outputs/thermodynamic_cost").mkdir(parents=True, exist_ok=True)
+    Path("outputs/figures").mkdir(parents=True, exist_ok=True)
+
     # Parameters
     L_min, L_max = 0.25, 0.55
     n_steps = 30
@@ -75,10 +44,16 @@ def run_experiment():
     # Standard IEC Parameters
     E0 = 1.0e9  # Pa (1.0 GPa)
     rho = 1100.0  # kg/m^3
+
+    # Interpretation: A=0.001 m^2 is the reference area at L=0.4m (standard length).
+    # We assume isometric growth A ~ L^2.
     A_ref = 0.001  # m^2 at L=0.4m
     L_ref = 0.4
+
     g = 9.81  # m/s^2
     chi_kappa = 0.05
+    # eta_a is now an inverse time constant (1/s) representing turnover rate
+    # Set to 1.0 for normalized cost
     eta_a = 1.0
 
     # Information field parameters (Bimodal Gaussian)
@@ -86,6 +61,7 @@ def run_experiment():
     A_c = 0.5; s_c = 0.80; sigma_c = 0.08
     # Lumbar
     A_l = 0.7; s_l = 0.25; sigma_l = 0.10
+    I_0 = 0.3 # Baseline
 
     # Proprioceptive supply reference
     L0 = 0.35
@@ -95,9 +71,10 @@ def run_experiment():
     for L in L_values:
         # Assume Isometric Growth: A scales with L^2
         # A(L) = A_ref * (L / L_ref)^2
-        # This is necessary to reproduce the L^3 scaling of metabolic demand (Volume)
-        # or L^2 if strictly following the P_counter formula with geometric similarity.
         A_cross = A_ref * (L / L_ref)**2
+
+        # Assume circular cross section for Moment of Inertia I
+        # I = pi * r^4 / 4 = A^2 / (4*pi)
         I_moment = (A_cross**2) / (4 * np.pi)
 
         # Spatial grid
@@ -107,15 +84,14 @@ def run_experiment():
 
         # 1. Compute Information Field Gradient (nabla I)
         # I(s) = I_c(s) + I_l(s) + I_0
-        # grad_I = grad_I_c + grad_I_l
         grad_I_c = gaussian_grad(s_norm, A_c, s_c, sigma_c, L)
         grad_I_l = gaussian_grad(s_norm, A_l, s_l, sigma_l, L)
         grad_I = grad_I_c + grad_I_l
 
         # 2. Define Loads
-        # Distributed load q = rho * A * g (Gravity)
+        # Distributed load q = rho * A * g (Gravity acting transversely as per simplified model)
         q = rho * A_cross * g
-        P_load = 0.0 # Tip load assumed negligible compared to distributed gravity
+        P_load = 0.0 # Tip load assumed negligible
 
         # 3. Beam Properties
         E_field = np.full_like(s, E0)
@@ -139,21 +115,31 @@ def run_experiment():
             I_moment=I_moment, P_load=P_load, distributed_load=q
         )
 
-        # 6. Compute Thermodynamic Cost P_counter
-        # P_counter ~ eta_a * rho * A * g * L^2 * <|kappa_IEC - kappa_passive|^2>
-        # Use Mean Squared Error
-        kappa_diff_sq = (kappa_IEC - kappa_passive)**2
-        mean_kappa_diff_sq = np.mean(kappa_diff_sq)
+        # 6. Compute Thermodynamic Cost P_counter (Power)
+        # New Scaling: P_counter ~ Strain Energy U / tau
+        # U = 0.5 * integral(EI * (kappa - kappa0)^2) ds
+        # EI ~ L^4, kappa^2 ~ L^-2, ds ~ L => U ~ L^3
+        # Therefore Demand scales as L^3
 
-        P_counter = eta_a * rho * A_cross * g * (L**2) * mean_kappa_diff_sq
+        kappa_diff_sq = (kappa_IEC - kappa_passive)**2
+        mean_kappa_diff_sq = np.mean(kappa_diff_sq) # Average (1/m^2)
+
+        # Integral approximation: mean * L
+        # U_strain = 0.5 * E0 * I_moment * mean_kappa_diff_sq * L
+        # P_counter = eta_a * U_strain
+
+        # Note: I_moment scales as L^4 (since A ~ L^2, I ~ A^2 ~ L^4)
+        # mean_kappa_diff_sq scales as L^-2
+        # L scales as L
+        # Result: L^4 * L^-2 * L = L^3
+
+        P_counter = eta_a * 0.5 * E0 * I_moment * mean_kappa_diff_sq * L
 
         # 7. Additional Metrics
         # Cobb Angle: Amplitude of theta in degrees
         cobb_angle = np.degrees(np.max(theta_IEC) - np.min(theta_IEC))
 
-        # Geodesic Deviation D_geo (normalized L2 norm of shape difference?)
-        # Manuscript defines D_geo as difference from gravity-only geodesic.
-        # Since kappa_passive is the gravity-only geodesic curvature,
+        # Geodesic Deviation D_geo
         # D_geo ~ sqrt(mean(kappa_diff_sq)) * L
         D_geo = np.sqrt(mean_kappa_diff_sq) * L
 
@@ -168,29 +154,24 @@ def run_experiment():
     df = pd.DataFrame(results)
 
     # Calculate Proprioceptive Supply Curves
-    # Reference P_counter at L0
+    # Reference P_counter at L0 (0.35m) to ensure crossover
+    # New Scaling: Supply ~ Surface Area ~ L^2
+    # Supply = S0 * (L/L0)^2
+
     # Interpolate to find P_counter at L0 exactly
     S0 = np.interp(L0, df['L'], df['P_counter'])
 
-    df['S_proprio_alpha05'] = S0 * (df['L'] / L0)**0.5
-    df['S_proprio_alpha10'] = S0 * (df['L'] / L0)**1.0
+    df['S_proprio_L2'] = S0 * (df['L'] / L0)**2.0
 
-    # Identify Critical Length L_crit (Intersection)
-    # For alpha=0.5
-    # Find where P_counter > S_proprio
-    deficit_mask = df['P_counter'] > df['S_proprio_alpha05']
-    # L_crit is the first L where deficit starts (if any)
-    # But since normalized at L0, they cross at L0.
-    # If P_counter grows faster than S, deficit is for L > L0.
-    # If P_counter grows slower, deficit is for L < L0.
+    # Also include L^1 (Volume/Length?) for comparison, or Kleiber L^2.25
+    df['S_proprio_L1'] = S0 * (df['L'] / L0)**1.0
 
-    print("\nResults Summary:")
-    print(df[['L', 'P_counter', 'S_proprio_alpha05']].head())
-    print(df[['L', 'P_counter', 'S_proprio_alpha05']].tail())
+    print("\nResults Summary (New Scaling: Demand L^3 vs Supply L^2):")
+    print(df[['L', 'P_counter', 'S_proprio_L2']].head())
+    print(df[['L', 'P_counter', 'S_proprio_L2']].tail())
 
     # Save CSV
     out_dir = Path("outputs/thermodynamic_cost")
-    out_dir.mkdir(parents=True, exist_ok=True)
     csv_path = out_dir / "energy_deficit_window.csv"
     df.to_csv(csv_path, index=False)
     print(f"Saved CSV to {csv_path}")
@@ -199,26 +180,35 @@ def run_experiment():
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Plot Demand
-    ax.plot(df['L'], df['P_counter'], 'r-', linewidth=2, label=r'Demand $P_{counter}$')
+    ax.plot(df['L'], df['P_counter'], 'r-', linewidth=2, label=r'Demand $P_{counter} \propto L^3$ (Strain Energy)')
 
     # Plot Supply
-    ax.plot(df['L'], df['S_proprio_alpha05'], 'b--', label=r'Supply ($\alpha=0.5$)')
-    ax.plot(df['L'], df['S_proprio_alpha10'], 'b:', label=r'Supply ($\alpha=1.0$)')
+    ax.plot(df['L'], df['S_proprio_L2'], 'b--', linewidth=2, label=r'Supply $S_{proprio} \propto L^2$ (Surface Area)')
+    # ax.plot(df['L'], df['S_proprio_L1'], 'b:', label=r'Supply $\propto L^1$')
 
-    # Fill Deficit Window (for alpha=0.5)
+    # Fill Deficit Window
     # Assuming deficit is when Demand > Supply
-    ax.fill_between(df['L'], df['P_counter'], df['S_proprio_alpha05'],
-                    where=(df['P_counter'] > df['S_proprio_alpha05']),
+    # Since Demand (L^3) grows faster than Supply (L^2), deficit is at high L
+    ax.fill_between(df['L'], df['P_counter'], df['S_proprio_L2'],
+                    where=(df['P_counter'] > df['S_proprio_L2']),
                     color='red', alpha=0.1, interpolate=True, label='Energy Deficit Window')
 
     ax.set_xlabel('Spinal Length L (m)')
-    ax.set_ylabel('Thermodynamic Cost (Normalized)')
-    ax.set_title('Thermodynamic Cost of Countercurvature vs. Proprioceptive Supply')
+    ax.set_ylabel('Thermodynamic Power (Normalized)')
+    ax.set_title('Thermodynamic Buckling: Strain Energy ($L^3$) vs Surface Supply ($L^2$)')
     ax.legend()
     ax.grid(True, alpha=0.3)
 
+    # Add annotation for Critical Length
+    # Find crossover
+    deficit_mask = df['P_counter'] > df['S_proprio_L2']
+    if deficit_mask.any():
+        idx = deficit_mask.idxmax()
+        L_crit_val = df.iloc[idx]['L']
+        ax.axvline(L_crit_val, color='k', linestyle='--', alpha=0.5)
+        ax.text(L_crit_val, ax.get_ylim()[1]*0.8, f' $L_{{crit}} \\approx {L_crit_val:.2f}$ m', rotation=90)
+
     fig_dir = Path("outputs/figures")
-    fig_dir.mkdir(parents=True, exist_ok=True)
     fig_path = fig_dir / "energy_deficit_window.png"
     plt.savefig(fig_path, dpi=300)
     plt.close()
