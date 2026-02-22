@@ -49,6 +49,7 @@ outputs/tests/
 outputs/temp/
 outputs/sim/
 outputs/methodology/
+outputs/pipeline_validation/
 !outputs/.gitkeep
 results/
 logs/
