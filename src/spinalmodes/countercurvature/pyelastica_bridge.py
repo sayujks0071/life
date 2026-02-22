@@ -299,6 +299,7 @@ class CounterCurvatureRodSystem:
         base_direction: tuple[float, float, float] = (0.0, 0.0, 1.0),
         normal: tuple[float, float, float] = (0.0, 1.0, 0.0),
         stiffness_anisotropy: Union[float, ArrayF64] = 1.0,
+        taper_ratio: float = 1.0,
     ) -> "CounterCurvatureRodSystem":
         _check_pyelastica()
 
@@ -314,6 +315,56 @@ class CounterCurvatureRodSystem:
             youngs_modulus=E0,
             shear_modulus=E0 / (2.0 * (1.0 + nu)),
         )
+
+        # Apply geometric tapering (muscle atrophy / developmental gradient)
+        if taper_ratio != 1.0:
+            # Generate scaling profile r(s) = r_base * (1 + (taper-1) * s/L)
+            s_nodes = np.linspace(0, length, n_elements + 1)
+            # Element centers
+            s_elements = 0.5 * (s_nodes[:-1] + s_nodes[1:])
+            # Internal nodes (Voronoi domains)
+            s_voronoi = s_nodes[1:-1]
+
+            # Scaling function
+            def get_scale(s_val):
+                return 1.0 + (taper_ratio - 1.0) * (s_val / length)
+
+            scale_elems = get_scale(s_elements)
+            scale_voro = get_scale(s_voronoi)
+
+            # 1. Update Radius (elements)
+            rod.radius[:] *= scale_elems
+
+            # 2. Update Mass (nodes)
+            # Recompute element mass based on new radius
+            # m_elem = rho * pi * r^2 * L_elem
+            m_elems_new = rho * np.pi * (rod.radius ** 2) * rod.rest_lengths
+
+            # Distribute to nodes (simple lumped mass)
+            rod.mass[:] = 0.0
+            rod.mass[:-1] += 0.5 * m_elems_new
+            rod.mass[1:] += 0.5 * m_elems_new
+
+            # 3. Update Mass Second Moment of Inertia (elements)
+            # J propto m * r^2 propto r^2 * r^2 = r^4
+            # Scale existing J by (r_new / r_old)^4
+            scale_J = scale_elems ** 4
+            for k in range(n_elements):
+                rod.mass_second_moment_of_inertia[..., k] *= scale_J[k]
+                if hasattr(rod, "inv_mass_second_moment_of_inertia"):
+                    rod.inv_mass_second_moment_of_inertia[..., k] /= scale_J[k]
+
+            # 4. Update Shear Matrix (elements)
+            # S propto A propto r^2
+            scale_S = scale_elems ** 2
+            for k in range(n_elements):
+                rod.shear_matrix[..., k] *= scale_S[k]
+
+            # 5. Update Bend Matrix (internal nodes)
+            # B propto I propto r^4
+            scale_B = scale_voro ** 4
+            for k in range(n_elements - 1):
+                rod.bend_matrix[..., k] *= scale_B[k]
 
         # Compute effective stiffness E_eff based on information field
         E_eff = compute_effective_stiffness(info, params, E0)
@@ -345,9 +396,14 @@ class CounterCurvatureRodSystem:
 
         # Apply stiffness anisotropy
         # bend_matrix[0, 0] corresponds to stiffness about d1 (Normal).
-        # In this setup (d1=X), this resists Sagittal bending (Y-Z plane).
+        # In this setup with normal=(0,1,0), d1 aligns with Y-axis.
+        # Bending about Y-axis (d1) occurs in the X-Z plane (Lateral Bending).
         # bend_matrix[1, 1] corresponds to stiffness about d2 (Binormal).
-        # In this setup (d2=Y), this resists Lateral bending (X-Z plane).
+        # d2 aligns with -X-axis. Bending about X-axis occurs in the Y-Z plane (Sagittal Bending).
+
+        # We want `anisotropy` to scale the Lateral stiffness (resisting scoliosis).
+        # So we scale bend_matrix[0, 0].
+
         # Handle scalar or array anisotropy
         anisotropy_arr = None
         if isinstance(stiffness_anisotropy, (float, int)):
@@ -631,34 +687,53 @@ def run_protein_simulation(
     scale_factor_E: float = 0.5,
 ) -> Dict[str, Any]:
     """
-    Run a mechanical simulation driven by protein-derived metrics.
+    Run a mechanical simulation driven by protein-derived metrics using PyElastica.
 
-    This function serves as a high-level entry point for simulating "virtual proteins" or
-    tissue patches. It maps abstract structural metrics to concrete mechanical parameters
-    of the CounterCurvatureRodSystem.
+    This function serves as the primary bridge between biological data (protein metrics)
+    and mechanical simulation (Cosserat rod). It maps abstract structural metrics to
+    concrete mechanical parameters of the CounterCurvatureRodSystem.
+
+    Mapping Logic:
+    - Anisotropy (A) -> Stiffness Anisotropy (B_lat / B_sag). Higher A means the rod is stiffer
+      in the lateral plane, resisting scoliosis-like buckling.
+    - Active Curvature (C) -> Coupling Strength (chi_kappa). Higher C drives stronger sagittal
+      curvature (lordosis/kyphosis) via the Information Field.
+    - Lateral Defect (D) -> Initial perturbation (kappa_0). Small lateral defects seed potential
+      instabilities.
 
     Args:
         anisotropy: Degree of stiffness anisotropy (1.0 = isotropic).
+                   Scalar or 1D array matching n_elements.
+                   Ratio of Lateral Bending Stiffness / Sagittal Bending Stiffness.
         active_curvature: Magnitude of active curvature drive (scalar signal).
+                          Maps to chi_kappa via scale_factor_kappa.
         torsion_drive: Magnitude of active torsion drive.
+                       Maps to chi_tau via scale_factor_tau.
         stiffness_modulation: Degree of stiffness modulation (blockiness).
-        initial_lateral_defect: Magnitude of initial lateral curvature (perturbation).
-        natural_kyphosis: Magnitude of natural sagittal curvature (kyphosis).
-        length: Length of the rod (m).
-        rho: Rod density (kg/m^3).
-        n_elements: Number of elements in the rod.
-        duration: Simulation duration (s).
-        dt: Time step (s).
-        gravity: Gravitational acceleration (m/s^2).
-        boundary_condition: "fixed" or "pinned".
+                              Maps to chi_E via scale_factor_E.
+        initial_lateral_defect: Magnitude of initial lateral curvature (perturbation) in 1/m.
+                                Seeds symmetry breaking.
+        natural_kyphosis: Magnitude of natural sagittal curvature (kyphosis) in 1/m.
+                          Sets the baseline sagittal profile.
+        length: Length of the rod (m). Default 1.0.
+        rho: Rod density (kg/m^3). Default 1000.0.
+        n_elements: Number of elements in the rod. Default 50.
+        duration: Simulation duration (s). Default 2.0.
+        dt: Time step (s). Default 1e-4.
+        gravity: Gravitational acceleration (m/s^2). Default 9.81.
+        boundary_condition: "fixed" (cantilever) or "pinned" (hinged).
         show_progress: Whether to show the PyElastica progress bar.
-        scale_factor_kappa: Scaling factor for active_curvature -> chi_kappa.
-        scale_factor_tau: Scaling factor for torsion_drive -> chi_tau.
-        scale_factor_E: Scaling factor for stiffness_modulation -> chi_E.
+        scale_factor_kappa: Scaling factor for active_curvature -> chi_kappa. Default 5.0.
+        scale_factor_tau: Scaling factor for torsion_drive -> chi_tau. Default 5.0.
+        scale_factor_E: Scaling factor for stiffness_modulation -> chi_E. Default 0.5.
 
     Returns:
-        Dictionary containing simulation results (geometry, scoliosis metrics)
-        and performance metrics (runtime, memory).
+        Dictionary containing:
+        - Geometric metrics: max_curvature, max_torsion, end_to_end_distance, z_tip.
+        - Scoliosis metrics: S_lat, cobb_angle.
+        - Energy metrics: U_CC, U_elastic, U_info, info_gain_ratio.
+        - Performance metrics: runtime_sec, peak_memory_mb.
+        - success (bool) and error (str).
     """
     if not PYELASTICA_AVAILABLE:
         return {
@@ -880,6 +955,20 @@ def compute_U_CC(
 
     # 5. Get Curvature (n_nodes, 3)
     kappa = result.kappa[-1] # Final step
+
+    # Handle grid mismatch between kappa and info.s
+    # kappa comes from the rod simulation grid, while info.s is the target grid for integration.
+    if kappa.shape[0] != s.shape[0]:
+        n_rod_nodes = kappa.shape[0]
+        # Assume linear mapping over the same domain [s[0], s[-1]]
+        s_rod = np.linspace(s[0], s[-1], n_rod_nodes)
+
+        # Interpolate kappa components to info.s grid
+        kappa_interp = np.zeros((s.shape[0], 3))
+        for i in range(3):
+            kappa_interp[:, i] = np.interp(s, s_rod, kappa[:, i])
+
+        kappa = kappa_interp
 
     # 6. Compute U_elastic_straight (Energy relative to straight rod)
     # Integral 0.5 * (B11*k0^2 + B22*k1^2 + B33*k2^2) ds
