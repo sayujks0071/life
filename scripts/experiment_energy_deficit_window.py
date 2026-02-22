@@ -115,6 +115,9 @@ def run_experiment():
 
         # 6. Compute Thermodynamic Cost P_counter
         # P_counter ~ eta_a * rho * A * g * L^2 * <|kappa_IEC - kappa_passive|^2>
+        # Under isometric scaling: A ~ L^2, g ~ L^0.
+        # Active moment M ~ L^3 (to balance M_g ~ L^4?? No, see manuscript discussion).
+        # Cost function effectively scales as L^2 due to geometric similarity (kappa ~ 1/L).
         # Use Mean Squared Error
         kappa_diff_sq = (kappa_IEC - kappa_passive)**2
         mean_kappa_diff_sq = np.mean(kappa_diff_sq)
@@ -140,10 +143,13 @@ def run_experiment():
     df = pd.DataFrame(results)
 
     # Calculate Proprioceptive Supply Curves
-    # Reference P_counter at L0
-    # Interpolate to find P_counter at L0 exactly
+    # Reference P_counter at L0.
+    # Interpolate to find P_counter at L0 exactly.
     S0 = np.interp(L0, df['L'], df['P_counter'])
 
+    # Supply scaling models:
+    # alpha=0.5: Sublinear proprioceptive maturation (neural limit).
+    # alpha=1.0: Linear scaling.
     df['S_proprio_alpha05'] = S0 * (df['L'] / L0)**0.5
     df['S_proprio_alpha10'] = S0 * (df['L'] / L0)**1.0
 
@@ -184,6 +190,20 @@ def run_experiment():
     plt.savefig(fig_path, dpi=300)
     plt.close()
     print(f"Saved Figure to {fig_path}")
+
+    # --- Analysis for Manuscript ---
+    # Calculate deficit at L=0.45
+    target_L = 0.45
+    P_target = np.interp(target_L, df['L'], df['P_counter'])
+    S_target = np.interp(target_L, df['L'], df['S_proprio_alpha05'])
+    deficit_pct = ((P_target - S_target) / S_target) * 100
+
+    print("\n--- Manuscript Statistics ---")
+    print(f"Reference Length L0: {L0} m")
+    print(f"At L = {target_L} m:")
+    print(f"  P_counter = {P_target:.4f}")
+    print(f"  S_proprio = {S_target:.4f}")
+    print(f"  Deficit   = {deficit_pct:.1f}%")
 
 if __name__ == "__main__":
     run_experiment()
