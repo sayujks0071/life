@@ -51,6 +51,8 @@ Based on this thermodynamic framework, we make three specific, falsifiable predi
     \label{fig:iec_landscape}
 \end{figure}
 
+\input{theory}
+
 \section*{Methods}
 
 \textbf{Cosserat Rod Simulation.} We utilized \texttt{PyElastica}\cite{pyelastica_zenodo}, an open-source Python implementation of Cosserat rod theory, to model the spine as a continuous elastic rod. The rod was discretized into $N=50-100$ elements. The ``Biological Countercurvature'' was implemented via an Information-Elasticity Coupling (IEC) term that modifies the local rest curvature $\bm{\kappa}^0(s)$ based on a scalar information field $I(s)$ representing HOX patterning. The field was modeled as a bimodal Gaussian distribution corresponding to cervical and lumbar lordosis.
@@ -60,6 +62,8 @@ Based on this thermodynamic framework, we make three specific, falsifiable predi
 \textbf{AlphaFold Structural Analysis.} We retrieved predicted structures for 23 proteins from the AlphaFold Protein Structure Database\cite{jumper2021alphafold}. Structural anisotropy was calculated via the Gyration Tensor of the atomic coordinates. Disorder fraction was computed based on pLDDT scores $< 70$. The ``Thermodynamic Cost'' was defined as Anisotropy $\times$ Number of Residues.
 
 \textbf{Data Availability.} All simulation code and processed data are available in the \texttt{spinalmodes} repository.
+
+\input{tables}
 
 \bibliography{references}
 \bibliographystyle{naturemag}
