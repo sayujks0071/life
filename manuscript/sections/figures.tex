@@ -19,31 +19,7 @@
 % Figure 3: 3D Solutions (Main Panel)
 \begin{figure}[h!]
     \centering
-    \begin{subfigure}[b]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{fig_countercurvature_panelA.pdf}
-        \caption{Curvature profiles $\kappa_{0}(s)$ vs $\kappa_{I}(s)$.}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{fig_countercurvature_panelB.pdf}
-        \caption{Countercurvature metric $g_{\mathrm{eff}}(s)$ and information field.}
-    \end{subfigure}
-
-    \vspace{0.5em}
-
-    \begin{subfigure}[b]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{fig_countercurvature_panelC.pdf}
-        \caption{Normalized geodesic deviation $\widehat{D}_{\mathrm{geo}}$ vs $\chi_{\kappa}$.}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{fig_countercurvature_panelD.pdf}
-        \caption{Microgravity adaptation: $\widehat{D}_{\mathrm{geo}}$ vs $g$.}
-    \end{subfigure}
+    \includegraphics[width=0.9\textwidth]{fig_countercurvature_metrics.png}
 
     \caption{\textbf{Information-driven countercurvature as Active Inference.}
     (A) Curvature profiles showing the transition from the \textbf{Passive Gravitational Prior} (blue, monotonic sag) to the \textbf{Active Posterior} (orange, S-shape). This transition represents the minimization of the Free Energy functional $U_{CC}$.
@@ -56,7 +32,7 @@
 % Figure 4: Phase Diagram
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.7\textwidth]{fig_phase_diagram_scoliosis.pdf}
+    \includegraphics[width=1.0\textwidth]{phase_diagram.png}
     \caption{\textbf{Phase Diagram of Countercurvature Regimes.} Heatmap of normalized geodesic deviation $\widehat{D}_{\mathrm{geo}}$ in the $(\chi_{\kappa},g)$ plane. Three distinct regimes are identified: (I) Gravity-dominated (sag), (II) Cooperative (stable S-curves matching biological norms), and (III) Information-dominated (high $\chi_\kappa$, leading to metric distortions and potential instability).}
     \label{fig:phase_diagram}
 \end{figure}
@@ -73,7 +49,7 @@
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{energy_deficit_window.png}
-    \caption{\textbf{Thermodynamic Collapse: The Energy Deficit Window.} (A) The metabolic power $P_{\mathrm{counter}}$ (red) required to maintain the Counter-Curvature active standing wave against gravity scales with spinal length as $L^2$. (B) In contrast, the proprioceptive supply capacity (blue), governed by sublinear neural maturation, scales as $L^{0.5}$. The intersection at $L_{\mathrm{crit}} \approx 0.35$~m marks the onset of the \textbf{Energy Deficit Window} ($L > L_{\mathrm{crit}}$), resulting in a 41.3\% metabolic deficit at $L=0.45$~m. Structural analysis of \textbf{Thermodynamic Cost Proteins} (Table 2) reveals the molecular basis of this deficit: high-anisotropy sensors like Piezo2 and Lamin A/C (demand-side) are structurally expensive to maintain~\cite{lynch2015bioenergetic}, while compact supply-side enzymes (PLOD1, MMPs) are cheaper but rate-limited. In the deficit regime, the system cannot afford the high-fidelity state, triggering a \textbf{Convective Shutdown}~\cite{sato2025convective} and a collapse into the low-energy scoliotic mode.}
+    \caption{\textbf{Thermodynamic Collapse: The Energy Deficit Window.} (A) While the gravitational moment scales as $M \propto L^4$ (The Gravity Paradox), the metabolic power $P_{\mathrm{counter}}$ (red) required to maintain the Counter-Curvature active standing wave scales as $L^2$ (assuming isometric growth). (B) In contrast, the proprioceptive supply capacity (blue), governed by sublinear neural maturation, scales as $L^{0.5}$. The intersection at $L_{\mathrm{crit}} \approx 0.35$~m marks the onset of the \textbf{Energy Deficit Window} ($L > L_{\mathrm{crit}}$), resulting in a 41.3\% metabolic deficit at $L=0.45$~m. Structural analysis of \textbf{Thermodynamic Cost Proteins} (Table 2) reveals the molecular basis of this deficit: high-anisotropy sensors like Piezo2 and Lamin A/C (demand-side) are structurally expensive to maintain~\cite{lynch2015bioenergetic}, while compact supply-side enzymes (PLOD1, MMPs) are cheaper but rate-limited. In the deficit regime, the system cannot afford the high-fidelity state, triggering a \textbf{Convective Shutdown}~\cite{sato2025convective} and a collapse into the low-energy scoliotic mode.}
     \label{fig:energy_deficit_window} % Verified
 \end{figure}
 

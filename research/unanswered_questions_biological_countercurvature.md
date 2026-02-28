@@ -9,7 +9,7 @@ The Biological Counter-Curvature framework explains Adolescent Idiopathic Scolio
 
 ---
 
-## Section 1: Why Rapid Growth During Ages 12-20? A Gravitational Standpoint
+## 1. Why Rapid Growth During Ages 12-20? A Gravitational Standpoint
 
 From a purely thermodynamic perspective, rapid growth in a gravitational field is paradoxical. The metabolic cost of maintaining a straight column scales as $L^4$, while energy supply generally scales as $L^2$ or $L^3$. Why, then, has evolution selected for a "sprint" through the most metabolically expensive developmental phase?
 
@@ -34,9 +34,9 @@ The hormonal loop (GH/IGF-1) is the *mechanism*, but gravity is the *selector*.
 *   **GHR (Growth Hormone Receptor):** Anisotropy **5.13**, 54 hinge candidates. The machinery driving this sprint is itself structurally expensive, reflecting the high evolutionary priority and cost of this system.
 *   **IGF1R:** Anisotropy **1.43**, Globular. Optimized for efficient signal capture to sustain the velocity.
 
----
+$$ T_{vulnerable} = \int_{L_{start}}^{L_{end}} \frac{dL}{v_{growth}(L)} $$
 
-## Section 2: Why Different Patterns of AIS Curves?
+Faster growth ($v_{growth}$) reduces the integral of time exposed to high gravitational deficit. Gravity acts as the **selector**: organisms that lingered in the high-deficit zone accumulated more structural damage, selecting for rapid pubertal growth despite the transient metabolic risk.
 
 Why does the spine buckle in specific patterns (Thoracic, Lumbar, Double Major) rather than randomly?
 
@@ -79,7 +79,7 @@ Females accumulate more fat mass during puberty, increasing the gravitational lo
 *   **LBX1 (2.27):** A top GWAS hit for AIS, predominantly identified in female cohorts, suggesting a sex-specific sensitivity in muscle specification.
 *   **GHR (5.13):** Sex differences in GH pulsatility impose different maintenance costs on this high-anisotropy receptor.
 
----
+Which mode is excited depends on the spatial distribution of the **Vector-Scalar Mismatch** ($\alpha(s)$) and the local bending stiffness ($B(s)$).
 
 ## Section 4: Protein Data Analysis — Quantitative Evidence for Energy Deficit
 
@@ -152,7 +152,7 @@ AIS is a **Metabolic Buckling** phenomenon caused by an evolutionary trade-off. 
 2.  **Therapy:** NAD+ precursors (NR/NMN) should rescue the "blinded" SIRT1 and stabilize the deficit, potentially slowing progression.
 3.  **Genetics:** Variants in **GHR** that increase anisotropy or hinge count should be associated with higher AIS risk (increasing the cost of growth).
 
----
+**AIS is a metabolic buckling event** triggered when the **Demand ($L^4$)** outstrips the **Supply ($L^2$)** during the **Rapid Growth Sprint**. The specific curve pattern is determined by the **Eigenmode** of the spine excited by regional **Vector-Scalar Mismatches**, and the high prevalence in **females** is due to a **deeper metabolic valley** caused by hormonal timing and body composition.
 
 ## Data Files Referenced
 *   `outputs/thermodynamic_cost/thermodynamic_cost_proteins.csv`
