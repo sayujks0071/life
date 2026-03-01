@@ -8,7 +8,7 @@
 
 | ID | Task | Description | Effort | Dependencies | Status |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **DATA-01** | **Cross-Species Dataset** | Gather scaling data ($L, R, EI, Mass$) for 9 species (e.g., Mouse, Rat, Rabbit, Cat, Dog, Human, Chimp, Cow, Elephant). Required for Figure 3. | 2 days | Literature search | ✅ **Completed** (Estimated from scaling) |
+| **DATA-01** | **Cross-Species Dataset** | Compile cross-species scaling data (Mass_kg, Length_m, EI_Nm2) for 10 species (e.g., Mouse, Rat, Rabbit, Cat, Dog, Human, Chimp, Cow, Elephant) as in `data/species_parameters.csv`. Required for Figure 3. | 2 days | Literature search | ✅ **Completed** (Estimated from scaling) |
 | **DATA-02** | **Mutation Parameter Mapping** | Define explicit mappings for "5 matrix protein variants" mentioned in Figure 4 (e.g., FBN1 $\to$ EI *= 0.7; COL1A1 $\to$ EI *= 0.5). | 1 day | Literature search | ✅ **Completed** (Implemented in `experiment_optimization_failure.py`) |
 
 ## 2. Code Implementation (Mostly Completed)
