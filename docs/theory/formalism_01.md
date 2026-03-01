@@ -475,7 +475,7 @@ $$ \gamma = \gamma_{basal} + \Gamma_{dendrite} \cdot \rho_{dendrite} $$
 
 ### 2.31. The Osteogenic Matrix Density ($\rho_{ECM}$)
 
-We postulate that the physical density of the extracellular matrix (ECM) provides a structural constraint that scales the local mechanotransduction gain. We define $\Gamma_{ECM}$ as the sensitivity of effective tissue stiffness ($E_{eff}$) to the volumetric density of the matrix.
+We postulate that the physical density of the extracellular matrix (ECM) provides a structural constraint that scales the effective tissue stiffness sensed during mechanotransduction. We define $\Gamma_{ECM}$ as the sensitivity of effective tissue stiffness ($E_{eff}$) to the volumetric density of the matrix.
 
 $$ E_{eff} = E_0 + \Gamma_{ECM} \cdot \rho_{ECM} $$
 
