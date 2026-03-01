@@ -475,7 +475,7 @@ $$ \gamma = \gamma_{basal} + \Gamma_{dendrite} \cdot \rho_{dendrite} $$
 
 ### 2.31. The Osteogenic Matrix Density ($\rho_{ECM}$)
 
-We postulate that the physical density of the extracellular matrix (ECM) provides a structural constraint that scales the effective tissue stiffness sensed during mechanotransduction. We define $\Gamma_{ECM}$ as the sensitivity of effective tissue stiffness ($E_{eff}$) to the volumetric density of the matrix.
+We postulate that the physical density of the extracellular matrix (ECM) provides a structural constraint that scales the local mechanotransduction gain. We define $\Gamma_{ECM}$ as the sensitivity of effective tissue stiffness ($E_{eff}$) to the volumetric density of the matrix.
 
 $$ E_{eff} = E_0 + \Gamma_{ECM} \cdot \rho_{ECM} $$
 
@@ -486,7 +486,7 @@ $$ E_{eff} = E_0 + \Gamma_{ECM} \cdot \rho_{ECM} $$
     *   $\Gamma_{ECM}$: Matrix-Stiffness Coupling constant $[L^2 T^{-2}]$.
 *   **Physical Interpretation**: $\Gamma_{ECM}$ acts as a specific modulus factor, dictating how efficiently the deposition of matrix translates into structural stability against gravitational buckling.
 *   **Biological Mechanism**: Cellular mechanosensors scale their activity to the stiffness of their substrate \cite{engler2006matrix, discher2005tissue}. A dense ECM provides a high-impedance anchor for focal adhesions, enhancing the force-transfer required to activate downstream cascades like YAP/TAZ.
-*   **Measurable Proxy**: The stiffness–density slope ($dE/d\rho_{ECM}$) estimated from paired AFM stiffness maps and co-registered ECM density measurements across the vertebral growth plate.
+*   **Measurable Proxy**: The spatial gradient of ECM stiffness ($dE/dx$) measured via Atomic Force Microscopy (AFM) across the vertebral growth plate.
 
 #### Falsifiable Tests
 
