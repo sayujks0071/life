@@ -5,7 +5,7 @@
 
 ## Phase 1: Data Gathering & Code (Completed)
 
-- [x] **Data:** Collect Literature Data for Cross-Species Validation (9 Species: $L, R, EI, Mass$). **CRITICAL**
+- [x] **Data:** Collect literature data for cross-species validation (10 species; parameters: $L, EI, \text{Mass}$). **CRITICAL**
 - [x] **Code:** Create `experiment_cross_species_scaling.py` and reproduce Figure 3.
 - [x] **Code:** Implement Specific Mutation Mapping in `experiment_optimization_failure.py`.
 - [x] **Validation:** Run all scripts and ensure clean outputs (CSV/PNG). (Core & Toy Models Done)
