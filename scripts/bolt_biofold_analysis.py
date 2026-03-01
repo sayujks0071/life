@@ -210,6 +210,11 @@ def main():
     md_report.append("## B) Key Plots Summary\n")
     md_report.append("Generated output files under `outputs/bolt_biofold/figures/`:\n")
 
+    # Save standalone CSV
+    csv_path = os.path.join(OUTPUT_DIR, "bolt_biofold_results.csv")
+    df.to_csv(csv_path, index=False)
+    print(f"\nSaved CSV to {csv_path}")
+
     # Plotting
     for symbol, plddt in plot_data.items():
         plt.figure(figsize=(10, 4))
