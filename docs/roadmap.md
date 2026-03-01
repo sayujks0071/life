@@ -17,7 +17,7 @@
 - [ ] **Text:** Finalize Manuscript Text (Abstract, Methods, Discussion).
 - [ ] **References:** Complete Bibliography (80-100 refs).
 
-## Phase 3: Review & Submission (Weeks 3-4: March 15 - March 29)
+## Phase 3: Review & Submission (Weeks 3-4: March 16 - March 29)
 
 - [ ] **Internal Review:** PI Review of full package (Manuscript + Supp Info).
 - [ ] **Pre-Submission:** Run `SUBMISSION_MASTER_CHECKLIST.md`.
