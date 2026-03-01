@@ -6,7 +6,7 @@
 
 ## 1. Executive Summary
 
-The "Gravity as an Optimization Process" framework is theoretically mature and computationally validated. The major previous blockers—Cross-Species Validation (9 species) and explicit mutation parameter mapping—have now been completely resolved. Recent simulations further validate the emergence of the optimal S-shape curvature. The final phase relies entirely on manuscript text polish, figure assembly, and adding missing references.
+The "Gravity as an Optimization Process" framework is theoretically mature and computationally validated. The major previous blockers—Cross-Species Validation (10 species; humans represented by two developmental-stage entries: Human_Child and Human_Adult) and explicit mutation parameter mapping—have now been completely resolved. Recent simulations further validate the emergence of the optimal S-shape curvature. The final phase relies entirely on manuscript text polish, figure assembly, and adding missing references.
 
 ## 2. Current State Checklist
 
