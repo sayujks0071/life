@@ -14,7 +14,7 @@ The "Gravity as an Optimization Process" framework is theoretically mature and c
 - [x] **Core Code:** `pyelastica_bridge.py` running and stable.
 - [x] **Validation:** Toy Models A & B implemented and plotting correct scaling laws.
 - [x] **Results:** Energy Phase Diagram, Deficit Window, and S-Shape emergence confirmed.
-- [x] **Data & Scaling:** Cross-species scaling data ($L, R, EI, Mass$) for 10 species generated (`scripts/experiment_cross_species_scaling.py`).
+- [x] **Data & Scaling:** Cross-species scaling data (`Length_m`, `Mass_kg`, `EI_Nm2`, computed `Bg`) for 10 species generated (`scripts/experiment_cross_species_scaling.py`).
 - [x] **Mutation Mapping:** Implemented `--run-mutations` in `scripts/experiment_optimization_failure.py`.
 - [ ] **Manuscript:** Abstract needs trimming; References incomplete; Figures need final assembly.
 
