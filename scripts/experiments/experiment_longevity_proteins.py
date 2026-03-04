@@ -18,6 +18,8 @@ Date: 2026-02-07
 import csv
 import time
 from pathlib import Path
+import os
+import sys
 from dataclasses import dataclass
 from typing import List, Dict, Any
 
@@ -34,6 +36,12 @@ METRICS_DIRS = [
     Path("outputs/afcc"),
     Path("research/alphafold_countercurvature/outputs/afcc"),
 ]
+from scripts.experiments.experiment_thermodynamic_cost_proteins import (
+    OUTPUT_DIR,
+    TARGETS,
+    load_all_metrics,
+)
+
 
 @dataclass
 class ProteinTarget:
