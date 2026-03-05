@@ -10,6 +10,7 @@
 - [x] **Code:** Implement Specific Mutation Mapping in `experiment_optimization_failure.py`.
 - [x] **Validation:** Run all scripts and ensure clean outputs (CSV/PNG). (Core & Toy Models Done)
 - [x] **Toy Models:** Develop Toy Models A & B for Reviewer Defense. (Done)
+- [x] **Simulation Sweeps:** Completed advanced PyElastica sweeps (Taper, Kyphosis, Torsion).
 
 ## Phase 2: Manuscript Polish & Theory (Weeks 1-2: March 01 - March 15)
 
@@ -27,10 +28,10 @@
 
 | Week | Task | Owner | Status |
 | :--- | :--- | :--- | :--- |
-| **Week 1 (Mar 01)** | Figure Assembly (1-7) | PI / Design | 🚨 **Starting** |
-| **Week 2 (Mar 08)** | Manuscript Final Text | PI | ✅ **Completed** |
-| **Week 3 (Mar 15)** | Internal Review & Polish | Team | ⚪ Planned |
-| **Week 4 (Mar 22)** | **SUBMISSION** | PI | ⚪ Planned |
+| **Week 1 (Mar 01)** | Code & Sweep Validation | Team | ✅ **Completed** |
+| **Week 2 (Mar 08)** | Manuscript Final Text & Refs | PI | 🟡 **In Progress** |
+| **Week 3 (Mar 15)** | Figure Assembly (1-7) & Polish | Design/Team | 🚨 **Starting** |
+| **Week 4 (Mar 22)** | Internal Review & **SUBMISSION** | PI | ⚪ Planned |
 
 ## Timeline Estimate
 
