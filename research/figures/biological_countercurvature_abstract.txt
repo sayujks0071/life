@@ -1,16 +1,18 @@
-A high-impact Visual Abstract for a scientific paper titled "Biological Countercurvature of Spacetime."
+Title: Visual Abstract: Metabolic Buckling in Adolescent Idiopathic Scoliosis
 
-The central image is a glowing, translucent S-shaped human spine (representing Information-Elasticity Coupling, IEC). It is superimposed against a warped 3D spacetime grid, illustrating the concept that biological structures actively warp their local metric to resist gravity.
+Concept: The adolescent human spine as an active control system that fails under thermodynamic scaling laws, leading to "Metabolic Buckling."
 
-Key Elements:
-1. S-Curve Spine: A glowing blue/gold S-shaped line tracing the human spine, emphasizing the lordosis and kyphosis curves.
-2. Downward Arrows: Several glowing crimson arrows pointing straight down alongside the spine, labeled "Gravity Vector (g)".
-3. Upward Arrows: Several glowing golden arrows originating from the spine's curves pointing upwards and outwards, labeled "Information Countercurvature (I)".
-4. Background: A dark, deep-blue cosmic or molecular grid background that subtly bends and warps around the spine, visualizing the theoretical connection between differential geometry, general relativity, and biological structures.
+Central Element: A growing human spine, transitioning from a healthy, stabilized S-curve to a buckled, scoliotic S-curve.
 
-Text/Labels to include:
-- "Biological Countercurvature" at the top in elegant sans-serif.
-- "Information-Elasticity Coupling (IEC)" at the bottom.
-- A smaller inset or sub-label "Energetic Ground State" near the stable center of the S-curve.
+Key Action:
+- The healthy spine is supported by strong, synchronized energetic/metabolic "struts" (representing sufficient Energy Supply, $S_{proprio}$).
+- The scoliotic spine shows these struts breaking down or becoming insufficient as the spine elongates (representing the Energy Deficit Window, where $P_{counter} > S_{proprio}$).
+- A prominent "Delay" metric ($\tau$) is shown increasing alongside the growth spurt, represented by asynchronous or out-of-phase signaling waves around the buckling section.
 
-Style: Highly polished, photorealistic glowing scientific illustration. Perfect for a Nature/Science journal cover. High contrast, neon-on-dark-background aesthetic. Very sharp and professional.
+Background:
+- A fading gradient from a stable, low-energy state (blue/cool colors) to a high-stress, deficit state (red/hot colors).
+- Faint mathematical equations in the background: $\mathcal{B}_g \approx 0.01$ and $R_{deficit} > 1$.
+
+Annotation: "Scoliosis: A Predictable Thermodynamic Scaling Failure"
+
+Style: High-impact, Nature/Science cover style. Emphasizes the transition from stability to instability driven by metabolic and temporal constraints.

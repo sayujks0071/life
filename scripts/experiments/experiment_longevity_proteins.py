@@ -1,226 +1,87 @@
 #!/usr/bin/env python3
 """
-Thermodynamic Cost of Countercurvature: Longevity Protein Extension
-====================================================================
+Longevity Protein Analysis Extension
+====================================
 
-Extends the 23-protein thermodynamic cost analysis to include 5 longevity proteins:
-FOXO3, SIRT1 (dual-role), Klotho, YAP1, PGC-1α (dual-role).
-
-This maps the core dissipation terms (eta_p, eta_a, Gamma_m) to downstream
-longevity effector networks, establishing the molecular basis for why
-frequent thermodynamic cycling (e.g., squat-to-stand) preserves biological
-coupling and promotes healthy aging.
+Extends the base thermodynamic cost analysis to include 5 specific longevity proteins
+(FOXO3, SIRT1, Klotho, YAP1, PGC-1α) to support the longevity squat-stand study.
 
 Author: Dr. Sayuj Krishnan S
 Date: 2026-02-07
 """
 
 import csv
-from dataclasses import dataclass
+import time
 from pathlib import Path
 from typing import Any, Dict, List
 
-# ---------------------------------------------------------------------------
-# Configuration
-# ---------------------------------------------------------------------------
+import numpy as np
 
+# Configuration
 OUTPUT_DIR = Path("outputs/thermodynamic_cost")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
 METRICS_DIRS = [
     Path("outputs/afcc"),
     Path("research/alphafold_countercurvature/outputs/afcc"),
 ]
-from scripts.experiments.experiment_thermodynamic_cost_proteins import (
-    OUTPUT_DIR,
-    TARGETS,
-    load_all_metrics,
-)
 
+# We include the original 23 proteins PLUS the 5 longevity proteins.
+# Note: SIRT1 and PGC-1a (PPARGC1A) are already in the original 23 as Gamma_m components.
+# In the longevity framework, they take on dual roles. We will explicitly define
+# the longevity-specific downstream forms here.
 
-@dataclass
 class ProteinTarget:
-    gene: str
-    uniprot: str
-    term: str           # "eta_p", "eta_a", "Gamma_m", or "longevity"
-    role: str
-    prediction: str
-    scaling: str
-    dual_role: bool = False
-    upstream: str = ""  # which term activates this longevity protein
+    def __init__(self, gene: str, uniprot: str, term: str, role: str, prediction: str, scaling: str, dual_role: bool = False):
+        self.gene = gene
+        self.uniprot = uniprot
+        self.term = term
+        self.role = role
+        self.prediction = prediction
+        self.scaling = scaling
+        self.dual_role = dual_role
 
-# ---------------------------------------------------------------------------
-# The 28 Proteins: Core 23 + 5 Longevity
-# ---------------------------------------------------------------------------
+TARGETS = [
+    # ===== Original 23 Proteins =====
+    ProteinTarget("PIEZO2", "Q9H5I5", "eta_p", "Vector mechanosensor", "High anisotropy", "L"),
+    ProteinTarget("EGR3", "Q06889", "eta_p", "Muscle spindle TF", "High disorder", "L"),
+    ProteinTarget("RUNX3", "Q13761", "eta_p", "Proprioceptive TF", "High disorder", "L"),
+    ProteinTarget("NTRK3", "Q16288", "eta_p", "Survival signal", "Cost scales with L", "L"),
+    ProteinTarget("PIEZO1", "Q92508", "eta_p", "Scalar mechanosensor", "Extended", "L^2"),
 
-TARGETS: List[ProteinTarget] = [
-    # ===== eta_p: Proprioceptive feedback dissipation =====
-    ProteinTarget(
-        gene="PIEZO2", uniprot="Q9H5I5", term="eta_p",
-        role="Vector mechanosensor for proprioception; detects alignment error",
-        prediction="High anisotropy (extended) = high metabolic cost to maintain orientation",
-        scaling="L"
-    ),
-    ProteinTarget(
-        gene="EGR3", uniprot="Q06889", term="eta_p",
-        role="Transcription factor maintaining muscle spindle innervation",
-        prediction="Extended structure despite being a TF; high disorder",
-        scaling="L"
-    ),
-    ProteinTarget(
-        gene="RUNX3", uniprot="Q13761", term="eta_p",
-        role="Master regulator of proprioceptive neuron development",
-        prediction="Intermediate anisotropy, high disorder",
-        scaling="L"
-    ),
-    ProteinTarget(
-        gene="NTRK3", uniprot="Q16288", term="eta_p",
-        role="TrkC receptor; proprioceptive neuron survival signal",
-        prediction="Intermediate anisotropy, conformationally expensive",
-        scaling="L"
-    ),
-    ProteinTarget(
-        gene="PIEZO1", uniprot="Q92508", term="eta_p",
-        role="Scalar mechanosensor; detects membrane tension",
-        prediction="Extended (3.9 aniso), massive (2521 res)",
-        scaling="L^2"
-    ),
+    ProteinTarget("DMD", "P11532", "eta_a", "ECM linker", "Essential for tone", "L^3"),
+    ProteinTarget("MYLK", "Q15746", "eta_a", "Tonic contraction", "Regulator", "L^2"),
+    ProteinTarget("LBX1", "P52954", "eta_a", "Paraspinal TF", "Sensitive to stiffness", "L^2"),
+    ProteinTarget("FLNA", "P21333", "eta_a", "Crosslinker", "Tension-gated", "L^3"),
+    ProteinTarget("VIM", "P08670", "eta_a", "Strain gauge", "Collapses in microgravity", "L^3"),
+    ProteinTarget("LMNA", "P02545", "eta_a", "Nuclear mechanostat", "Highest TF anisotropy", "L^2"),
+    ProteinTarget("CAV1", "Q03135", "eta_a", "Curvature sensor", "Membrane-embedded", "L^2"),
 
-    # ===== eta_a: Active moment maintenance =====
-    ProteinTarget(
-        gene="DMD", uniprot="P11532", term="eta_a",
-        role="Dystrophin; cytoskeleton-ECM linker in paraspinal muscle",
-        prediction="Essential for maintenance of muscle tone against gravity",
-        scaling="L^3"
-    ),
-    ProteinTarget(
-        gene="MYLK", uniprot="Q15746", term="eta_a",
-        role="Myosin light chain kinase; tonic contraction regulator",
-        prediction="Regulator of myosin contractility",
-        scaling="L^2"
-    ),
-    ProteinTarget(
-        gene="LBX1", uniprot="P52954", term="eta_a",
-        role="Paraspinal muscle specification TF",
-        prediction="Intermediate anisotropy, high disorder",
-        scaling="L^2"
-    ),
-    ProteinTarget(
-        gene="FLNA", uniprot="P21333", term="eta_a",
-        role="Filamin A; cytoskeletal mechanosensor and crosslinker",
-        prediction="Tension-gated signal integrator",
-        scaling="L^3"
-    ),
-    ProteinTarget(
-        gene="VIM", uniprot="P08670", term="eta_a",
-        role="Vimentin; gravitational strain gauge in cells",
-        prediction="Intermediate filament; collapses in microgravity",
-        scaling="L^3"
-    ),
-    ProteinTarget(
-        gene="LMNA", uniprot="P02545", term="eta_a",
-        role="Lamin A/C; nuclear mechanostat",
-        prediction="Highest anisotropy among TFs",
-        scaling="L^2"
-    ),
-    ProteinTarget(
-        gene="CAV1", uniprot="Q03135", term="eta_a",
-        role="Caveolin-1; membrane curvature sensor",
-        prediction="Membrane-embedded sensor",
-        scaling="L^2"
-    ),
+    ProteinTarget("COL1A1", "P02452", "Gamma_m", "Primary structural", "Turnover cost", "L^3"),
+    ProteinTarget("COMP", "P49747", "Gamma_m", "Disc ECM", "Scaffold", "L"),
+    ProteinTarget("SIRT1", "Q96EB6", "Gamma_m", "Metabolic sensor", "Fuel gauge", "constant"),
+    ProteinTarget("SOX9", "P48436", "Gamma_m", "Chondrogenic TF", "Drives growth", "L"),
+    ProteinTarget("SHH", "Q15465", "Gamma_m", "Morphogen", "Gradient maintenance", "L"),
+    ProteinTarget("CDKN1A", "P38936", "Gamma_m", "Cell cycle inhibitor", "Unloading signal", "threshold"),
+    ProteinTarget("PPARGC1A", "Q9UBK2", "Gamma_m", "Mitochondrial supply", "Supply bottleneck", "L"),
+    ProteinTarget("IGF1R", "P08069", "Gamma_m", "Growth factor receptor", "Signaling", "L"),
+    ProteinTarget("GHR", "P10912", "Gamma_m", "Growth hormone receptor", "Rate regulator", "L"),
+    ProteinTarget("ARNTL", "O00327", "Gamma_m", "Circadian clock", "Rhythm", "L"),
 
-    # ===== Gamma_m: Basal tissue maintenance =====
-    ProteinTarget(
-        gene="COL1A1", uniprot="P02452", term="Gamma_m",
-        role="Type I collagen; primary structural protein",
-        prediction="Triple helix; turnover is largest component of Gamma_m",
-        scaling="L^3"
-    ),
-    ProteinTarget(
-        gene="COMP", uniprot="P49747", term="Gamma_m",
-        role="Cartilage oligomeric matrix protein",
-        prediction="ECM scaffold protein",
-        scaling="L"
-    ),
-    ProteinTarget(
-        gene="SIRT1", uniprot="Q96EB6", term="Gamma_m",
-        role="Sirtuin 1; NAD+-dependent metabolic sensor",
-        prediction="Compact enzyme; energy gauge",
-        scaling="constant",
-        dual_role=True,
-        upstream="Gamma_m (NAD+ cycling)"
-    ),
-    ProteinTarget(
-        gene="SOX9", uniprot="P48436", term="Gamma_m",
-        role="Master chondrogenic TF",
-        prediction="Drives growth plate proliferation",
-        scaling="L"
-    ),
-    ProteinTarget(
-        gene="SHH", uniprot="Q15465", term="Gamma_m",
-        role="Sonic Hedgehog; morphogen gradient",
-        prediction="Compact signaling molecule",
-        scaling="L"
-    ),
-    ProteinTarget(
-        gene="CDKN1A", uniprot="P38936", term="Gamma_m",
-        role="p21; cell cycle inhibitor",
-        prediction="Upregulated in microgravity",
-        scaling="threshold"
-    ),
-    ProteinTarget(
-        gene="PPARGC1A", uniprot="Q9UBK2", term="Gamma_m",
-        role="PGC-1a; Mitochondrial biogenesis master regulator",
-        prediction="Energy supply bottleneck during growth",
-        scaling="L",
-        dual_role=True,
-        upstream="Gamma_m (AMPK activation)"
-    ),
-    ProteinTarget(
-        gene="IGF1R", uniprot="P08069", term="Gamma_m",
-        role="Insulin-like growth factor 1 receptor",
-        prediction="Signaling receptor for growth spurt rate",
-        scaling="L"
-    ),
-    ProteinTarget(
-        gene="GHR", uniprot="P10912", term="Gamma_m",
-        role="Growth hormone receptor",
-        prediction="Regulates the rate of spinal elongation",
-        scaling="L"
-    ),
-    ProteinTarget(
-        gene="ARNTL", uniprot="O00327", term="Gamma_m",
-        role="BMAL1; circadian clock TF",
-        prediction="Circadian rhythm disruption linked to scoliosis",
-        scaling="L"
-    ),
+    # ===== Longevity Specific Targets (New + Explicit Dual Roles) =====
+    # FOXO3: Downstream of eta_a (AMPK) and Gamma_m (SIRT1)
+    ProteinTarget("FOXO3", "O43524", "longevity", "Stress resistance TF", "Downstream of AMPK/SIRT1", "longevity"),
+    # Klotho: Downstream of eta_p (PIEZO/Ca2+)
+    ProteinTarget("KLOTHO", "Q9UEF7", "longevity", "Anti-aging hormone", "Downstream of PIEZO2 Ca2+ influx", "longevity"),
+    # YAP1: Downstream of eta_a (VIM/LMNA tension)
+    ProteinTarget("YAP1", "P46937", "longevity", "Tissue repair TF", "Nuclear translocation requires cytoskeletal tension", "longevity"),
 
-    # ===== Longevity Extensions =====
-    ProteinTarget(
-        gene="FOXO3", uniprot="O43524", term="longevity",
-        role="Stress resistance, autophagy, DNA repair",
-        prediction="Activated by AMPK (from muscle contraction) and deacetylated by SIRT1",
-        scaling="activity level",
-        upstream="eta_a + Gamma_m"
-    ),
-    ProteinTarget(
-        gene="KLOTHO", uniprot="Q9UEF7", term="longevity",
-        role="Anti-aging hormone, Ca2+ homeostasis",
-        prediction="Secreted in response to proprioceptive Ca2+ transients",
-        scaling="activity level",
-        upstream="eta_p (PIEZO -> Ca2+)"
-    ),
-    ProteinTarget(
-        gene="YAP1", uniprot="P46937", term="longevity",
-        role="Tissue repair and proliferation",
-        prediction="Nuclear translocation driven by cytoskeletal tension",
-        scaling="activity level",
-        upstream="eta_a (VIM/LMNA tension)"
-    ),
+    # Dual role explicitly marked for output clarity
+    ProteinTarget("SIRT1_L", "Q96EB6", "longevity", "FOXO3 deacetylase", "Dual-role: metabolic gauge + longevity effector", "longevity", dual_role=True),
+    ProteinTarget("PPARGC1A_L", "Q9UBK2", "longevity", "Mitochondrial biogenesis", "Dual-role: developmental bottleneck + exercise-induced supply", "longevity", dual_role=True),
 ]
 
 def load_all_metrics() -> Dict[str, Dict[str, Any]]:
+    """Load all pre-computed AFCC metrics."""
     all_proteins = {}
     for metrics_dir in METRICS_DIRS:
         if not metrics_dir.exists():
@@ -232,31 +93,36 @@ def load_all_metrics() -> Dict[str, Dict[str, Any]]:
                     gene = row.get("gene_symbol", "")
                     if gene:
                         all_proteins[gene] = row
-                        all_proteins[gene]["_source_file"] = str(metrics_file)
     return all_proteins
 
 def main():
     print("=" * 70)
-    print("  THERMODYNAMIC COST: Longevity Protein Extension")
+    print("  LONGEVITY PROTEIN EXTENSION: Thermodynamic Cost Analysis")
     print("=" * 70)
 
     metrics = load_all_metrics()
-    print(f"\n  Loaded pre-computed metrics for {len(metrics)} proteins")
+    print(f"\n  Loaded metrics for {len(metrics)} proteins")
 
+    # Save Extended CSV
     csv_path = OUTPUT_DIR / "thermodynamic_cost_proteins_extended.csv"
     rows = []
 
+    matched_count = 0
     for t in TARGETS:
-        m = metrics.get(t.gene, {})
-        # Note: pae_blockiness is the correct key per codebase memory
+        # For dual roles, look up the base gene name
+        lookup_gene = t.gene.replace("_L", "")
+        m = metrics.get(lookup_gene, {})
+
+        if lookup_gene in metrics:
+            matched_count += 1
+
         rows.append({
             "gene": t.gene,
             "uniprot": t.uniprot,
             "term": t.term,
-            "dual_role": str(t.dual_role),
-            "upstream_activator": t.upstream,
             "role": t.role,
             "scaling": t.scaling,
+            "dual_role": "True" if t.dual_role else "False",
             "anisotropy": m.get("anisotropy_index", ""),
             "morphology": m.get("morphology", ""),
             "rg": m.get("radius_of_gyration", ""),
@@ -264,21 +130,18 @@ def main():
             "n_residues": m.get("n_residues", ""),
             "hinge_candidates": m.get("hinge_candidates", ""),
             "disorder_fraction": m.get("disorder_fraction_proxy", ""),
-            "PAE_blockiness": m.get("pae_blockiness", ""),
-            "status": "matched" if t.gene in metrics else "missing",
+            "PAE_blockiness": m.get("pae_blockiness", m.get("PAE_domain_blockiness_score", "")),
+            "status": "matched" if lookup_gene in metrics else "missing",
         })
+
+    print(f"\n  Matched: {matched_count}/{len(TARGETS)} targets")
 
     if rows:
         with open(csv_path, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
             writer.writeheader()
             writer.writerows(rows)
-        print(f"  ✅ Extended CSV: {csv_path}")
-
-    print(f"\n  Mapped {len(TARGETS)} proteins total:")
-    print("  - core framework: 23 proteins")
-    print("  - longevity new : 3 proteins")
-    print("  - dual-role     : 2 proteins (SIRT1, PPARGC1A)")
+        print(f"  ✅ Extended CSV written to: {csv_path}")
 
 if __name__ == "__main__":
     main()

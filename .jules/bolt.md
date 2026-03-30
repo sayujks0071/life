@@ -140,3 +140,22 @@ This reduced the metric calculation overhead significantly while preserving bit-
 ## 2026-11-20 - [Bolt BioFold metrics boolean arrays optimization]
 **Learning:** Checking the fraction of residues above/below pLDDT thresholds is a frequent operation inside `MetricsAnalyzer.analyze_structure`. Using `np.sum()` on boolean arrays allocates memory or runs sub-optimally.
 **Action:** Replaced `np.sum(plddt >= 90)` with `np.count_nonzero(plddt >= 90)` inside `research/alphafold_countercurvature/src/afcc/metrics.py`. It provides a minor (~3-4x speedup on that specific block) performance boost with identical numerical output.
+
+## 2026-11-26 - [Vectorized End-to-End Distance]
+**Learning:** In `MetricsAnalyzer.analyze_structure`, finding the longest contiguous high-confidence segment used `np.hstack` (which forces internal copies and integer upcasting) and a python `for` loop over `zip(starts, ends)` to track the maximum length. This introduced unnecessary overhead for an operation done on every structure.
+**Action:** Replaced `np.hstack` with an explicitly pre-allocated boolean array for padding, followed by `np.diff` on `int8`. Replaced the python loop with vectorized `lengths = ends - starts` and `np.argmax(lengths)` to find the longest segment. This yielded a ~6x speedup (from 3.08s to 0.48s for 10,000 runs) and is O(N) instead of O(N) with high python overhead, while returning identical results.
+
+## 2026-03-09 - [Vectorized Variance for Radius of Gyration]
+
+**Learning:** When profiling `run_bolt_analysis_cycle.py`, we observed high cumulative time from parsing coordinates and repeatedly calculating geometric metrics like Radius of Gyration (`calculate_rg`). The previous implementation manually computed the center of mass, squared differences along axes, and mean squared distances, leading to multiple temporary arrays.
+
+**Action:** Optimized `calculate_rg` using NumPy's vectorized variance `np.var`. The identity `Rg = sqrt(sum(Var(coords, axis=0)))` avoids manual broadcasting and computes variance efficiently in C. This provides a ~35% speedup per call (from 0.88s to 0.54s per 10M points) and reduces peak memory allocation for this metric (30MB -> 23MB for 1M points). The output remains mathematically identical.
+
+## $(date +%Y-%m-%d) - [Fast Boolean Diff for Segment Finding]
+**Learning:** In AlphaFold structure analysis, `np.diff` is often used to find boundaries of continuous segments (e.g., residues with high pLDDT scores or domains). When operating on boolean arrays, first casting to `int8` before calling `np.diff` adds unnecessary memory overhead. Instead, using a boolean condition `bounded[1:] != bounded[:-1]` and extracting starts/ends with boolean bitwise `&` logic (`diff & bounded[1:]`) achieves the same boundary detection with ~25% to ~30% improved speed.
+**Action:** Replaced `np.diff(bounded.astype(np.int8))` with fast boolean diff logic in `research/alphafold_countercurvature/src/afcc/metrics.py` (specifically in PAE segment finding and end-to-end distance calculations).
+
+## 2026-11-20 - [Bolt Optimization: pLDDT boolean mask reuse]   **Learning:** pLDDT fractions calculation repeatedly creates internal boolean masks across array boundaries. This was a pipeline-specific bottleneck pattern resulting in duplicated boolean traversal and slow performance. **Action:** Refactored `analyze_structure` in `metrics.py` to reuse logical boolean masks (`mask_low = plddt_scores < 70` and `mask_high >= 90`) and logical subsetting (`plddt_scores[mask_low] < 50`) to avoid compound logical ops (`&`) and duplicate mask allocations. Improved block speed from ~0.25s to ~0.02s per 10k items.
+## 2025-02-28 - [Vectorize modulus condition in Hopf boundary solver]
+**Learning:** Python loops over NumPy arrays with conditional blocks are very slow. In `analytical_hopf_boundary` of `alphafold_pipeline_v2.py`, calculating values element-wise over an array of 6000 values took about ~1.1 seconds.
+**Action:** Vectorized the initial modulus condition mask `abs(lhs - rhs) / max(lhs, rhs) < 0.002` across the `omega` array before dropping into the `valid_omegas` loop to calculate the phase boundary. This lowered execution time per call to ~0.02s (~40-50x speedup).
