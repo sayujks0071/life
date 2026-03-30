@@ -1,7 +1,9 @@
 # From Molecules to Curvature: A Causal Map of Scoliosis
 
 ## Overview
-The **Scoliosis Mechanism Map** connects molecular actors to tissue mechanics via **Biological Counter-Curvature**. The spine actively grows into an anticipatory S-shape to neutralize gravity. Scoliosis is a failure of this active control system. The organizing principle of **Biological Counter-Curvature** unifies these diverse molecular pathways, framing them all as components of a single active control system working to offset gravitational loading.
+The **Scoliosis Mechanism Map** connects molecular actors to tissue mechanics via **Biological Counter-Curvature**. The spine actively grows into an anticipatory S-shape to neutralize gravity. Scoliosis is a failure of this active control system.
+
+The organizing principle of **Biological Counter-Curvature** unifies these diverse molecular pathways, framing them all as components of a single active control system working to offset gravitational loading. Instead of viewing scoliosis as a collection of isolated defects (e.g., a "bone problem", a "muscle problem", or a "neural problem"), Counter-Curvature reveals how genetic variation, mechanical forces, and tissue metabolism feed into a unified mechanosensory loop. This continuous feedback loop dynamically adjusts structural stiffness ($EI$) and biological target curvature ($\kappa_0$) via mechanotransductive gain ($G_{mech}$) to maintain spinal stability against gravity. When pathways like PIEZO1 signaling or cellular metabolism fail, the active control loop collapses, leading to Euler buckling and the emergent 3D deformity of scoliosis.
 
 Categories: Genetics, Processes, Tissue Properties ($EI$, $G_{mech}$, $\kappa_0$), Outcomes.
 
@@ -72,6 +74,25 @@ Categories: Genetics, Processes, Tissue Properties ($EI$, $G_{mech}$, $\kappa_0$
 ### 14. Voltage Gain
 * **Path**: `KCNQ` $\rightarrow$ `Mechanotransduction` $\rightarrow$ `Gain (G_{mech})`
 * **Role**: Resting membrane potential regulates Piezo2 sensitivity. Hyperpolarization (e.g., via KCNQ channels) dampens the proprioceptive error-correction loop, reducing the feedback gain and leading to Bastien instability (Sánchez-Carranza et al., 2024).
+
+### 15. PIEZO1-GPX4 Ferroptosis Axis
+* **Path**: `PIEZO1` $\rightarrow$ `GPX4` $\rightarrow$ `Ferroptosis` $\rightarrow$ `Growth Plate Dysplasia`
+* **Mechanism**: Mechanical stress upregulates the mechanosensitive ion channel PIEZO1 in vertebral growth plate chondrocytes. This overactivation inhibits GPX4 signaling, breaking down the cell's antioxidant defense.
+* **Role**: **Asymmetric Ossification**. Without GPX4, iron overload and lipid peroxidation trigger ferroptosis, driving growth plate degeneration and asymmetric ossification that compromises mechanical stability.
+* **Evidence**: Chen et al. (2025) demonstrated that the PIEZO1-GPX4 axis mediates mechanical stress-induced vertebral growth plate dysplasia via ferroptosis activation.
+
+### 16. Stochastic Resonance Mechanosensing (Dither Failure)
+* **Path**: `Muscle Tone / Fluid Flow` $\rightarrow$ `Micro-Tremor (Dither)` $\rightarrow$ `PIEZO1/2` $\rightarrow$ `Gain (G_{mech})`
+* **Mechanism**: High-threshold mechanosensors (like PIEZO channels) require high-frequency physiological "noise" (e.g., muscle micro-tremors, vascular pulsation, Reissner fiber oscillation) to act as a "dither" signal. This noise keeps the sensors in their linear, high-sensitivity detection range, allowing them to sense slow, sub-threshold postural drifts (gravity).
+* **Role**: **Sensory Lock-up**. During rapid adolescent growth, muscle mass and vascular development often lag behind bone elongation. This reduces the baseline physiological "noise floor". Without this stochastic resonance dither, mechanosensors lock up and fail to detect the initial slow geometric drift, dropping the feedback gain ($G_{mech}$) to zero and precipitating buckling.
+> **Hypothesis**: Targeted acoustic or vibration therapy acting as an artificial dither during the Energy Deficit Window can artificially boost mechanosensor sensitivity, preventing the initial scoliotic bifurcation.
+
+### 17. Caveolin Gain Control
+* **Path**: `CAV1` $\rightarrow$ `Membrane Tension` $\rightarrow$ `YAP`
+* **Mechanism**: Caveolin-1 (CAV1) functions as a mechanical "Gain Control" element by forming invaginated caveolae that flatten under tension, buffering the cell membrane against transient mechanical noise and sequestering YAP in the cytoplasm.
+* **Role**: **Mechanotransductive Hypersensitivity**. Loss of this buffering capacity (due to genetics or chronic unloading) causes constitutive YAP nuclear translocation, increasing mechanotransductive gain and pushing the system toward instability.
+* **Evidence**: Moreno-Vicente et al. (2018) demonstrated CAV1 modulates mechanotransduction responses to substrate stiffness through actin-dependent control of YAP.
+> **Hypothesis**: CAV1 deficiency lowers the critical buckling load of the spine by removing the "noise filter" that normally prevents random fluctuations from becoming self-reinforcing curves.
 
 ---
 *Generated by Systems Mapper based on the Biological Counter-Curvature framework.*
