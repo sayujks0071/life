@@ -1,28 +1,40 @@
-
-import os
+from pathlib import Path
+import subprocess
 import sys
+import tempfile
 
 import numpy as np
 import pandas as pd
 
-# Ensure src is in pythonpath
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-def test_energy_deficit_output():
+REPO_ROOT = Path(__file__).resolve().parents[1]
+SCRIPT = REPO_ROOT / "scripts" / "experiment_energy_deficit_window.py"
+
+def test_energy_deficit_output(tmp_path):
     """
     Verify that the energy deficit experiment generates the expected output files
     and that the data follows the qualitative trends required by the hypothesis.
     """
+    csv_path = tmp_path / "energy_deficit_window.csv"
+    png_path = tmp_path / "energy_deficit_window.png"
+
     # Run the experiment script
-    exit_code = os.system("python scripts/experiment_energy_deficit_window.py")
-    assert exit_code == 0, "Experiment script failed to run."
+    subprocess.run(
+        [
+            sys.executable,
+            str(SCRIPT),
+            "--output-csv",
+            str(csv_path),
+            "--output-figure",
+            str(png_path),
+            "--skip-manuscript-figure",
+        ],
+        check=True,
+        cwd=REPO_ROOT,
+    )
 
-    # Check for output files
-    csv_path = "outputs/thermodynamic_cost/energy_deficit_window.csv"
-    png_path = "outputs/figures/energy_deficit_window.png"
-
-    assert os.path.exists(csv_path), "CSV output not found."
-    assert os.path.exists(png_path), "PNG output not found."
+    assert csv_path.exists(), "CSV output not found."
+    assert png_path.exists(), "PNG output not found."
 
     # Analyze CSV data
     df = pd.read_csv(csv_path)
@@ -62,7 +74,8 @@ def test_energy_deficit_output():
 if __name__ == "__main__":
     # Manually run the test function if executed as script
     try:
-        test_energy_deficit_output()
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_energy_deficit_output(Path(tmpdir))
         print("Test passed!")
     except AssertionError as e:
         print(f"Test failed: {e}")
