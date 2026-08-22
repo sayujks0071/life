@@ -1,3 +1,5 @@
+> **Superseded 2026-08-22.** Correct portal: https://www.editorialmanager.com/sdef/ (not `/spde/`). No journal-imposed deadline. See `JOURNAL_TRACK.md` and `PUBLICATION_STATUS.md`.
+
 # 🚀 SUBMIT NOW - 3 SIMPLE STEPS
 
 ## You are 30 minutes from submission!
@@ -36,7 +38,7 @@ ls -lh /home/sayuj/life/manuscript/main.pdf
 ## STEP 2: SUBMIT TO SPRINGER (10 minutes)
 
 ### Portal
-**https://www.editorialmanager.com/spde/**
+**https://www.editorialmanager.com/sdef/**
 
 ### Login
 **Email**: dr.sayujkrishnan@gmail.com  
@@ -95,7 +97,7 @@ ls -lh /home/sayuj/life/manuscript/main.pdf
 
 7. **SUBMIT!**
 
-8. **Note manuscript ID**: SPDE-D-26-XXXXX
+8. **Note manuscript ID**: SDEF-D-26-XXXXX
 
 ---
 
@@ -124,7 +126,7 @@ ls -lh /home/sayuj/life/manuscript/main.pdf
 - **Week 14-16**: Final decision
 
 ### Status Tracking
-Check: https://www.editorialmanager.com/spde/
+Check: https://www.editorialmanager.com/sdef/
 
 Look for:
 - "With Editor" → editorial review

@@ -1,35 +1,12 @@
-# Spine Submission Roadmap
+# Spine submission roadmap (pointer)
 
-**Target:** *Spine* (IF: 3.30, Q1, H-index: 300)
-**Strategy:** "A computational framework predicting adolescent scoliosis onset" with clinical validation against published cohort data.
-**Start Date:** 2026-02-23
-**Target Submission Date:** 2026-04-06 (6 Weeks)
+This file previously targeted Wolters Kluwer *Spine* (IF 3.30) with a self-imposed date **2026-04-06** (6 weeks from 2026-02-23). That was never a journal-imposed deadline and is **stale**.
 
-## Phase 1: Computational Framework (Weeks 1-2)
+**Live track:** *Spine Deformity* (Springer / SRS).
 
-- [x] **Core Model:** Establish "Energy Deficit" model (`experiment_energy_deficit_window.py`).
-- [x] **Rescue Cliff:** Validate "Rescue Cliff" at Anisotropy ~2.4 (Simulated in `outputs/sim/2026-02-22/`).
-- [x] **Spinal Jetlag:** Run "Spinal Jetlag" simulation to demonstrate circadian modulation of curvature (`experiment_spinal_jetlag.py`).
-- [x] **Robustness:** Ensure model stability across parameter sweeps (Sensitivity Analysis). (`scripts/weekly_sim_defect_sensitivity.py`)
+- Canonical journal / portal / deadline facts: `JOURNAL_TRACK.md`
+- Remaining work checkboxes: `docs/spine_submission_roadmap.md`
+- Honest status: `PUBLICATION_STATUS.md` and `REMAINING_ITEMS.md`
 
-## Phase 2: Clinical Validation (Weeks 3-4)
-
-- [x] **Cohort Data Extraction:** Extract Weinstein 1983 / Lonstein 1984 curve progression data to `data/clinical_cohort_targets.csv`.
-- [x] **Clinical Script:** Implement `scripts/validate_clinical_data.py` to automate these comparisons.
-- [ ] **PHV Timing:** Compare model "Instability Window" with clinical Peak Height Velocity (PHV) timing data.
-- [ ] **Sexual Dimorphism:** Validate model predictions for female vs. male prevalence against epidemiological data.
-- [ ] **Curve Types:** Verify if model can reproduce common curve types (e.g., Lenke classification patterns) based on initial conditions.
-
-## Phase 3: Manuscript Preparation (Weeks 5-6)
-
-- [ ] **Reformatting:** Adapt `nature_manuscript.tex` to *Spine* format (IMRaD structure).
-- [ ] **Abstract:** Draft Structured Abstract (Study Design, Objective, Summary of Background Data, Methods, Results, Conclusions).
-- [ ] **Clinical Relevance:** Write "Clinical Relevance" section highlighting the predictive value for early intervention.
-- [ ] **Figures:** Generate "Clinical Translation" figures (Model vs. Patient Data overlays).
-- [ ] **References:** Update bibliography to include relevant *Spine* and *Eur Spine J* citations.
-
-## Progress Tracking
-
-**Current Phase:** Phase 1
-**Percent Complete:** 0% (Calculated by script)
-**Status:** In Progress
+Editorial Manager: https://www.editorialmanager.com/sdef/  
+Not https://www.editorialmanager.com/spde/ (different journal).

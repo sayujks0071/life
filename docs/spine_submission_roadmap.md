@@ -1,11 +1,16 @@
 # Spine Deformity remaining-work roadmap
 
 **Target:** *Spine Deformity* (Springer / SRS). *Spine* (LWW) is backup only.
-**Canonical status:** `PUBLICATION_STATUS.md` and `REMAINING_ITEMS.md`
+**Canonical status:** `PUBLICATION_STATUS.md`, `REMAINING_ITEMS.md`, `JOURNAL_TRACK.md`
 **Start Date:** 2026-02-23
-**Target Submission Date:** 2026-09-15
+**Journal-imposed deadline:** none as of 2026-08-22
 
-This file is what `scripts/spine_daily_update.py` reads. It is **not** a claim that the May pack was submitted.
+This file is what `scripts/spine_daily_update.py` reads. Checkbox progress is **not** a journal clock.
+
+Do **not** put a `Target Submission Date` here. Historical dates that are **not** journal deadlines:
+
+- **2026-04-06** — stale self-imposed 6-week target for Wolters Kluwer *Spine* (IF 3.30) from this file’s original start 2026-02-23.
+- **2026-09-15** — invented internal date; removed.
 
 ## Phase 1: Computational Framework (Weeks 1-2)
 
@@ -28,4 +33,4 @@ This file is what `scripts/spine_daily_update.py` reads. It is **not** a claim t
 - [x] **Honest claims:** Abstract/results no longer call synthetic N=1000 "clinical validation".
 - [x] **Compile path:** `make -C manuscript` + figure checker.
 - [ ] **Zenodo DOI** in availability.tex after a GitHub release.
-- [ ] **Portal submit** by the author (credentials required).
+- [ ] **Portal submit** by the author (credentials required; https://www.editorialmanager.com/sdef/ not /spde/).

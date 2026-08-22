@@ -1,8 +1,10 @@
 Spine Deformity (Springer) is the live track.
-See START_HERE.txt, PUBLICATION_STATUS.md, and REMAINING_ITEMS.md.
+See START_HERE.txt, PUBLICATION_STATUS.md, JOURNAL_TRACK.md, REMAINING_ITEMS.md.
 
 Ready: computational/theory manuscript + open SpineWeb geometry check.
 Not ready: patient-level clinical validation (not in this repo; do not invent it).
+No journal-imposed deadline as of 22 Aug 2026.
 
 Compile:  python3 scripts/run_submission_validation.py && make -C manuscript
-Submit:   Overleaf or local PDF -> https://www.editorialmanager.com/spde/
+Submit:   Overleaf or local PDF -> https://www.editorialmanager.com/sdef/
+NOT https://www.editorialmanager.com/spde/ (different journal).

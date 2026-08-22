@@ -1,3 +1,5 @@
+> **Superseded 2026-08-22.** Correct portal: https://www.editorialmanager.com/sdef/ (not `/spde/`). No journal-imposed deadline. See `JOURNAL_TRACK.md` and `PUBLICATION_STATUS.md`.
+
 # 🎉 MANUSCRIPT READY FOR SUBMISSION
 
 ## Status: ✅ PUBLICATION-READY (92/100)
@@ -29,7 +31,7 @@
 
 ### Step 2: Submit to Springer Editorial Manager (10 min)
 
-1. **Go to**: https://www.editorialmanager.com/spde/
+1. **Go to**: https://www.editorialmanager.com/sdef/
 2. **Login** with: dr.sayujkrishnan@gmail.com
 3. **Click**: "Submit New Manuscript"
 4. **Article type**: Original Article (Basic Science)
@@ -241,7 +243,7 @@ Distinguishing this from correlation-based models:
 - **8-16 weeks total**: Final decision
 
 ### Status Tracking
-Check https://www.editorialmanager.com/spde/ for:
+Check https://www.editorialmanager.com/sdef/ for:
 - "With Editor" → editorial screening
 - "Under Review" → sent to reviewers
 - "Required Reviews Complete" → reviews in
@@ -302,7 +304,7 @@ Before clicking "Submit" on Springer portal:
 **You will know the manuscript is successfully submitted when:**
 
 1. ✅ Springer Editorial Manager shows "Submitted" status
-2. ✅ You receive confirmation email with manuscript ID (SPDE-D-26-XXXXX)
+2. ✅ You receive confirmation email with manuscript ID (SDEF-D-26-XXXXX)
 3. ✅ Portal shows "With Editor" status
 4. ✅ You can download submission PDF from portal
 
@@ -317,7 +319,7 @@ Before clicking "Submit" on Springer portal:
 1. **Open browser** → https://www.overleaf.com
 2. **Upload** `manuscript_overleaf.zip`
 3. **Compile** → Download `submission_manuscript.pdf`
-4. **Go to** https://www.editorialmanager.com/spde/
+4. **Go to** https://www.editorialmanager.com/sdef/
 5. **Submit** manuscript + cover letter + figures
 6. **Celebrate!** 🎉
 

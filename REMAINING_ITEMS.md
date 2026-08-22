@@ -2,6 +2,8 @@
 
 Live manuscript: `manuscript/main.tex`
 Live journal: Spine Deformity (Springer). Backup: Spine (LWW).
+Portal: https://www.editorialmanager.com/sdef/ (not `/spde/`).
+No journal-imposed deadline as of 22 Aug 2026. See `JOURNAL_TRACK.md`.
 
 Mark items done only when the artifact exists in this repo.
 
@@ -41,6 +43,8 @@ python3 scripts/run_submission_validation.py
 make -C manuscript
 ```
 
-Upload `manuscript/main.pdf` (or Overleaf PDF), `manuscript/cover_letter_spine_deformity.tex` compiled PDF, and individual figures to https://www.editorialmanager.com/spde/
+Upload `manuscript/main.pdf` (or Overleaf PDF), `manuscript/cover_letter_spine_deformity.tex` compiled PDF, and individual figures to https://www.editorialmanager.com/sdef/ (not `/spde/`).
+
+Optional: select the journal’s AI / machine-learning collection (Springer Status: Open / deadline Ongoing as of 22 Aug 2026). If selected, omit guest editor Carl-Éric Aubin from suggested reviewers.
 
 If *Spine Deformity* desks the paper for insufficient clinical data, retarget *Spine* or *European Spine Journal* with the same computational framing; do not invent a cohort to keep the original journal.

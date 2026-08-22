@@ -1,3 +1,5 @@
+NOTE 2026-08-22: Correct portal https://www.editorialmanager.com/sdef/ (NOT /spde/). No journal-imposed deadline. See JOURNAL_TRACK.md and PUBLICATION_STATUS.md.
+
 ═══════════════════════════════════════════════════════════════════
 🎉 MISSION ACCOMPLISHED: MANUSCRIPT PUBLICATION-READY
 ═══════════════════════════════════════════════════════════════════
@@ -65,7 +67,7 @@ STEP 1: COMPILE PDF (15 minutes)
   → Download: submission_manuscript.pdf
 
 STEP 2: SUBMIT TO SPRINGER (10 minutes)
-  → Go to: https://www.editorialmanager.com/spde/
+  → Go to: https://www.editorialmanager.com/sdef/
   → Login: dr.sayujkrishnan@gmail.com
   → Upload: manuscript PDF + cover letter + figures
   → Submit!

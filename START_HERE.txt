@@ -4,8 +4,10 @@ LIVE TRACK: Springer Spine Deformity — honest status
 
 Date: 2026-08-22
 Canonical status: PUBLICATION_STATUS.md
+Journal / portal / deadlines: JOURNAL_TRACK.md
 Remaining blockers: REMAINING_ITEMS.md
 Target: Spine Deformity (Springer / SRS). Spine (LWW) is a backup journal.
+Journal-imposed deadline: none as of 22 Aug 2026.
 
 The May 2026 pack claiming "100% ready / submitted" is stale. There is no
 manuscript ID in this repo. Clinical validation is not patient-level.
@@ -30,8 +32,8 @@ WHAT IS STILL BLOCKING A FULL CLINICAL PAPER
 - No patient-level Cobb series, Risser/Sanders, or serial progression
 - No IRB cohort; ethics statement is computational-only
 - r = 0.983 is model-internal, not a clinical Cobb correlation
-- Daily tracker previously targeted Spine and counted a 6-week roadmap,
-  which is a parallel aspirational track, not the live submission
+- 2026-04-06 in older daily trackers was a self-imposed 6-week Spine (LWW)
+  target, not a journal deadline. Do not treat it as a clock.
 
 See REMAINING_ITEMS.md for the precise list.
 
@@ -47,5 +49,9 @@ From repo root:
 If pdflatex is missing, upload the manuscript/ folder to Overleaf
 and compile main.tex.
 
-Portal (author action): https://www.editorialmanager.com/spde/
+Portal (author action): https://www.editorialmanager.com/sdef/
+NOT https://www.editorialmanager.com/spde/ (that is a different journal).
 Backup journal: Spine (LWW), only if Spine Deformity desks the paper.
+No journal-imposed deadline as of 22 Aug 2026. Optional AI/ML collection
+is Springer Status: Open / deadline Ongoing (original 20 May 2026 CST cutoff
+is past). See JOURNAL_TRACK.md.

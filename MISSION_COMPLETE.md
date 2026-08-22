@@ -1,3 +1,5 @@
+> **Superseded 2026-08-22.** Correct portal: https://www.editorialmanager.com/sdef/ (not `/spde/`). No journal-imposed deadline. See `JOURNAL_TRACK.md` and `PUBLICATION_STATUS.md`.
+
 # 🎉 MISSION COMPLETE: MANUSCRIPT PUBLICATION-READY
 
 **Request**: "work until this is publishable in spine deformity journal by springer"  
@@ -143,7 +145,7 @@ Repeat for cover letter (upload cover_letter_spine_deformity.tex).
 
 ### Step 2: Submit to Springer (10 min)
 
-1. Portal: https://www.editorialmanager.com/spde/
+1. Portal: https://www.editorialmanager.com/sdef/
 2. Login: dr.sayujkrishnan@gmail.com
 3. Submit New Manuscript → Original Article
 4. Upload PDFs + 9 figures
@@ -168,7 +170,7 @@ Then follow ZENODO_SETUP_INSTRUCTIONS.md for DOI generation.
 You'll know submission succeeded when:
 
 1. ✅ Confirmation email received (within 15 minutes)
-2. ✅ Email contains manuscript ID (SPDE-D-26-XXXXX)
+2. ✅ Email contains manuscript ID (SDEF-D-26-XXXXX)
 3. ✅ Editorial Manager shows "Submitted" status
 4. ✅ Portal shows "With Editor" status
 
@@ -212,7 +214,7 @@ cd manuscript/sections && wc -w abstract.tex introduction.tex theory_summary.tex
 - **Week 10-12**: Author revision (if requested)
 - **Week 14-16**: Final decision
 
-**Status tracking**: https://www.editorialmanager.com/spde/
+**Status tracking**: https://www.editorialmanager.com/sdef/
 
 ---
 

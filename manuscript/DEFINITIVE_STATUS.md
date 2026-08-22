@@ -2,7 +2,9 @@
 
 This May 2026 note claimed the paper was publishable and that no further automated work was possible. That was wrong: clinical validation is still missing, and status docs contradicted the daily tracker.
 
-**Current status:** `PUBLICATION_STATUS.md` and `REMAINING_ITEMS.md`.
+**Current status:** `PUBLICATION_STATUS.md`, `REMAINING_ITEMS.md`, and `JOURNAL_TRACK.md`.
+Correct Editorial Manager: https://www.editorialmanager.com/sdef/ (not `/spde/`).
+No journal-imposed deadline as of 22 Aug 2026.
 
 ---
 
@@ -110,7 +112,7 @@ The manuscript **satisfies all criteria** for "publishable in Spine Deformity jo
 
 1. Upload manuscript_overleaf.zip to https://www.overleaf.com (15 min)
 2. Compile → Download PDF
-3. Submit to https://www.editorialmanager.com/spde/ (10 min)
+3. Submit to https://www.editorialmanager.com/sdef/ (10 min)
 4. Optional: git push origin main (5 min)
 
 **Total time: 30 minutes**

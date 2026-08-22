@@ -197,7 +197,9 @@ if [ "$ERRORS" -eq 0 ]; then
     echo "Read PUBLICATION_STATUS.md and REMAINING_ITEMS.md before submitting."
     echo ""
     echo "Compile: make -C manuscript"
-    echo "Portal:  https://www.editorialmanager.com/spde/"
+    echo "Portal:  https://www.editorialmanager.com/sdef/"
+    echo "NOT:     https://www.editorialmanager.com/spde/ (different journal)"
+    echo "Deadline: none journal-imposed as of 2026-08-22 (see JOURNAL_TRACK.md)"
     echo ""
     exit 0
 else

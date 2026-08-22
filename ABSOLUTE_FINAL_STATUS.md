@@ -1,3 +1,5 @@
+> **Superseded 2026-08-22.** Correct portal: https://www.editorialmanager.com/sdef/ (not `/spde/`). No journal-imposed deadline. See `JOURNAL_TRACK.md` and `PUBLICATION_STATUS.md`.
+
 # ABSOLUTE FINAL STATUS - 2026-05-05 13:25
 
 ## REQUEST
@@ -238,7 +240,7 @@ Repeat for cover letter:
 8. Download as: `cover_letter_spine_deformity.pdf`
 
 ### Step 2: Springer (10 min)
-1. Go to: https://www.editorialmanager.com/spde/
+1. Go to: https://www.editorialmanager.com/sdef/
 2. Login: dr.sayujkrishnan@gmail.com
 3. Submit New Manuscript → Original Article
 4. Upload: PDFs + 9 figures

@@ -2,6 +2,8 @@
 
 **Live journal:** *Spine Deformity* (Springer; official journal of the Scoliosis Research Society)
 **Backup journal:** *Spine* (LWW) — only if *Spine Deformity* desks the paper
+**Editorial Manager:** https://www.editorialmanager.com/sdef/ — **not** `/spde/` (different journal)
+**Journal-imposed deadline:** none as of 22 August 2026. Canonical facts: `JOURNAL_TRACK.md`
 **Manuscript:** `manuscript/main.tex` — *Active Geometric Maintenance of the Spinal S-Curve Against Gravity: An Information--Mechanical Coupling Model for Adolescent Idiopathic Scoliosis Onset*
 **Status:** Computational/theory package can be compiled and submitted as a **hypothesis-generating computational article**. It is **not** 100% clinically validated and **has not** been shown in this repo to be already submitted.
 
@@ -13,7 +15,7 @@
 |---|---|---|
 | `START_HERE.txt` / `PUBLICATION_STATUS.md` (2026-05-05) | 100% ready; 30 minutes to submit; sometimes implied already submitted | **Stale.** No manuscript ID, no `v1.0.0-submission` tag, `final_verification.sh` looked in the wrong figure directory (`figures/main`). |
 | `CITATION.cff` (2026-05-11) | `status: submitted` to Spine Deformity | **Overstated.** Treat as in preparation until an Editorial Manager ID exists. |
-| `reports/daily_update_latest.md` (auto, Aug 2026) | Target *Spine*; 23% complete; clinical validation 0% | **Partly honest on the gap, wrong on the journal.** The generator hardcoded *Spine* and read `docs/spine_submission_roadmap.md`, a parallel 6-week checklist. Live track is *Spine Deformity*. |
+| `reports/daily_update_latest.md` (auto) | Target *Spine*; deadline 2026-04-06; later 2026-09-15 | **2026-04-06 was a self-imposed 6-week *Spine* (LWW, IF 3.30) target from start 2026-02-23, not a journal clock. 2026-09-15 was an invented internal date. Neither is live.** Generator now targets *Spine Deformity* and prints **no journal-imposed deadline**. |
 | `submission_package/SUBMISSION_CHECKLIST.md` | Different title (“Derivative Gain Gap”); says no patient data yet | Parallel draft, not the live `main.tex`. |
 
 **Live track = Spine Deformity + `manuscript/main.tex`.** The May pack is the right *journal*, not the right *readiness*. The daily tracker is the right *clinical-gap warning*, not the right *journal*.
@@ -49,7 +51,10 @@ make -C manuscript          # requires pdflatex/latexmk
 
 If LaTeX is not installed, upload `manuscript/` to Overleaf and compile `main.tex`. Cover letter: `manuscript/cover_letter_spine_deformity.tex`.
 
-**Author-only portal step:** https://www.editorialmanager.com/spde/  
+**Author-only portal step:** https://www.editorialmanager.com/sdef/  
+Do **not** use https://www.editorialmanager.com/spde/ (different journal).  
+Optional AI/ML collection: Springer Status Open / deadline Ongoing as of 22 Aug 2026 (original 20 May 2026 23:59 CST cutoff is past). Guest editors include Carl-Éric Aubin — omit him as a suggested reviewer if that collection is selected.
+
 Do not treat this file as proof of submission.
 
 Checklist that matches this status: `REMAINING_ITEMS.md`.

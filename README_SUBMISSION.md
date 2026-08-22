@@ -1,3 +1,5 @@
+> **Superseded 2026-08-22.** Correct portal: https://www.editorialmanager.com/sdef/ (not `/spde/`). No journal-imposed deadline. See `JOURNAL_TRACK.md` and `PUBLICATION_STATUS.md`.
+
 # 🎯 MANUSCRIPT READY FOR SUBMISSION
 
 ## Publication: Biological Countercurvature of Spacetime
@@ -44,7 +46,7 @@
    - Use checklist in `FINAL_SUBMISSION_CHECKLIST.md`
 
 6. **Submit to Springer** (10 min)
-   - Go to: https://www.editorialmanager.com/spde/
+   - Go to: https://www.editorialmanager.com/sdef/
    - Upload: submission_manuscript.pdf + cover_letter_spine_deformity.pdf + figures
    - Follow steps in `FINAL_SUBMISSION_CHECKLIST.md`
 
@@ -221,7 +223,7 @@ If any <300 DPI, regenerate from scripts.
 - Verify all citations render correctly
 
 ### Step 6: Submit to Springer (10 min)
-1. Go to: https://www.editorialmanager.com/spde/
+1. Go to: https://www.editorialmanager.com/sdef/
 2. Login/create account: dr.sayujkrishnan@gmail.com
 3. Submit New Manuscript → Original Article
 4. Upload:
@@ -229,7 +231,7 @@ If any <300 DPI, regenerate from scripts.
    - Manuscript: `submission_manuscript.pdf`
    - Figures: Individual files from `figures/main/`
 5. Fill metadata (title, abstract, keywords)
-6. Note manuscript ID (SPDE-D-26-XXXXX)
+6. Note manuscript ID (SDEF-D-26-XXXXX)
 7. Confirmation email → Done! 🎉
 
 ---
@@ -243,7 +245,7 @@ If any <300 DPI, regenerate from scripts.
 - **8-16 weeks total**: Final decision
 
 ### Status Tracking
-Check https://www.editorialmanager.com/spde/ regularly:
+Check https://www.editorialmanager.com/sdef/ regularly:
 - "With Editor" → editorial screening
 - "Under Review" → sent to reviewers
 - "Required Reviews Complete" → reviews received
