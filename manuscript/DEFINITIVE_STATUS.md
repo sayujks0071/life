@@ -1,6 +1,12 @@
-# DEFINITIVE MANUSCRIPT STATUS - 2026-05-05
+# DEFINITIVE MANUSCRIPT STATUS - superseded 2026-08-22
 
-## REQUEST
+This May 2026 note claimed the paper was publishable and that no further automated work was possible. That was wrong: clinical validation is still missing, and status docs contradicted the daily tracker.
+
+**Current status:** `PUBLICATION_STATUS.md` and `REMAINING_ITEMS.md`.
+
+---
+
+## REQUEST (historical)
 "work until this is publishable in spine deformity journal by springer"
 
 ## STATUS: ✅ COMPLETED

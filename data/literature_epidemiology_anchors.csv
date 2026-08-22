@@ -1,0 +1,5 @@
+source,sex,endpoint,age_lo,age_hi,age_mid,notes
+Cheng_2015,F,AIS_onset_window,10,13,11.5,"Cited in scripts/validate_tau_clinical.py (Cheng 2015). Literature window not patient-level records."
+Cheng_2015,M,AIS_onset_window,12,15,13.5,"Cited in scripts/validate_tau_clinical.py (Cheng 2015). Literature window not patient-level records."
+validate_tau_clinical,F,model_PHV,11.5,11.5,11.5,"Model PHV parameter already present in scripts/validate_tau_clinical.py. Not a measured cohort."
+validate_tau_clinical,M,model_PHV,13.5,13.5,13.5,"Model PHV parameter already present in scripts/validate_tau_clinical.py. Not a measured cohort."

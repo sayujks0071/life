@@ -1,101 +1,115 @@
-import os
+#!/usr/bin/env python3
+"""Sex-specific model deficit curves overlaid on published AIS onset windows.
+
+R_peak values (2.7 female / 2.4 male) are model parameters, not measured
+cohort statistics. Published onset windows come from
+data/literature_epidemiology_anchors.csv.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 
-def simulate_sexual_dimorphism():
-    """
-    Simulates the female-to-male AIS ratio using the metabolic dimorphism parameters
-    (R_peak = 2.7 in females vs 2.4 in males).
-    """
-    print("Simulating Sexual Dimorphism...")
+PROJECT_DIR = Path(__file__).resolve().parents[1]
+ANCHORS_PATH = PROJECT_DIR / "data" / "literature_epidemiology_anchors.csv"
+OUTPUT_DIR = PROJECT_DIR / "manuscript" / "figures"
+SUMMARY_PATH = PROJECT_DIR / "results" / "open_data" / "sexual_dimorphism_overlay_summary.json"
 
-    # Parameters
+
+def simulate_sexual_dimorphism() -> None:
+    print("Sex-specific model overlay against published onset windows...")
+    if not ANCHORS_PATH.exists():
+        raise FileNotFoundError(f"Missing literature anchors: {ANCHORS_PATH}")
+
+    anchors = pd.read_csv(ANCHORS_PATH)
+    onset = anchors[anchors["endpoint"] == "AIS_onset_window"].copy()
+    model_phv = anchors[anchors["endpoint"] == "model_PHV"].copy()
+
     age = np.linspace(8, 18, 100)
+    t_mid_f = float(model_phv.loc[model_phv["sex"] == "F", "age_mid"].iloc[0])
+    t_mid_m = float(model_phv.loc[model_phv["sex"] == "M", "age_mid"].iloc[0])
+    l_min = 0.25
+    l_max_f = 0.43
+    l_max_m = 0.48
+    l_t_f = l_min + (l_max_f - l_min) / (1 + np.exp(-1.3 * (age - t_mid_f)))
+    l_t_m = l_min + (l_max_m - l_min) / (1 + np.exp(-1.1 * (age - t_mid_m)))
+    dl_dt_f = np.gradient(l_t_f, age)
+    dl_dt_m = np.gradient(l_t_m, age)
 
-    # Growth curves (Females typically peak earlier and slightly lower than Males)
-    # L(t) approximations
-    t_mid_f = 11.5  # Female PHV age
-    t_mid_m = 13.5  # Male PHV age
-    k_growth_f = 1.3
-    k_growth_m = 1.1
-    L_max_f = 0.43  # Adult female spine length
-    L_max_m = 0.48  # Adult male spine length
-    L_min = 0.25
+    r_peak_f = 2.7
+    r_peak_m = 2.4
+    r_t_f = (r_peak_f / l_max_f) * l_t_f
+    r_t_m = (r_peak_m / l_max_m) * l_t_m
+    r_eff_f = r_t_f + dl_dt_f * (r_peak_f - np.max(r_t_f)) / np.max(dl_dt_f)
+    r_eff_m = r_t_m + dl_dt_m * (r_peak_m - np.max(r_t_m)) / np.max(dl_dt_m)
+    r_crit = 2.5
 
-    L_t_f = L_min + (L_max_f - L_min) / (1 + np.exp(-k_growth_f * (age - t_mid_f)))
-    L_t_m = L_min + (L_max_m - L_min) / (1 + np.exp(-k_growth_m * (age - t_mid_m)))
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(age, r_eff_f, color="tab:pink", linewidth=2.5, label=f"Female model R (peak parameter {r_peak_f})")
+    ax.plot(age, r_eff_m, color="tab:blue", linewidth=2.5, label=f"Male model R (peak parameter {r_peak_m})")
+    ax.axhline(y=r_crit, color="black", linestyle="--", label="Model R_crit = 2.5")
 
-    # Growth Velocities
-    dL_dt_f = np.gradient(L_t_f, age)
-    dL_dt_m = np.gradient(L_t_m, age)
+    inst_f = np.where(r_eff_f > r_crit)[0]
+    inst_m = np.where(r_eff_m > r_crit)[0]
+    if len(inst_f) > 0:
+        ax.axvspan(age[inst_f[0]], age[inst_f[-1]], color="tab:pink", alpha=0.15, label="Female model window")
+    if len(inst_m) > 0:
+        ax.axvspan(age[inst_m[0]], age[inst_m[-1]], color="tab:blue", alpha=0.15, label="Male model window")
 
-    # Energy Deficit Calculation (R_peak scaling)
-    # R_peak = P_counter / S_proprio
-    # According to memory: R_peak = 2.7 in females vs 2.4 in males
-    # The true deficit is exacerbated by the *rate* of growth
-    # We calibrate R_eff so its maximum matches the R_peak value
+    for _, row in onset.iterrows():
+        color = "tab:pink" if row["sex"] == "F" else "tab:blue"
+        ax.plot(
+            [float(row["age_lo"]), float(row["age_hi"])],
+            [r_crit - 0.08, r_crit - 0.08] if row["sex"] == "F" else [r_crit - 0.16, r_crit - 0.16],
+            color=color,
+            linewidth=6,
+            alpha=0.45,
+            solid_capstyle="butt",
+            label=f"{row['source']} {row['sex']} onset window",
+        )
 
-    # Base deficit scales with L
-    c_scaling_f = 2.7 / L_max_f
-    c_scaling_m = 2.4 / L_max_m
+    ax.set_xlabel("Age (years)")
+    ax.set_ylabel("Model metabolic deficit ratio R")
+    ax.set_title(
+        "Sex-specific model windows vs published AIS onset windows\n"
+        "R_peak values are model parameters; Cheng 2015 windows are literature, not patient data"
+    )
+    ax.grid(True, alpha=0.3)
+    ax.legend(loc="upper right", fontsize=8)
 
-    R_t_f = c_scaling_f * L_t_f
-    R_t_m = c_scaling_m * L_t_m
-
-    # Add growth velocity multiplier
-    alpha = 4.0
-    R_eff_f = R_t_f * (1 + alpha * dL_dt_f)
-    R_eff_m = R_t_m * (1 + alpha * dL_dt_m)
-
-    # Normalize to match the peak memory values (2.7 for F, 2.4 for M)
-    # R_eff_f = (R_eff_f / np.max(R_eff_f)) * 2.7
-    # R_eff_m = (R_eff_m / np.max(R_eff_m)) * 2.4
-
-    # Wait, the prompt says "R_peak = 2.7 in females vs 2.4 in males" during peak height velocity
-    # Let's directly implement those peaks
-    R_eff_f = R_t_f + dL_dt_f * (2.7 - np.max(R_t_f)) / np.max(dL_dt_f)
-    R_eff_m = R_t_m + dL_dt_m * (2.4 - np.max(R_t_m)) / np.max(dL_dt_m)
-
-    # Critical threshold for metabolic buckling
-    R_crit = 2.5
-
-    # Plotting
-    fig, ax1 = plt.subplots(figsize=(10, 6))
-
-    color_f = 'tab:pink'
-    color_m = 'tab:blue'
-
-    ax1.set_xlabel('Age (years)')
-    ax1.set_ylabel('Metabolic Deficit Ratio ($R$)', color='black')
-
-    ax1.plot(age, R_eff_f, color=color_f, linewidth=2.5, label='Female ($R_{peak} = 2.7$)')
-    ax1.plot(age, R_eff_m, color=color_m, linewidth=2.5, label='Male ($R_{peak} = 2.4$)')
-
-    ax1.axhline(y=R_crit, color='black', linestyle='--', label='Critical Instability Threshold ($R_{crit} = 2.5$)')
-
-    # Highlight female instability window
-    instability_f = np.where(R_eff_f > R_crit)[0]
-    if len(instability_f) > 0:
-        ax1.axvspan(age[instability_f[0]], age[instability_f[-1]], color=color_f, alpha=0.2, label='Female Vulnerability Window')
-
-    # Highlight male instability window (none, or very small)
-    instability_m = np.where(R_eff_m > R_crit)[0]
-    if len(instability_m) > 0:
-        ax1.axvspan(age[instability_m[0]], age[instability_m[-1]], color=color_m, alpha=0.2, label='Male Vulnerability Window')
-
-    plt.title('Metabolic Dimorphism: Explaining the 10:1 Female-to-Male AIS Ratio')
-    plt.grid(True, alpha=0.3)
-    plt.legend(loc='upper right')
-
-    output_dir = "manuscript/figures"
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, "fig_sexual_dimorphism.png")
-
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_path = OUTPUT_DIR / "fig_sexual_dimorphism.png"
     plt.tight_layout()
     plt.savefig(output_path, dpi=300)
-    print(f"Successfully generated plot: {output_path}")
+    plt.close()
+    print(f"Wrote {output_path}")
+
+    summary = {
+        "evidence_level": "model overlay on published epidemiology windows",
+        "model_parameters": {
+            "female_R_peak": r_peak_f,
+            "male_R_peak": r_peak_m,
+            "R_crit": r_crit,
+            "female_PHV_y": t_mid_f,
+            "male_PHV_y": t_mid_m,
+        },
+        "literature_windows": onset.to_dict(orient="records"),
+        "gap": (
+            "This repository has no sex-stratified patient cohort. The widely "
+            "cited 8:1 female predominance is an epidemiological fact from the "
+            "literature, not a statistic computed here."
+        ),
+    }
+    SUMMARY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    SUMMARY_PATH.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(json.dumps(summary, indent=2))
+
 
 if __name__ == "__main__":
     simulate_sexual_dimorphism()

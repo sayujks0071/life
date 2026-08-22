@@ -98,13 +98,14 @@ def generate_report(data):
     today = datetime.date.today()
     expected_date = calculate_projection(data)
 
-    report = f"""# Daily Update: Spine Submission
+    report = f"""# Daily Update: Spine Deformity Submission
 
 **Date:** {today}
-**Target Journal:** Spine (IF: 3.30, Q1, H-index: 300)
-**Why:** The highest prestige spine journal by H-index. Publishes basic science.
-**Fit score:** 6/10 — High bar; will need experimental validation or strong clinical dataset comparison.
-**Strategy:** Reframe as "A computational framework predicting adolescent scoliosis onset" with clinical validation against published cohort data.
+**Target Journal:** Spine Deformity (Springer / SRS)
+**Backup:** Spine (LWW) only if Spine Deformity desks the paper
+**Why:** Live track in CITATION.cff, cover letter, and manuscript/main.tex. The old hardcoded "Spine" line was a stale daily-tracker default.
+**Fit score:** Computational/hypothesis-generating original article. Patient-level validation is still a gap (see REMAINING_ITEMS.md).
+**Strategy:** Submit the in-repo theory + computational results + open SpineWeb geometry check; do not invent a clinical cohort.
 
 ## Status Overview
 - **Percent Complete:** {data['percent_complete']:.1f}%

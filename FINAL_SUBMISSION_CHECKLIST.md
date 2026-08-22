@@ -1,6 +1,11 @@
 # Final Submission Checklist: Spine Deformity Journal
-**Date**: 2026-05-05  
-**Manuscript**: "Biological Countercurvature of Spacetime: An Information-Cosserat Framework for Spinal Geometry"  
+
+> **2026-08-22:** This May 2026 checklist claimed 100% readiness. That is stale.
+> Live status: `PUBLICATION_STATUS.md`. Remaining blockers: `REMAINING_ITEMS.md`.
+> Compile: `make -C manuscript`.
+
+**Date**: 2026-05-05 (historical pack; superseded)  
+**Manuscript**: "Active Geometric Maintenance of the Spinal S-Curve Against Gravity"  
 **Target**: Springer Spine Deformity (Official Journal of Scoliosis Research Society)
 
 ---

@@ -1,34 +1,31 @@
-# Spine Submission Roadmap
+# Spine Deformity remaining-work roadmap
 
-**Target:** *Spine* (IF: 3.30, Q1, H-index: 300)
-**Strategy:** "A computational framework predicting adolescent scoliosis onset" with clinical validation against published cohort data.
+**Target:** *Spine Deformity* (Springer / SRS). *Spine* (LWW) is backup only.
+**Canonical status:** `PUBLICATION_STATUS.md` and `REMAINING_ITEMS.md`
 **Start Date:** 2026-02-23
-**Target Submission Date:** 2026-04-06 (6 Weeks)
+**Target Submission Date:** 2026-09-15
+
+This file is what `scripts/spine_daily_update.py` reads. It is **not** a claim that the May pack was submitted.
 
 ## Phase 1: Computational Framework (Weeks 1-2)
 
-- [x] **Core Model:** Establish "Energy Deficit" model (`experiment_energy_deficit_window.py`).
-- [x] **Rescue Cliff:** Validate "Rescue Cliff" at Anisotropy ~2.4 (Simulated in `outputs/sim/2026-02-22/`).
-- [x] **Spinal Jetlag:** Run "Spinal Jetlag" simulation to demonstrate circadian modulation of curvature.
-- [ ] **Robustness:** Ensure model stability across parameter sweeps (Sensitivity Analysis).
+- [x] **Core Model:** Energy-deficit / IEC / Cosserat work in-repo (`scripts/experiment_energy_deficit_window.py`, `manuscript/`).
+- [x] **Open geometry:** SpineWeb/AASCE landmark package under `data/open/` with validation scripts.
+- [x] **Status reconciliation:** May "100% ready" docs aligned to the actual computational package.
+- [ ] **Robustness:** Broader published sensitivity tables beyond existing sweeps.
 
 ## Phase 2: Clinical Validation (Weeks 3-4)
 
-- [ ] **Cohort Data Extraction:** Extract clinical cohort data (Cobb angle distributions, progression rates) from published literature.
-- [ ] **PHV Timing:** Compare model "Instability Window" with clinical Peak Height Velocity (PHV) timing data.
-- [ ] **Sexual Dimorphism:** Validate model predictions for female vs. male prevalence against epidemiological data.
-- [ ] **Curve Types:** Verify if model can reproduce common curve types (e.g., Lenke classification patterns) based on initial conditions.
+- [x] **Literature anchors:** Weinstein 1983 / Lonstein 1984 aggregate points in `data/clinical_cohort_targets.csv` (n=5; not patient-level).
+- [x] **PHV overlay:** Model window vs Cheng 2015 ages in `data/literature_epidemiology_anchors.csv`.
+- [x] **SpineWeb geometry:** 609 public AP landmark cases; not progression validation.
+- [ ] **Patient-level cohort:** Serial Cobb + Risser/Sanders + treatment (requires DUA; not in this repo).
+- [ ] **Lenke types:** Multi-segment prediction against labelled curve types (not in this repo).
 
 ## Phase 3: Manuscript Preparation (Weeks 5-6)
 
-- [ ] **Reformatting:** Adapt `nature_manuscript.tex` to *Spine* format (IMRaD structure).
-- [ ] **Abstract:** Draft Structured Abstract (Study Design, Objective, Summary of Background Data, Methods, Results, Conclusions).
-- [ ] **Clinical Relevance:** Write "Clinical Relevance" section highlighting the predictive value for early intervention.
-- [ ] **Figures:** Generate "Clinical Translation" figures (Model vs. Patient Data overlays).
-- [ ] **References:** Update bibliography to include relevant *Spine* and *Eur Spine J* citations.
-
-## Progress Tracking
-
-**Current Phase:** Phase 1
-**Percent Complete:** 0% (Will be calculated by script)
-**Status:** In Progress
+- [x] **Live manuscript:** `manuscript/main.tex` is the Spine Deformity IMRaD computational paper.
+- [x] **Honest claims:** Abstract/results no longer call synthetic N=1000 "clinical validation".
+- [x] **Compile path:** `make -C manuscript` + figure checker.
+- [ ] **Zenodo DOI** in availability.tex after a GitHub release.
+- [ ] **Portal submit** by the author (credentials required).
