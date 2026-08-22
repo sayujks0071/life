@@ -1,3 +1,5 @@
+> **Superseded 2026-08-22.** Correct portal: https://www.editorialmanager.com/sdef/ (not `/spde/`). No journal-imposed deadline. See `JOURNAL_TRACK.md` and `PUBLICATION_STATUS.md`.
+
 # FINAL PRE-SUBMISSION VALIDATION
 ## Date: 2026-05-05
 
@@ -166,7 +168,7 @@ The manuscript is scientifically complete, technically validated, and meets all 
    - Download submission_manuscript.pdf
 
 2. **Editorial Manager submission** (10 min)
-   - Portal: https://www.editorialmanager.com/spde/
+   - Portal: https://www.editorialmanager.com/sdef/
    - Login: dr.sayujkrishnan@gmail.com
    - Upload PDFs + figures
    - Fill metadata

@@ -1,4 +1,12 @@
-# Spine Deformity Submission Checklist
+# Spine Deformity Submission Checklist (live track)
+
+**This file previously described a parallel “Derivative Gain Gap” draft.**
+The live manuscript is `manuscript/main.tex` targeting *Spine Deformity*.
+See `REMAINING_ITEMS.md` and `PUBLICATION_STATUS.md`.
+
+---
+
+# Legacy notes (Derivative Gain Gap draft; not the live paper)
 
 **Target**: Spine Deformity (Springer Nature) — Official Journal of the Scoliosis Research Society
 **Article Type**: Original Article (Computational/Basic Science)

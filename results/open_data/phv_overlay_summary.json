@@ -1,0 +1,52 @@
+{
+  "evidence_level": "model overlay on published epidemiology windows",
+  "model_phv_parameters": [
+    {
+      "source": "validate_tau_clinical",
+      "sex": "F",
+      "endpoint": "model_PHV",
+      "age_lo": 11.5,
+      "age_hi": 11.5,
+      "age_mid": 11.5,
+      "notes": "Model PHV parameter already present in scripts/validate_tau_clinical.py. Not a measured cohort."
+    },
+    {
+      "source": "validate_tau_clinical",
+      "sex": "M",
+      "endpoint": "model_PHV",
+      "age_lo": 13.5,
+      "age_hi": 13.5,
+      "age_mid": 13.5,
+      "notes": "Model PHV parameter already present in scripts/validate_tau_clinical.py. Not a measured cohort."
+    }
+  ],
+  "overlap": [
+    {
+      "source": "Cheng_2015",
+      "sex": "F",
+      "literature_window": [
+        10.0,
+        13.0
+      ],
+      "model_window": [
+        10.929292929292929,
+        18.0
+      ],
+      "overlap_years": 2.070707070707071
+    },
+    {
+      "source": "Cheng_2015",
+      "sex": "M",
+      "literature_window": [
+        12.0,
+        15.0
+      ],
+      "model_window": [
+        10.929292929292929,
+        18.0
+      ],
+      "overlap_years": 3.0
+    }
+  ],
+  "gap": "No measured PHV, Risser, or serial Cobb trajectories are in this repository. Overlap with Cheng 2015 windows is qualitative."
+}

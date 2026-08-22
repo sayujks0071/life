@@ -1,0 +1,11 @@
+{
+  "evidence_level": "literature-extracted aggregate anchors",
+  "n_points": 5,
+  "sources": [
+    "Lonstein_1984",
+    "Weinstein_1983"
+  ],
+  "gap": "No patient-level Cobb series, Risser/Sanders staging, or serial progression outcomes are in this repository. Do not treat the Pearson statistic below as clinical validation.",
+  "age_vs_cobb_pearson_r": 0.89902581869511,
+  "age_vs_cobb_pearson_p": 0.03792798163919627
+}

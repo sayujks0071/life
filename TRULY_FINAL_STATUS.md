@@ -1,3 +1,5 @@
+> **Superseded 2026-08-22.** Correct portal: https://www.editorialmanager.com/sdef/ (not `/spde/`). No journal-imposed deadline. See `JOURNAL_TRACK.md` and `PUBLICATION_STATUS.md`.
+
 # TRULY FINAL STATUS - 2026-05-05 13:50
 
 ## All LaTeX Compilation Blockers RESOLVED ✅
@@ -122,7 +124,7 @@ b71c72e6 Clarify Cobb correlation is model validation
 5. Download clean PDF (no ?? or [?] marks)
 
 ### Step 2: Springer (10 min)
-1. Go to https://www.editorialmanager.com/spde/
+1. Go to https://www.editorialmanager.com/sdef/
 2. Login: dr.sayujkrishnan@gmail.com
 3. Submit manuscript + cover letter + figures
 4. Note manuscript ID
@@ -155,7 +157,7 @@ You'll know submission succeeded when:
 2. ✅ PDF downloads with NO ?? or [?] marks
 3. ✅ Springer shows "Submitted" status
 4. ✅ Confirmation email arrives (within 15 min)
-5. ✅ Email contains manuscript ID (SPDE-D-26-XXXXX)
+5. ✅ Email contains manuscript ID (SDEF-D-26-XXXXX)
 
 ---
 

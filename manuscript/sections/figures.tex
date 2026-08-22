@@ -43,8 +43,6 @@
 % Figure 4: 3D Cosserat Rod Solutions
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.9\textwidth]{fig_countercurvature_metrics.png}
-    \caption{\textbf{Spinal Geometry from First Principles.} (A)~Curvature profiles showing the transition from passive gravitational sag (blue) to the active S-shaped counter-curvature (orange), reproducing clinical lordosis (${\sim}42^\circ$) and kyphosis (${\sim}35^\circ$). (B)~The effective biological metric $g_{\mathrm{eff}}(s)$ shows dilation at lordotic regions. (C)~Deviation from the gravity-only equilibrium $\Dgeohat$ versus coupling strength, confirming robust counter-curvature above $\chi_\kappa \approx 0.03$. (D)~Microgravity prediction: $\Dgeohat$ remains stable at $\approx 0.091$ even as $g \to 0$, explaining astronaut S-curve persistence.}
     \begin{subfigure}{0.45\textwidth}
         \includegraphics[width=\textwidth]{fig_countercurvature_panelA.pdf}
     \end{subfigure}
@@ -97,7 +95,39 @@
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1.0\textwidth]{fig_clinical_validation.pdf}
-    \caption{\textbf{Clinical Validation of the Bio-Gravitational Spinal Growth Model.} (A)~Validation against the Lonstein \& Carlson (1984) progression index. Biomechanical stability ($B_g^{\mathrm{eff}}$) is strongly correlated with the clinical Progression Factor ($PF = (\Phi - 3R)/\mathrm{Age}$) in a simulated cohort of $N=1,000$ patients ($r = -0.483$, $p = 1.66 \times 10^{-59}$, Pearson; $\rho = -0.452$, $p = 2.08 \times 10^{-51}$, Spearman). (B)~Progression probability comparison: The model-predicted risk sigmoid (red) aligns closely with the clinical nomogram (green) across the range of biomechanical stability, transitioning at a critical threshold $B_{g,c} = 0.0180$ ($\lambda = 110.0$; $r = 0.462$, $p = 4.71 \times 10^{-54}$). (C)~Validation against the BrAIST (2013) randomized bracing trial. When bracing is modeled as load-sharing that reduces gravitational loading by 37\%, the model reproduces the overall clinical success rates: 48\% vs 72\% overall success, 70\% vs 64\% for Risser 0 (immature), and 74\% vs 78\% for Risser 1--2 (intermediate maturity). This directly links the first-principles stability parameters to patient outcomes and treatment efficacy.}
+    \caption{\textbf{Synthetic-cohort calibration against published trial rates, not patient-level records.} (A)~In a simulated $N=1{,}000$ demographic draw, $B_g^{\mathrm{eff}}$ correlates with the Lonstein \& Carlson Progression Factor ($PF = (\Phi - 3R)/\mathrm{Age}$) because both are functions of the same sampled age/Cobb/Risser variables ($r = -0.483$). This is mathematical structure, not an independent clinical test. (B)~The model sigmoid was calibrated to the published BrAIST overall braced success rate. (C)~After that calibration, simulated observation-arm and Risser-stratum rates are compared with published BrAIST percentages. Patient-level BrAIST or Lonstein records are \emph{not} in this repository (see Figure~\ref{fig:spineweb_geometry} for the open-data geometry check that \emph{is} in-repo).}
     \label{fig:clinical_validation}
+\end{figure}
+
+% Figure 9: Open SpineWeb landmark geometry (real public dataset)
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1.0\textwidth]{fig_spineweb_geometry_validation.png}
+    \caption{\textbf{Open SpineWeb/AASCE landmark geometry (public dataset; not progression validation).} Derived Cobb-like endplate envelopes and AP centerline metrics from 609 curated T1--L5 landmark cases (534 usable/complete). Endplate envelope tracks tortuosity, lateral span, chord deviation, and projected-turn proxies in the expected direction. These Cobb-like values are computed from the same landmarks, not from independent clinician measurements, and the package has no Risser/Sanders stage, growth velocity, treatment exposure, or serial Cobb outcomes~\cite{wu2020spineweb}.}
+    \label{fig:spineweb_geometry}
+\end{figure}
+
+% Figure 10: Literature Cobb anchors (n=5 aggregate points)
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{fig_clinical_cohort_data.png}
+    \caption{\textbf{Literature-extracted Cobb anchors versus model $L_{\mathrm{crit}}$.} Five aggregate age--Cobb points digitized from published Weinstein (1983) and Lonstein (1984) figures/tables (\texttt{data/clinical\_cohort\_targets.csv}). These are not patient-level records. The vertical line is the model $L_{\mathrm{crit}}=0.35$\,m age correspondence. \textbf{Gap:} this repository does not contain a clinical Cobb series.}
+    \label{fig:clinical_cohort_anchors}
+\end{figure}
+
+% Figure 11: PHV overlay
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{fig_phv_timing.png}
+    \caption{\textbf{Model instability window versus published AIS onset windows.} The growth curve and deficit ratio are model output. Shaded onset windows are the Cheng (2015) female 10--13\,y and male 12--15\,y ranges already cited in \texttt{scripts/validate\_tau\_clinical.py}~\cite{cheng2015ais}. No measured peak-height-velocity trajectories are in this repository.}
+    \label{fig:phv_overlay}
+\end{figure}
+
+% Figure 12: Sex-specific overlay
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{fig_sexual_dimorphism.png}
+    \caption{\textbf{Sex-specific model windows versus published onset windows.} Female/male $R_{\mathrm{peak}}$ values are model parameters. Horizontal bars are Cheng (2015) onset windows already cited in-repo~\cite{cheng2015ais}. This repository has no sex-stratified patient cohort.}
+    \label{fig:sex_overlay}
 \end{figure}
 

@@ -62,7 +62,19 @@ The current manuscript citations are present in the consolidated `references.bib
 
 ## Figures and Graphics
 
-Figure files are expected in the `figures/` directory, with LaTeX also checking `../alphafold_figures/` where needed.
+Figure files live in `figures/`. `make paper` first checks that every `\\includegraphics` path in `main.tex` and `sections/` resolves.
+
+Local compile:
+
+```bash
+# from repo root
+python3 scripts/run_submission_validation.py
+make -C manuscript
+```
+
+If `pdflatex` is not installed, upload the `manuscript/` directory to Overleaf and compile `main.tex` there. Do not use `npx convex deploy` or any production deploy path for this work.
+
+Cover letter: `manuscript/cover_letter_spine_deformity.tex` (also copied under `submission_package/`).
 
 ## Version Notes
 

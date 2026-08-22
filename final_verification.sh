@@ -101,14 +101,23 @@ echo ""
 
 # Check 5: Figure files exist
 echo "✓ Checking figure files..."
-FIGURE_COUNT=$(find figures/main -type f \( -name "*.pdf" -o -name "*.png" \) 2>/dev/null | wc -l)
-echo "  Found $FIGURE_COUNT figure files"
+FIGURE_COUNT=$(find manuscript/figures -type f \( -name "*.pdf" -o -name "*.png" \) 2>/dev/null | wc -l)
+echo "  Found $FIGURE_COUNT figure files in manuscript/figures/"
 
 if [ "$FIGURE_COUNT" -ge 7 ]; then
-    echo "  ✅ Sufficient figures (expected 7-8)"
+    echo "  ✅ Sufficient figures (expected 7+)"
 else
-    echo "  ⚠️  WARNING: Expected 7-8 figures, found $FIGURE_COUNT"
+    echo "  ⚠️  WARNING: Expected 7+ figures, found $FIGURE_COUNT"
     ((WARNINGS++))
+fi
+
+if [ -x "$(command -v python3)" ]; then
+    if python3 scripts/check_manuscript_figures.py; then
+        echo "  ✅ All includegraphics paths resolve"
+    else
+        echo "  ❌ ERROR: Missing graphics referenced by the manuscript"
+        ((ERRORS++))
+    fi
 fi
 echo ""
 
@@ -133,7 +142,7 @@ echo "✓ Checking git status..."
 if git rev-parse --verify v1.0.0-submission >/dev/null 2>&1; then
     echo "  ✅ Tag v1.0.0-submission exists"
 else
-    echo "  ⚠️  WARNING: Tag v1.0.0-submission not found"
+    echo "  ⚠️  WARNING: Tag v1.0.0-submission not found (May pack claimed it)"
     ((WARNINGS++))
 fi
 
@@ -184,15 +193,13 @@ echo "Warnings: $WARNINGS"
 echo ""
 
 if [ "$ERRORS" -eq 0 ]; then
-    echo "✅ ✅ ✅ MANUSCRIPT IS PUBLICATION-READY! ✅ ✅ ✅"
+    echo "File presence checks passed. This is NOT a claim of clinical validation."
+    echo "Read PUBLICATION_STATUS.md and REMAINING_ITEMS.md before submitting."
     echo ""
-    echo "Next steps:"
-    echo "1. Go to https://www.overleaf.com"
-    echo "2. Upload manuscript_overleaf.zip"
-    echo "3. Compile → Download PDF"
-    echo "4. Submit to https://www.editorialmanager.com/spde/"
-    echo ""
-    echo "See DO_THIS_NOW.txt for detailed instructions."
+    echo "Compile: make -C manuscript"
+    echo "Portal:  https://www.editorialmanager.com/sdef/"
+    echo "NOT:     https://www.editorialmanager.com/spde/ (different journal)"
+    echo "Deadline: none journal-imposed as of 2026-08-22 (see JOURNAL_TRACK.md)"
     echo ""
     exit 0
 else

@@ -1,3 +1,5 @@
+NOTE 2026-08-22: Correct portal https://www.editorialmanager.com/sdef/ (NOT /spde/). No journal-imposed deadline. See JOURNAL_TRACK.md and PUBLICATION_STATUS.md.
+
 ═══════════════════════════════════════════════════════════════════
 🎯 MANUSCRIPT READY FOR SUBMISSION - DO THESE 3 THINGS NOW
 ═══════════════════════════════════════════════════════════════════
@@ -30,7 +32,7 @@ Repeat for cover letter:
 STEP 2: SUBMIT TO SPRINGER (10 MINUTES)
 ═══════════════════════════════════════════════════════════════════
 
-Portal: https://www.editorialmanager.com/spde/
+Portal: https://www.editorialmanager.com/sdef/
 Email: dr.sayujkrishnan@gmail.com
 
 Actions:
@@ -48,7 +50,7 @@ Actions:
    - Abstract: Copy from manuscript PDF
 
 6. Review and SUBMIT
-7. Note manuscript ID (SPDE-D-26-XXXXX)
+7. Note manuscript ID (SDEF-D-26-XXXXX)
 8. DONE! 🎉
 
 ═══════════════════════════════════════════════════════════════════
@@ -98,7 +100,7 @@ SUCCESS CRITERIA
 ═══════════════════════════════════════════════════════════════════
 
 You'll know it's successful when:
-✅ Confirmation email with manuscript ID (SPDE-D-26-XXXXX)
+✅ Confirmation email with manuscript ID (SDEF-D-26-XXXXX)
 ✅ Editorial Manager shows "Submitted" status
 ✅ Portal shows "With Editor" status
 

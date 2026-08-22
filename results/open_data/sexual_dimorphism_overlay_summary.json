@@ -1,0 +1,31 @@
+{
+  "evidence_level": "model overlay on published epidemiology windows",
+  "model_parameters": {
+    "female_R_peak": 2.7,
+    "male_R_peak": 2.4,
+    "R_crit": 2.5,
+    "female_PHV_y": 11.5,
+    "male_PHV_y": 13.5
+  },
+  "literature_windows": [
+    {
+      "source": "Cheng_2015",
+      "sex": "F",
+      "endpoint": "AIS_onset_window",
+      "age_lo": 10.0,
+      "age_hi": 13.0,
+      "age_mid": 11.5,
+      "notes": "Cited in scripts/validate_tau_clinical.py (Cheng 2015). Literature window not patient-level records."
+    },
+    {
+      "source": "Cheng_2015",
+      "sex": "M",
+      "endpoint": "AIS_onset_window",
+      "age_lo": 12.0,
+      "age_hi": 15.0,
+      "age_mid": 13.5,
+      "notes": "Cited in scripts/validate_tau_clinical.py (Cheng 2015). Literature window not patient-level records."
+    }
+  ],
+  "gap": "This repository has no sex-stratified patient cohort. The widely cited 8:1 female predominance is an epidemiological fact from the literature, not a statistic computed here."
+}

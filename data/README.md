@@ -5,8 +5,10 @@ This directory contains the project's datasets, including master registries, raw
 ## Directory Structure
 
 ### Top Level
-- **`candidates_master.csv`**: The canonical master list of gene candidates for the project. This file is version-controlled and manually curated.
-- **`datasets_registry.md`**: A registry of external datasets (e.g., OSD-665) used in the research.
+- **`clinical_cohort_targets.csv`**: Five literature-digitized aggregate Cobb anchors (Weinstein 1983, Lonstein 1984). Not patient-level data.
+- **`literature_epidemiology_anchors.csv`**: Published AIS onset / model PHV ages already cited in `scripts/validate_tau_clinical.py`.
+- **`species_parameters.csv`**: Twelve-species Bio-Gravitational Number table.
+- **`open/`**: Public SpineWeb/AASCE 2019 landmark zips and correction CSVs (see `data/open/README.md`).
 
 ### Subdirectories
 

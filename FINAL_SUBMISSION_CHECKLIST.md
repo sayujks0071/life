@@ -1,6 +1,13 @@
 # Final Submission Checklist: Spine Deformity Journal
-**Date**: 2026-05-05  
-**Manuscript**: "Biological Countercurvature of Spacetime: An Information-Cosserat Framework for Spinal Geometry"  
+
+> **2026-08-22:** This May 2026 checklist claimed 100% readiness. That is stale.
+> Live status: `PUBLICATION_STATUS.md`. Remaining blockers: `REMAINING_ITEMS.md`.
+> Portal: https://www.editorialmanager.com/sdef/ — **not** `/spde/` (different journal).
+> No journal-imposed deadline. See `JOURNAL_TRACK.md`.
+> Compile: `make -C manuscript`.
+
+**Date**: 2026-05-05 (historical pack; superseded)  
+**Manuscript**: "Active Geometric Maintenance of the Spinal S-Curve Against Gravity"  
 **Target**: Springer Spine Deformity (Official Journal of Scoliosis Research Society)
 
 ---
@@ -249,7 +256,7 @@ Submit each figure as individual file:
 
 ### Springer Editorial Manager Steps
 
-1. **Navigate to**: https://www.editorialmanager.com/spde/ (Spine Deformity)
+1. **Navigate to**: https://www.editorialmanager.com/sdef/ (Spine Deformity)
    - Alternative: https://www.editorialmanager.com/esjo/ (European Spine Journal)
 
 2. **Login/Create Account**: Use professional email (dr.sayujkrishnan@gmail.com)
@@ -293,7 +300,7 @@ Submit each figure as individual file:
 
 9. **Review and Submit**: Check all information, then submit
 
-10. **Confirmation**: Note manuscript ID (format: SPDE-D-26-XXXXX)
+10. **Confirmation**: Note manuscript ID (format: SDEF-D-26-XXXXX)
 
 ---
 
@@ -312,7 +319,7 @@ Submit each figure as individual file:
 - **Final decision**: 8-16 weeks total
 
 ### Status Tracking
-- **Check portal**: https://www.editorialmanager.com/spde/
+- **Check portal**: https://www.editorialmanager.com/sdef/
 - **Manuscript status will show**:
   - "With Editor" (editorial screening)
   - "Under Review" (sent to reviewers)

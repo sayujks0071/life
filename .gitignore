@@ -51,7 +51,11 @@ outputs/sim/
 outputs/methodology/
 outputs/protein_physics/
 !outputs/.gitkeep
-results/
+results/*
+!results/open_data/
+!results/open_data/**
+data/open/spineweb_curated/annotations_train/
+data/open/spineweb_curated/annotations_test/
 logs/
 *.log
 cloudflared*.log

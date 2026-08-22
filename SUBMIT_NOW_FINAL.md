@@ -1,3 +1,5 @@
+> **Superseded 2026-08-22.** Correct portal: https://www.editorialmanager.com/sdef/ (not `/spde/`). No journal-imposed deadline. See `JOURNAL_TRACK.md` and `PUBLICATION_STATUS.md`.
+
 # ✅ MANUSCRIPT PUBLICATION-READY - SUBMIT NOW
 
 **Date**: 2026-05-05  
@@ -44,7 +46,7 @@
 
 ### STEP 2: Submit to Springer Editorial Manager (10 min)
 
-**Portal**: https://www.editorialmanager.com/spde/  
+**Portal**: https://www.editorialmanager.com/sdef/  
 **Email**: dr.sayujkrishnan@gmail.com
 
 #### Steps:
@@ -86,7 +88,7 @@
 
 7. **Review** all information carefully
 8. Click **"Submit"**
-9. **Note the manuscript ID** (format: SPDE-D-26-XXXXX)
+9. **Note the manuscript ID** (format: SDEF-D-26-XXXXX)
 10. **DONE!** 🎉
 
 ---
@@ -144,7 +146,7 @@ You'll know submission succeeded when:
 
 1. ✅ Editorial Manager shows "Submitted" status
 2. ✅ Confirmation email arrives (within 15 minutes)
-3. ✅ Email contains manuscript ID (SPDE-D-26-XXXXX)
+3. ✅ Email contains manuscript ID (SDEF-D-26-XXXXX)
 4. ✅ Portal shows "With Editor" status
 
 ---
@@ -178,7 +180,7 @@ You'll know submission succeeded when:
 - **2-4 weeks**: Author revision (if requested)
 - **8-16 weeks total**: Final decision
 
-**Status tracking**: https://www.editorialmanager.com/spde/
+**Status tracking**: https://www.editorialmanager.com/sdef/
 
 ---
 

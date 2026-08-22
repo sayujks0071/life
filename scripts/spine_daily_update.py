@@ -4,9 +4,21 @@ import re
 import sys
 
 
+# Keep in sync with JOURNAL_TRACK.md. Never print a date as a journal deadline
+# unless that file lists it as journal-imposed.
+JOURNAL_NAME = "Spine Deformity (Springer / SRS)"
+EDITORIAL_MANAGER = "https://www.editorialmanager.com/sdef/"
+WRONG_PORTAL = "https://www.editorialmanager.com/spde/"
+DEADLINE_AS_OF = "2026-08-22"
+
+
 def parse_roadmap(filepath):
     """
     Parses the roadmap markdown file to extract tasks and calculate progress.
+
+    Intentionally ignores any ``Target Submission Date``. Historical roadmaps
+    used 2026-04-06 as a self-imposed Spine (LWW) 6-week target, which is not
+    a journal-imposed deadline.
     """
     if not os.path.exists(filepath):
         return None, f"Roadmap file not found at {filepath}"
@@ -22,10 +34,7 @@ def parse_roadmap(filepath):
     next_milestones = []
 
     start_date_match = re.search(r'\*\*Start Date:\*\* (\d{4}-\d{2}-\d{2})', content)
-    target_date_match = re.search(r'\*\*Target Submission Date:\*\* (\d{4}-\d{2}-\d{2})', content)
-
     start_date = datetime.datetime.strptime(start_date_match.group(1), '%Y-%m-%d').date() if start_date_match else None
-    target_date = datetime.datetime.strptime(target_date_match.group(1), '%Y-%m-%d').date() if target_date_match else None
 
     for line in lines:
         if line.startswith('## Phase'):
@@ -42,13 +51,9 @@ def parse_roadmap(filepath):
                 if current_phase:
                     phases[current_phase]['completed'] += 1
             elif line.strip().startswith('- [ ]'):
-                # Collect up to 3 next milestones
                 if len(next_milestones) < 3:
-                    # Clean the line: remove '- [ ]', bold markers, and trailing info
                     task = line.strip().replace('- [ ]', '').strip()
-                    # Remove bold markers
                     task = task.replace('**', '')
-                    # Extract the main task name (before the colon if present)
                     if ':' in task:
                         task = task.split(':')[0]
                     next_milestones.append(task)
@@ -61,13 +66,14 @@ def parse_roadmap(filepath):
         'percent_complete': percent_complete,
         'phases': phases,
         'start_date': start_date,
-        'target_date': target_date,
+        'target_date': None,
         'next_milestones': next_milestones
     }, None
 
+
 def calculate_projection(data):
     """
-    Calculates expected completion date based on velocity.
+    Internal velocity estimate from checkbox counts. Not a journal deadline.
     """
     if not data['start_date']:
         return "Unknown (Start Date missing)"
@@ -75,11 +81,10 @@ def calculate_projection(data):
     today = datetime.date.today()
     days_elapsed = (today - data['start_date']).days
 
-    # Avoid division by zero
     if days_elapsed <= 0:
         days_elapsed = 1
 
-    velocity = data['completed_tasks'] / days_elapsed # Tasks per day
+    velocity = data['completed_tasks'] / days_elapsed
 
     if velocity <= 0:
         return "Unknown (No tasks completed yet)"
@@ -91,6 +96,7 @@ def calculate_projection(data):
 
     return expected_date
 
+
 def generate_report(data):
     """
     Generates a formatted daily update report.
@@ -98,19 +104,24 @@ def generate_report(data):
     today = datetime.date.today()
     expected_date = calculate_projection(data)
 
-    report = f"""# Daily Update: Spine Submission
+    report = f"""# Daily Update: Spine Deformity Submission
 
 **Date:** {today}
-**Target Journal:** Spine (IF: 3.30, Q1, H-index: 300)
-**Why:** The highest prestige spine journal by H-index. Publishes basic science.
-**Fit score:** 6/10 — High bar; will need experimental validation or strong clinical dataset comparison.
-**Strategy:** Reframe as "A computational framework predicting adolescent scoliosis onset" with clinical validation against published cohort data.
+**Target Journal:** {JOURNAL_NAME}
+**Backup:** Spine (LWW) only if Spine Deformity desks the paper
+**Editorial Manager:** {EDITORIAL_MANAGER}
+**Wrong portal:** {WRONG_PORTAL} is a different journal — do not use it.
+**Journal-imposed deadline:** none as of {DEADLINE_AS_OF}
+**Optional AI/ML collection:** Springer lists Status: Open / deadline Ongoing as of {DEADLINE_AS_OF}. Original cutoff 20 May 2026 23:59 CST is past. Guest editors include Carl-Éric Aubin (omit as suggested reviewer if that collection is selected).
+**Stale dates (not clocks):** 2026-04-06 was a self-imposed 6-week *Spine* (LWW, IF 3.30) target from start 2026-02-23. 2026-09-15 was an invented internal date and is not used.
+**Why:** Live track in CITATION.cff, cover letter, and manuscript/main.tex. Canonical facts: JOURNAL_TRACK.md.
+**Fit score:** Computational/hypothesis-generating original article. Patient-level validation is still a gap (see REMAINING_ITEMS.md).
+**Strategy:** Submit the in-repo theory + computational results + open SpineWeb geometry check; do not invent a clinical cohort.
 
 ## Status Overview
 - **Percent Complete:** {data['percent_complete']:.1f}%
 - **Tasks Completed:** {data['completed_tasks']} / {data['total_tasks']}
-- **Projected Completion:** {expected_date}
-- **Target Deadline:** {data['target_date']}
+- **Internal velocity projection (NOT a journal deadline):** {expected_date}
 
 ## Phase Breakdown
 """
@@ -127,8 +138,9 @@ def generate_report(data):
     report += f"\n**Current Focus:** {active_phase}\n"
 
     report += "\n## Next Milestones\n"
-    if data['next_milestones']:
-        for i, milestone in enumerate(data['next_milestones'], 1):
+    next_milestones = data.get('next_milestones') or []
+    if next_milestones:
+        for i, milestone in enumerate(next_milestones, 1):
             report += f"{i}. {milestone}\n"
     else:
         report += "No milestones remaining!\n"
@@ -136,6 +148,7 @@ def generate_report(data):
     report += "\nRun `python scripts/spine_daily_update.py` to regenerate this report."
 
     return report
+
 
 def save_report(report):
     """
@@ -158,6 +171,7 @@ def save_report(report):
         f.write(report)
 
     return filepath
+
 
 if __name__ == "__main__":
     roadmap_path = "docs/spine_submission_roadmap.md"

@@ -3,14 +3,12 @@ import unittest
 
 from scripts.generate_spine_daily_update import generate_report, parse_roadmap
 
-# Create a temporary roadmap file for testing
 TEMP_ROADMAP = "tests/temp_roadmap.md"
-ROADMAP_CONTENT = """# Spine Submission Roadmap
+ROADMAP_CONTENT = """# Spine Deformity remaining-work roadmap
 
-**Target:** *Spine* (IF: 3.30, Q1, H-index: 300)
-**Strategy:** "A computational framework predicting adolescent scoliosis onset" with clinical validation against published cohort data.
+**Target:** *Spine Deformity* (Springer / SRS). *Spine* (LWW) is backup only.
 **Start Date:** 2026-02-23
-**Target Submission Date:** 2026-04-06 (6 Weeks)
+**Journal-imposed deadline:** none as of 2026-08-22
 
 ## Phase 1: Computational Framework (Weeks 1-2)
 
@@ -23,6 +21,19 @@ ROADMAP_CONTENT = """# Spine Submission Roadmap
 
 - [ ] **Cohort Data Extraction:** Extract clinical cohort data (Cobb angle distributions, progression rates) from published literature.
 """
+
+STALE_CLOCK_ROADMAP = """# Spine Submission Roadmap
+
+**Target:** *Spine* (IF: 3.30, Q1, H-index: 300)
+**Start Date:** 2026-02-23
+**Target Submission Date:** 2026-04-06 (6 Weeks)
+
+## Phase 1: Computational Framework (Weeks 1-2)
+
+- [x] **Core Model:** placeholder
+- [ ] **Rescue Cliff:** placeholder
+"""
+
 
 class TestSpineUpdateScript(unittest.TestCase):
 
@@ -42,13 +53,33 @@ class TestSpineUpdateScript(unittest.TestCase):
         self.assertAlmostEqual(data['percent_complete'], 40.0)
         self.assertEqual(data['phases']['Phase 1: Computational Framework (Weeks 1-2)']['total'], 4)
         self.assertEqual(data['phases']['Phase 1: Computational Framework (Weeks 1-2)']['completed'], 2)
+        self.assertIsNone(data['target_date'])
 
     def test_generate_report(self):
         data, error = parse_roadmap(TEMP_ROADMAP)
         report = generate_report(data)
-        self.assertIn("**Target Journal:** Spine", report)
+        self.assertIn("**Target Journal:** Spine Deformity", report)
         self.assertIn("**Percent Complete:** 40.0%", report)
         self.assertIn("Phase 1: Computational Framework (Weeks 1-2)", report)
+        self.assertIn("https://www.editorialmanager.com/sdef/", report)
+        self.assertIn("Journal-imposed deadline:** none", report)
+        self.assertIn("**Editorial Manager:** https://www.editorialmanager.com/sdef/", report)
+        self.assertIn("Wrong portal:** https://www.editorialmanager.com/spde/", report)
+        self.assertNotIn("**Target Deadline:**", report)
+        self.assertNotIn("**Target Journal:** Spine (IF", report)
+        self.assertNotIn("**Target Journal:** Spine\n", report)
+
+    def test_stale_target_date_is_not_a_journal_clock(self):
+        with open(TEMP_ROADMAP, "w") as f:
+            f.write(STALE_CLOCK_ROADMAP)
+        data, error = parse_roadmap(TEMP_ROADMAP)
+        self.assertIsNone(error)
+        self.assertIsNone(data['target_date'])
+        report = generate_report(data)
+        self.assertIn("Journal-imposed deadline:** none", report)
+        self.assertNotIn("**Target Deadline:** 2026-04-06", report)
+        self.assertIn("2026-04-06 was a self-imposed", report)
+
 
 if __name__ == '__main__':
     unittest.main()
