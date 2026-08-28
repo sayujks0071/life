@@ -75,6 +75,21 @@
 
 ---
 
+## Toy Model F: Information-Coupled Thermostatic Column (Delayed Feedback)
+
+**Goal:** Extend Toy Model A to include a delayed feedback loop mimicking biological sensor lag and identify oscillatory instability.
+
+**Setup:**
+- 1D column with a PID controller regulating stiffness based on strain, with a defined time delay $\tau$.
+- Identification of a critical delay $\tau_{crit}$ that induces oscillatory instability (hunting).
+
+**Implementation:**
+- Script: `scripts/experiments/toy_model_thermostatic_delay.py`
+- **Output:** [`outputs/figures/toy_model_thermostatic_delay.png`](../outputs/figures/toy_model_thermostatic_delay.png)
+- **Status:** ✅ **Implemented**
+
+---
+
 ## Part 2: Proposed Validation Experiments (Future)
 
 To further de-risk the theory and provide robust validation, the following toy models and real experiments are proposed:
