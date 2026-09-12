@@ -8,7 +8,9 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts" / "experiments" / "newton"))
-from rod_measure import joint_dtheta, out_of_plane, rest_kb_from_curvature, segment_tangents  # noqa: E402
+from rod_measure import (control_drift_deg, joint_dtheta, out_of_plane,
+                         rest_kb_from_curvature, segment_tangents,
+                         total_absolute_bend_deg)  # noqa: E402
 
 SEG_L = 0.5 / 24
 
@@ -54,3 +56,24 @@ def test_rest_kb_is_an_angle_in_the_bend_about_y_component():
 def test_out_of_plane_bend_is_flagged():
     bq = _body_q_from_angles([0.1] * 24, axis="x")
     assert out_of_plane(bq, np.arange(24)) > 0.09
+
+
+def test_known_arc_total_angle_is_independent_of_mesh():
+    for n in (12, 24, 48):
+        dtheta = math.radians(20) / (n - 1)
+        seg_l = 0.5 / n
+        bq = _body_q_from_angles(np.arange(n) * dtheta)
+        curv = joint_dtheta(bq, np.arange(n)) / seg_l
+        assert np.isclose(total_absolute_bend_deg(curv, seg_l), 20)
+    curv = np.full(23, math.radians(20) / (23 * SEG_L))
+    assert np.isclose(np.degrees(abs(curv).sum()), 960)  # old 48-fold inflation
+
+
+def test_absolute_bend_is_not_end_to_end_or_clinical_cobb():
+    dtheta = np.radians([10, -10])
+    assert np.isclose(total_absolute_bend_deg(dtheta / SEG_L, SEG_L), 20)
+    assert np.isclose(dtheta.sum(), 0)
+
+
+def test_control_drift_preserves_negative_change_magnitude():
+    assert np.allclose(control_drift_deg([[10, 5], [9, 7]]), [1, 2])

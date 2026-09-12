@@ -39,6 +39,25 @@ def out_of_plane(body_q, body_ids) -> float:
     return float(np.abs(segment_tangents(body_q, body_ids)[:, 1]).max())
 
 
+def total_absolute_bend_deg(curvature, seg_l):
+    """Integrated absolute planar bend [deg], from joint curvature [rad/m].
+
+    This is not clinical Cobb: opposite bends add rather than cancel.
+    The measured span contains N-1 joints for N segments.
+    """
+    if not np.isfinite(seg_l) or seg_l <= 0:
+        raise ValueError("seg_l must be finite and positive")
+    return np.degrees(np.abs(np.asarray(curvature, dtype=float)).sum(axis=-1) * seg_l)
+
+
+def control_drift_deg(angles):
+    """Absolute end-minus-start change within the SAME control time series."""
+    a = np.asarray(angles, dtype=float)
+    if a.ndim != 2 or len(a) < 2 or not np.isfinite(a).all():
+        raise ValueError("Expected at least two finite observation rows")
+    return np.abs(a[-1] - a[0])
+
+
 def rest_kb_from_curvature(rest_kp, seg_l):
     """(n_joints, 3) parent-local rest curvature-binormal for a per-joint permanent-set
     curvature rest_kp [1/m]: kb_y = 2 tan(dθ/2) with dθ = rest_kp·seg_l, sign-matched to

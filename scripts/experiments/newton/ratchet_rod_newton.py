@@ -7,7 +7,7 @@ cemented fraction can never be wrong, only re-labelled.
 
 This experiment makes the ratchet spatially resolved mechanics:
 
-  * N-vertebra clamped-free rods under self-weight (Newton SolverVBD), one
+  * N-segment idealized clamped-free rods under self-weight (Newton SolverVBD), one
     per (k_r, B_g) condition, batched via ModelBuilder.replicate into worlds
     (separate Model per condition costs ~140 s of fixed per-model overhead
     per column — replication costs ~3 s total for 20 worlds),
@@ -24,10 +24,9 @@ Gates before any developmental claim is trusted:
   A1 (statics, batched): B_g = 0.05 (sub-critical, discrete crit 0.1359)
      must topple under self-weight and B_g = 0.8 must hold — but the HOLD
      test is only meaningful with damping (see calibration note 3).
-  A2 (no-shake control): identical columns with ZERO root shake must show
-     the ratchet order preserved (the shake is a perturbation source, not
-     the driver; if order flips, the experiment is shake-driven mechanics,
-     not growth-driven ratcheting).
+  A2 (law-off control, same shake): absolute drift of the control must be
+     smaller than the compared permanent set, in the same angular units.
+     A separate CPU readout checks this against the pre-registration.
   C (monotonicity): final permanent set orders k_r 0.3 > 1.0 > 6.0.
 
 Calibration notes (measured 2026-09-03, GB10):
@@ -70,7 +69,8 @@ import newton
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from greenhill_discrete_reference import bg_crit  # noqa: E402
-from rod_measure import joint_dtheta, out_of_plane, rest_kb_from_curvature  # noqa: E402
+from rod_measure import (control_drift_deg, joint_dtheta, out_of_plane,
+                         rest_kb_from_curvature, total_absolute_bend_deg)  # noqa: E402
 
 OUT = Path(os.environ.get("RATCHET_OUT", Path.home() / "life/results/newton_ratchet_rod"))
 OUT.mkdir(parents=True, exist_ok=True)
@@ -210,8 +210,10 @@ def run_batch(model, months, k_r_per_world, bg_per_world, kappa_e_law=True,
             q = s0.body_q.numpy()
             curv = np.stack([joint_dtheta(q, np.arange(w * nb, (w + 1) * nb)) / SEG_L
                              for w in range(W)])
-            obs["age"].append(age)
-            obs["cobb"].append(np.degrees(np.abs(curv).sum(axis=1)).tolist())
+            # Observation is AFTER the month; kg above is evaluated at its start.
+            obs["age"].append(age + dt_month)
+            # Legacy key retained; total absolute bend is not clinical Cobb.
+            obs["cobb"].append(total_absolute_bend_deg(curv, SEG_L).tolist())
             set_frac = np.abs(rest_kp).sum(axis=1) / np.maximum(np.abs(curv).sum(axis=1), 1e-12)
             obs["flex"].append((1.0 - np.minimum(set_frac, 1.0)).tolist())
             obs["tip"].append(q[tips, 0].tolist())
@@ -298,7 +300,7 @@ def main():
     ctrl_obs, ctrl_kp = run_batch(model_ctrl, MONTHS, k_r_list, bg_list,
                                   kappa_e_law=False, shake=True)
     print(f"control (ratchet OFF): {time.time()-t0:.0f}s  "
-          f"Cobb drift max = {max(c-o for c,o in zip(ctrl_obs['cobb'][-1], ctrl_obs['cobb'][0])):.1f} deg")
+          f"absolute control bend drift max = {max(control_drift_deg(ctrl_obs['cobb'])):.3f} deg")
 
     model_exp = batched_model([bg_to_k_bend(bg, m_col) for bg in bg_list])
     exp_obs, exp_kp = run_batch(model_exp, MONTHS, k_r_list, bg_list,
@@ -311,7 +313,7 @@ def main():
     # recompute mean curvature from ctrl Cobb (total |dtheta| over 24 segs / SEG_L)
     kappa_e0 = float(np.mean(ctrl_obs["cobb"][-1])) * math.pi / 180.0 / L
 
-    print(f"\n{'B_g':>5} {'k_r':>5} | {'Cobb5':>6} {'Cobb20':>7} {'flex20':>6} "
+    print(f"\n{'B_g':>5} {'k_r':>5} | {'bend1':>6} {'bendN':>7} {'flex20':>6} "
           f"{'<kp>':>8} {'ODE kp':>8} {'ratio':>6}")
     rows = {}
     for i, (kr, bg) in enumerate(conds):
@@ -334,14 +336,24 @@ def main():
     for bg in (0.20, 0.30, 0.50):
         kp = {kr: rows[(kr, bg)]["rod_kappa_p_mean"] for kr in K_R_YEARS}
         gate_c[bg] = kp[0.3] > kp[1.0] > kp[6.0]
-    # GATE A2: order preserved with ratchet law (shake on) AND law-driven
-    # set must exceed control drift
-    drifts = {bg: max(0.0, rows[(6.0, bg)]["ctrl_cobb_20y"] - rows[(6.0, bg)]["cobb_5y"])
+    # Same-control baseline; never clip a negative change to zero.
+    per_world_drift = control_drift_deg(ctrl_obs["cobb"])
+    drifts = {bg: float(max(per_world_drift[i] for i, (_, b) in enumerate(conds) if b == bg))
               for bg in (0.20, 0.30, 0.50)}
-    print(f"\nGATE C monotonicity (k_p: 0.3>1.0>6.0): {gate_c}")
-    print(f"control Cobb drift (deg): {drifts}")
+    print(f"\nDescriptive final order (k_p: 0.3>1.0>6.0; prerequisites checked separately): {gate_c}")
+    print(f"absolute control bend drift (deg): {drifts}")
 
     payload = {
+        "measurement_schema_version": 2,
+        "measurement": {
+            "cobb_key_quantity": "total_absolute_planar_bend_deg_not_clinical_cobb",
+            "angle_formula": "degrees(sum(abs(joint_curvature_rad_per_m))*segment_length_m)",
+            "observation_age": "end_of_month",
+            "control_drift": "abs(control_last-control_first), recorded observation window",
+            "kappa_e0_definition": "mean final control absolute bend in radians / full rod L",
+        },
+        "conditions": [{"k_r": kr, "B_g": bg} for kr, bg in conds],
+        "permanent_curvature_rad_per_m": exp_kp.tolist(),
         "gate_a1": ga, "gate_c_per_bg": gate_c, "control_drift_deg": drifts,
         "bg_crit_discrete_N24": crit,
         "kappa_e0_derived_rad_per_m": kappa_e0,
@@ -353,14 +365,17 @@ def main():
         "rows": {f"k{kr}_bg{bg}": v for (kr, bg), v in rows.items()},
     }
     (OUT / "ratchet_rod.json").write_text(json.dumps(payload, indent=2))
-    md = ["# Recovery ratchet on a Newton rod — results\n",
+    md = ["# Recovery ratchet on a Newton rod — raw results\n",
+          "The legacy `cobb` key measures total absolute planar bend, not clinical Cobb. "
+          "Observation window starts after month 1; no pre-first-month observation is stored. "
+          "Ordering is descriptive only: run ratchet_rod_readout.py for prerequisite checks.\n",
           f"B_g_crit(N={N_SEG}) = {crit:.6f}. Gate A1: {'PASS' if ga['pass'] else 'FAIL'} "
           f"{gstr}.",
           f"kappa_e0 derived from rod (not assumed 0.02): {kappa_e0:.5f} rad/m.\n",
-          "\n| B_g | k_r | Cobb 5y | Cobb 20y | flex20 | rod <kp> | ODE kp | ratio |",
+          "\n| B_g | k_r | bend first (deg) | bend last (deg) | flex last | rod <kp> | ODE kp | ratio |",
           "|---|---|---|---|---|---|---|---|"]
     for (kr, bg), r in rows.items():
-        md.append(f"| {bg} | {kr} | {r['cobb_5y']:.1f} | {r['cobb_20y']:.1f} "
+        md.append(f"| {bg} | {kr} | {r['cobb_5y']:.3f} | {r['cobb_20y']:.3f} "
                   f"| {r['flex_20y']:.2f} | {r['rod_kappa_p_mean']:.5f} "
                   f"| {r['ode_kappa_p']:.5f} | {r['ratio_rod_over_ode']:.2f} |")
     oop = max(max(row) for row in exp_obs["oop"] + ctrl_obs["oop"])

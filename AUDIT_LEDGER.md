@@ -98,7 +98,8 @@ line so gotcha 1 stops recurring.
 
 ### R-7 — Newton ratchet-rod experiment measured the wrong quantity in the wrong plane (found 2026-09-12)
 Not a manuscript defect (no active section cites `results/newton_ratchet_rod/`), recorded
-here because the README and the 09-08 review point at it. Two defects:
+here because the README and the 09-08 review point at it. Three defects (the third found by the
+Codex continuation the same afternoon, `reports/newton_readout_audit_2026-09-12/`):
 (i) `joint_dtheta` took `atan2(px, py)` of body *positions* — the azimuth of each body about
 the vertical, numerically undefined for a rod in the x–z plane — and the ratchet law
 consumed it; the 15,628° "Cobb" is this. (ii) The permanent set was written to
@@ -107,7 +108,13 @@ consumed it; the 15,628° "Cobb" is this. (ii) The permanent set was written to
 prescribed rest bending in the y–z plane, 48× too large. Fixed in `f9d5b042`
 (`scripts/experiments/newton/rod_measure.py`, unit tests in
 `tests/test_newton_rod_measure.py`); every number from the 2026-09-03 run is void and kept as
-`*.pre-measurement-fix-2026-09-12.*`. The re-run's reading is pre-registered in
+`*.pre-measurement-fix-2026-09-12.*`. (iii) The reported "Cobb" summed joint curvature (rad/m) and called it degrees without the
+segment length — 48× too large; the smoke values first recorded in the pre-registration file
+(10.6–56.2°) are really 0.22–1.17° of total absolute planar bend, and the control drift was
+mis-defined as well. Fixed in `rod_measure.total_absolute_bend_deg` / `control_drift_deg`; the
+running process's output is corrected on read by `ratchet_rod_readout.py`. The pre-registered
+sanity bound (1–40°) was set on the inflated scale and is now known to be mis-scaled — an open
+author decision (card t_40524ff0), not silently retuned. The re-run's reading is pre-registered in
 `results/newton_ratchet_rod/PREREG_2026-09-12.md`; the result is recorded there, not here.
 
 ### R-8 — Both citations on the Hueter–Volkmann sentence were phantom records (found 2026-09-12)
