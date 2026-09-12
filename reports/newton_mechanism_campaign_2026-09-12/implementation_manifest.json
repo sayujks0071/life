@@ -1,0 +1,12 @@
+{
+  "tests/test_newton_campaign.py": "150cd99fdbad3cc35a3d1dc99fca296a3dc7cdc2ca34a6725883927e29424a33",
+  "reports/newton_mechanism_campaign_2026-09-12/README.md": "827a0cda3041d1d1ebb61c1a09822a0f2f19690b739db5510e06c6c2ee62838f",
+  "reports/newton_mechanism_campaign_2026-09-12/protocol.json": "a74d0cb5d538327d0be9dbb2eb9e3b8240dbecbdfb8f378fc06e73abd4d1faf3",
+  "reports/newton_mechanism_campaign_2026-09-12/PREREG.md": "2a96a66f57cab3b2d35b9756d935d11890ae51fdef8bed28dbfff84b1bd1b5b4",
+  "scripts/experiments/newton/campaign/comparators.py": "a7d9be763ededa821ea90ffdd2c4e6fec56f5cd538a5ee2c29b6e8f4fa60095b",
+  "scripts/experiments/newton/campaign/report.py": "ae80077c7ad13160dfc1294afa953d1a260ef0a9214dadd78eee2cb82a468acd",
+  "scripts/experiments/newton/campaign/controller.py": "4b36f2f72760cec2f8ea6e4a7211cc575cd5640b2b08fa07c2f94dc3e871873a",
+  "scripts/experiments/newton/campaign/__init__.py": "b5f8d4455965d7723196b4ccd5f77fde6adf227f845ab8fcc55e1423c130f92d",
+  "scripts/experiments/newton/campaign/worker.py": "d8be2b7d5b077c23563f9e2923bdaf369cf8b348f30fae983a4eda82850cb403",
+  "scripts/experiments/newton/campaign/core.py": "5f48dce9683356cfb5a27ce64d6c2a1488cdc1e938824f23c2cb49d336990d6d"
+}

@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "purpose": "implementation and numerical falsification; no clinical inference",
+  "active_hours_cap": 48.0,
+  "night_exclusion_ist": [
+    23,
+    1
+  ],
+  "min_available_gib": 6.0,
+  "stop_available_gib": 3.0,
+  "conditions": [
+    {
+      "kr": 0.3,
+      "bg": 0.2,
+      "law_on": false
+    },
+    {
+      "kr": 0.3,
+      "bg": 0.3,
+      "law_on": false
+    },
+    {
+      "kr": 0.3,
+      "bg": 0.5,
+      "law_on": false
+    },
+    {
+      "kr": 1.0,
+      "bg": 0.2,
+      "law_on": false
+    },
+    {
+      "kr": 1.0,
+      "bg": 0.3,
+      "law_on": false
+    },
+    {
+      "kr": 1.0,
+      "bg": 0.5,
+      "law_on": false
+    },
+    {
+      "kr": 6.0,
+      "bg": 0.2,
+      "law_on": false
+    },
+    {
+      "kr": 6.0,
+      "bg": 0.3,
+      "law_on": false
+    },
+    {
+      "kr": 6.0,
+      "bg": 0.5,
+      "law_on": false
+    },
+    {
+      "kr": 0.3,
+      "bg": 0.2,
+      "law_on": true
+    },
+    {
+      "kr": 0.3,
+      "bg": 0.3,
+      "law_on": true
+    },
+    {
+      "kr": 0.3,
+      "bg": 0.5,
+      "law_on": true
+    },
+    {
+      "kr": 1.0,
+      "bg": 0.2,
+      "law_on": true
+    },
+    {
+      "kr": 1.0,
+      "bg": 0.3,
+      "law_on": true
+    },
+    {
+      "kr": 1.0,
+      "bg": 0.5,
+      "law_on": true
+    },
+    {
+      "kr": 6.0,
+      "bg": 0.2,
+      "law_on": true
+    },
+    {
+      "kr": 6.0,
+      "bg": 0.3,
+      "law_on": true
+    },
+    {
+      "kr": 6.0,
+      "bg": 0.5,
+      "law_on": true
+    }
+  ],
+  "geometry": {
+    "length_m": 0.5,
+    "radius_m": 0.006,
+    "fixed_root_length_m": 0.020833333333333332,
+    "free_mass_kg": 0.07500238442636259,
+    "gravity_m_s2": 9.81,
+    "seed_tilt_deg": 0.5,
+    "reference_stretch_N_per_m": 10000000.0,
+    "linear_damping": 0.0,
+    "angular_relaxation_time_s": 1.0
+  },
+  "load": {
+    "shake_seconds": 8.0,
+    "settle_seconds": 10.0,
+    "hz": 0.25,
+    "amplitude_m": 0.004
+  },
+  "growth": {
+    "peak_years": 12.0,
+    "sigma_years": 1.6,
+    "baseline": 0.08,
+    "kg_peak": 1.0
+  },
+  "agreement": {
+    "absolute_bend_deg": 0.1,
+    "relative_peak": 0.05,
+    "crossing_age_years": 0.08333333333333333,
+    "quaternion_norm_error": 0.001,
+    "planarity": 0.001,
+    "anchor_strain": 0.01
+  },
+  "jobs": [
+    {
+      "id": "diag_legacy",
+      "hz": 60,
+      "iterations": 150,
+      "segments": 24,
+      "months": 12,
+      "material": "legacy",
+      "waveform": "legacy"
+    },
+    {
+      "id": "diag_material",
+      "hz": 60,
+      "iterations": 150,
+      "segments": 24,
+      "months": 12,
+      "material": "corrected",
+      "waveform": "legacy"
+    },
+    {
+      "id": "diag_exact",
+      "hz": 60,
+      "iterations": 150,
+      "segments": 24,
+      "months": 12,
+      "material": "corrected",
+      "waveform": "exact"
+    },
+    {
+      "id": "baseline",
+      "hz": 60,
+      "iterations": 150,
+      "segments": 24,
+      "months": 180,
+      "material": "corrected",
+      "waveform": "exact"
+    },
+    {
+      "id": "dt120",
+      "hz": 120,
+      "iterations": 150,
+      "segments": 24,
+      "months": 180,
+      "material": "corrected",
+      "waveform": "exact"
+    },
+    {
+      "id": "iter300",
+      "hz": 60,
+      "iterations": 300,
+      "segments": 24,
+      "months": 180,
+      "material": "corrected",
+      "waveform": "exact"
+    },
+    {
+      "id": "mesh48",
+      "hz": 60,
+      "iterations": 150,
+      "segments": 48,
+      "months": 180,
+      "material": "corrected",
+      "waveform": "exact"
+    },
+    {
+      "id": "dt240",
+      "hz": 240,
+      "iterations": 150,
+      "segments": 24,
+      "months": 180,
+      "material": "corrected",
+      "waveform": "exact"
+    },
+    {
+      "id": "iter600",
+      "hz": 60,
+      "iterations": 600,
+      "segments": 24,
+      "months": 180,
+      "material": "corrected",
+      "waveform": "exact"
+    },
+    {
+      "id": "mesh96",
+      "hz": 60,
+      "iterations": 150,
+      "segments": 96,
+      "months": 180,
+      "material": "corrected",
+      "waveform": "exact"
+    }
+  ],
+  "combined": {
+    "id": "combined",
+    "hz": 120,
+    "iterations": 300,
+    "segments": 48,
+    "months": 180,
+    "material": "corrected",
+    "waveform": "exact"
+  },
+  "growth_update_refinement": "not part of the accepted fixed matrix; requires a separate protocol if numerical results demand it",
+  "policy": "No angle ceiling is a solver-validity test in this campaign; retain historical exclusions separately. No successful ordering alone establishes biology."
+}

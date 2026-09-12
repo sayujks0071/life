@@ -1,0 +1,18 @@
+{
+  "controller_pid": 1243828,
+  "command": [
+    "/home/sayuj/newton/.venv/bin/python",
+    "-m",
+    "scripts.experiments.newton.campaign.controller",
+    "--protocol",
+    "/home/sayuj/life/reports/newton_mechanism_campaign_2026-09-12/protocol.json",
+    "--out-dir",
+    "/home/sayuj/life/results/newton_mechanism_campaign_2026-09-12",
+    "--max-active-hours",
+    "48",
+    "--kanban-task",
+    "t_c0635f19"
+  ],
+  "out_dir": "/home/sayuj/life/results/newton_mechanism_campaign_2026-09-12",
+  "kanban_task": "t_c0635f19"
+}
