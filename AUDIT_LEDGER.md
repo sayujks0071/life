@@ -115,7 +115,11 @@ mis-defined as well. Fixed in `rod_measure.total_absolute_bend_deg` / `control_d
 running process's output is corrected on read by `ratchet_rod_readout.py`. The pre-registered
 sanity bound (1–40°) was set on the inflated scale and is now known to be mis-scaled — an open
 author decision (card t_40524ff0), not silently retuned. The re-run's reading is pre-registered in
-`results/newton_ratchet_rod/PREREG_2026-09-12.md`; the result is recorded there, not here.
+`results/newton_ratchet_rod/PREREG_2026-09-12.md` and was read there on 2026-09-12 under an
+amendment adopted before the run reported (sanity bounds in corrected units): Gate C holds at
+`B_g` 0.3 and 0.5, `B_g` 0.2 is excluded because the law-on columns exceed the bend ceiling
+(runaway set near the buckling threshold, control column clean), so no single run-level verdict
+is claimed. Corrected view: `reports/newton_readout_audit_2026-09-12/full/READOUT.md`.
 
 ### R-8 — Both citations on the Hueter–Volkmann sentence were phantom records (found 2026-09-12)
 `introduction.tex` and `theory_summary.tex` supported "a sustained asymmetric deviation is
