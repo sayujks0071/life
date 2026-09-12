@@ -19,9 +19,17 @@ from rod_measure import control_drift_deg, total_absolute_bend_deg
 RATES = (0.3, 1.0, 6.0)
 BGS = (0.2, 0.3, 0.5)
 CONDS = [(kr, bg) for kr in RATES for bg in BGS]
+# Sanity bounds on total absolute planar bend, degrees. The pre-registration's original
+# 1-40 deg was written against the 2026-09-03 run's 48x-inflated scale; the author adopted the
+# corrected-unit bounds on 2026-09-12 (PREREG_2026-09-12.md, 'Amendment') before any full-run
+# output existed. Pass --bend-bounds 1 40 to reproduce the pre-amendment reading.
+BEND_BOUNDS_DEG = (0.05, 10.0)
 
 
-def evaluate(payload):
+def evaluate(payload, bend_bounds=BEND_BOUNDS_DEG):
+    lo, hi = float(bend_bounds[0]), float(bend_bounds[1])
+    if not (0 <= lo < hi):
+        raise ValueError("bend bounds must satisfy 0 <= lo < hi")
     version = payload.get("measurement_schema_version", 1)
     if version not in (1, 2):
         raise ValueError("Unknown measurement schema; refuse a guessed unit conversion")
@@ -79,7 +87,7 @@ def evaluate(payload):
             "control_first_deg": float(c[0, i]), "control_last_deg": float(c[-1, i]),
             "control_abs_drift_deg": float(drift[i]),
             "max_out_of_plane_tangent": maximum_oop,
-            "angle_sanity_1_to_40_deg": bool(((observed >= 1) & (observed <= 40)).all()),
+            "angle_sanity_pass": bool(((observed >= lo) & (observed <= hi)).all()),
             "planarity_pass": maximum_oop < 1e-3,
             "control_drift_under_5_deg": bool(drift[i] < 5),
             "permanent_bend_deg": permanent if full else None,
@@ -91,7 +99,7 @@ def evaluate(payload):
     by_bg = {}
     for bg in BGS:
         group = [r for r in rows if r["B_g"] == bg]
-        sanity = all(r["angle_sanity_1_to_40_deg"] and r["planarity_pass"]
+        sanity = all(r["angle_sanity_pass"] and r["planarity_pass"]
                      and r["control_drift_under_5_deg"] for r in group)
         a2 = all(r["a2_recorded_window_pass"] for r in group) if full else None
         order = (group[0]["rod_kappa_p_mean_rad_per_m"] > group[1]["rod_kappa_p_mean_rad_per_m"]
@@ -116,12 +124,14 @@ def evaluate(payload):
         "observed_age_start": float(ages[0]), "observed_age_end": float(ages[-1]),
         "pre_first_month_baseline_recorded": baseline,
         "registered_full_window_a2": "not adjudicated: baseline absent" if not baseline else "see per-world checks",
-        "sanity_bounds": {"bend_deg": [1, 40], "max_abs_t_y_exclusive": 1e-3, "control_drift_deg_exclusive": 5},
+        "sanity_bounds": {"bend_deg": [lo, hi], "max_abs_t_y_exclusive": 1e-3, "control_drift_deg_exclusive": 5,
+                          "bend_bounds_source": ("PREREG_2026-09-12.md Amendment (adopted 2026-09-12, corrected units)"
+                                                 if (lo, hi) == BEND_BOUNDS_DEG else "command-line override")},
         "kappa_e0_unit_corrected_rad_per_m": float(np.mean(c[-1]) * np.pi / 180 / length),
         "by_bg": by_bg, "rows": rows,
         "limitations": [
-            "1-40 degree range is retained from the board reading of the preregistration, not retuned after correction.",
-            "The preregistration's smoke magnitudes were computed before the 48-fold reporting error was found.",
+            f"Bend sanity bounds applied: {lo}-{hi} deg. The original 1-40 deg was written on the 48x-inflated scale; "
+            "the amended bounds were adopted before any full-run output existed (PREREG_2026-09-12.md, Amendment).",
             "A failed measurement/sanity prerequisite is not a biological null.",
             "Scalar amplitude retains the original mean-across-worlds/full-L definition; it is not a Bg-matched joint-mean calibration.",
             "No statement here validates AIS, vertebral growth, or a clinical Cobb measurement.",
@@ -135,11 +145,11 @@ def markdown(r):
              f"Quantity: {r['quantity']}. Angle conversion factor: {r['angle_conversion_factor']:.12g}.",
              f"Recorded ages: {r['observed_age_start']:.6f} to {r['observed_age_end']:.6f} years.",
              f"Full-window A2: {r['registered_full_window_a2']}.", "",
-             "| Bg | kr | bend min/max deg | control drift deg | permanent bend deg | angle sanity | A2 recorded window |",
+             "| Bg | kr | bend min/max deg | control drift deg | permanent bend deg | bend sanity | A2 recorded window |",
              "|---|---|---|---|---|---|---|"]
     for x in r["rows"]:
         perm = "not read (smoke)" if x['permanent_bend_deg'] is None else f"{x['permanent_bend_deg']:.6g}"
-        lines.append(f"| {x['B_g']} | {x['k_r']} | {x['all_observations_bend_min_deg']:.6g}/{x['all_observations_bend_max_deg']:.6g} | {x['control_abs_drift_deg']:.6g} | {perm} | {x['angle_sanity_1_to_40_deg']} | {x['a2_recorded_window_pass']} |")
+        lines.append(f"| {x['B_g']} | {x['k_r']} | {x['all_observations_bend_min_deg']:.6g}/{x['all_observations_bend_max_deg']:.6g} | {x['control_abs_drift_deg']:.6g} | {perm} | {x['angle_sanity_pass']} | {x['a2_recorded_window_pass']} |")
     lines += ["", "Per-Bg checks:", "", "```json", json.dumps(r["by_bg"], indent=2), "```", ""]
     lines += [f"- {s}" for s in r["limitations"]]
     return "\n".join(lines) + "\n"
@@ -149,10 +159,12 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("input", type=Path)
     p.add_argument("--out-dir", type=Path, required=True)
+    p.add_argument("--bend-bounds", type=float, nargs=2, metavar=("LO", "HI"), default=BEND_BOUNDS_DEG,
+                   help="total-bend sanity window in degrees (default: the adopted amendment)")
     args = p.parse_args()
     data = args.input.read_bytes()
     try:
-        result = evaluate(json.loads(data))
+        result = evaluate(json.loads(data), bend_bounds=tuple(args.bend_bounds))
     except (KeyError, ValueError, TypeError) as exc:
         p.exit(2, f"REFUSED: {exc}\n")
     result["input_path"] = str(args.input.resolve())

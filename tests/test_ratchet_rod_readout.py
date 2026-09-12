@@ -68,12 +68,23 @@ def test_wrong_frame_old_result_cannot_be_rescued_by_scaling():
         evaluate(data)
 
 
-def test_unchanged_lower_angle_bound_is_not_retuned():
+def test_amended_bend_bounds_are_the_default_and_the_original_window_is_reproducible():
+    """Author adopted 0.05-10 deg (corrected units) on 2026-09-12 before any full-run output existed;
+    the pre-amendment 1-40 deg reading stays reproducible through bend_bounds for the record."""
     data = fixture(2); data["observations"]["cobb"][0][0] = .9
     result = evaluate(data)
-    assert result["by_bg"]["0.2"]["gate_c_conditional_on_recorded_window"] is None
-    assert result["status"] == "PREREQUISITE_FAILURE_NO_MECHANISTIC_VERDICT"
-    assert result["rows"][0]["angle_sanity_1_to_40_deg"] is False
+    assert result["sanity_bounds"]["bend_deg"] == [0.05, 10.0]
+    assert "Amendment" in result["sanity_bounds"]["bend_bounds_source"]
+    assert result["rows"][0]["angle_sanity_pass"] is True
+    old = evaluate(data, bend_bounds=(1, 40))
+    assert old["sanity_bounds"]["bend_deg"] == [1.0, 40.0]
+    assert old["rows"][0]["angle_sanity_pass"] is False
+    assert old["by_bg"]["0.2"]["gate_c_conditional_on_recorded_window"] is None
+    assert old["status"] == "PREREQUISITE_FAILURE_NO_MECHANISTIC_VERDICT"
+    low = fixture(2); low["observations"]["cobb"][0][0] = .04
+    assert evaluate(low)["rows"][0]["angle_sanity_pass"] is False
+    with pytest.raises(ValueError, match="bend bounds"):
+        evaluate(data, bend_bounds=(5, 1))
 
 
 def test_large_angle_planarity_and_drift_gates():
@@ -82,7 +93,7 @@ def test_large_angle_planarity_and_drift_gates():
     data["control"]["oop"][0][1] = .001
     data["control"]["cobb"][1][2] = 8
     result = evaluate(data)
-    assert not result["rows"][0]["angle_sanity_1_to_40_deg"]
+    assert not result["rows"][0]["angle_sanity_pass"]
     assert not result["rows"][1]["planarity_pass"]
     assert not result["rows"][2]["control_drift_under_5_deg"]
     assert all(x["gate_c_conditional_on_recorded_window"] is None for x in result["by_bg"].values())
