@@ -1,0 +1,375 @@
+{
+  "source_sha256": "15bd31b5943b4119c3a1d3bc384fc949c50baaa9481e2e67da378a0ec4d450b8",
+  "independently_matched_fields": 66,
+  "sample_count": 31,
+  "recorded_age_window": [
+    5.083333333333333,
+    19.999999999999996
+  ],
+  "adopted_bounds_deg": [
+    0.05,
+    10.0
+  ],
+  "gate_a1_pass": true,
+  "max_abs_t_y": 0,
+  "rows": [
+    {
+      "B_g": 0.2,
+      "k_r": 0.3,
+      "bend_last_deg": 86.51019442167957,
+      "control_abs_drift_deg": 0.3650526231634099,
+      "permanent_bend_deg": 45.758718899825986,
+      "ode_kappa_p_unit_corrected_rad_per_m": 0.06335664422796122,
+      "rod_over_ode_unit_corrected": 26.307068754340417,
+      "rod_kappa_p_mean_rad_per_m": 1.6667275957492609,
+      "angle_sanity_pass": false,
+      "a2_recorded_window_pass": true,
+      "first_observed_10deg_crossing_bracket_years": [
+        11.583333333333334,
+        12.083333333333334
+      ],
+      "late_trajectory": [
+        [
+          17.583333333333332,
+          84.72780000944785
+        ],
+        [
+          18.083333333333332,
+          85.11057043185338
+        ],
+        [
+          18.583333333333332,
+          85.48017672876979
+        ],
+        [
+          19.083333333333332,
+          85.84388268456026
+        ],
+        [
+          19.583333333333332,
+          86.20724675304292
+        ],
+        [
+          19.999999999999996,
+          86.51019442167957
+        ]
+      ]
+    },
+    {
+      "B_g": 0.3,
+      "k_r": 0.3,
+      "bend_last_deg": 9.331064421284125,
+      "control_abs_drift_deg": 0.023687625529776712,
+      "permanent_bend_deg": 5.151874403421351,
+      "ode_kappa_p_unit_corrected_rad_per_m": 0.06335664422796122,
+      "rod_over_ode_unit_corrected": 2.9618555196274823,
+      "rod_kappa_p_mean_rad_per_m": 0.18765322641166163,
+      "angle_sanity_pass": true,
+      "a2_recorded_window_pass": true,
+      "first_observed_10deg_crossing_bracket_years": null,
+      "late_trajectory": [
+        [
+          17.583333333333332,
+          9.0764618508858
+        ],
+        [
+          18.083333333333332,
+          9.13010856702696
+        ],
+        [
+          18.583333333333332,
+          9.182351521459918
+        ],
+        [
+          19.083333333333332,
+          9.23439744330145
+        ],
+        [
+          19.583333333333332,
+          9.287029929293045
+        ],
+        [
+          19.999999999999996,
+          9.331064421284125
+        ]
+      ]
+    },
+    {
+      "B_g": 0.5,
+      "k_r": 0.3,
+      "bend_last_deg": 1.8129581201720968,
+      "control_abs_drift_deg": 0.0004759641194111708,
+      "permanent_bend_deg": 1.1849615853876008,
+      "ode_kappa_p_unit_corrected_rad_per_m": 0.06335664422796122,
+      "rod_over_ode_unit_corrected": 0.6812442884663535,
+      "rod_kappa_p_mean_rad_per_m": 0.04316135201669335,
+      "angle_sanity_pass": true,
+      "a2_recorded_window_pass": true,
+      "first_observed_10deg_crossing_bracket_years": null,
+      "late_trajectory": [
+        [
+          17.583333333333332,
+          1.782634227272377
+        ],
+        [
+          18.083333333333332,
+          1.7890310753675926
+        ],
+        [
+          18.583333333333332,
+          1.795255081015613
+        ],
+        [
+          19.083333333333332,
+          1.801585322442826
+        ],
+        [
+          19.583333333333332,
+          1.807687267856532
+        ],
+        [
+          19.999999999999996,
+          1.8129581201720968
+        ]
+      ]
+    },
+    {
+      "B_g": 0.2,
+      "k_r": 1.0,
+      "bend_last_deg": 27.891794208589218,
+      "control_abs_drift_deg": 0.3650526231634099,
+      "permanent_bend_deg": 10.501904433637472,
+      "ode_kappa_p_unit_corrected_rad_per_m": 0.03689706954441937,
+      "rod_over_ode_unit_corrected": 10.367330797336733,
+      "rod_kappa_p_mean_rad_per_m": 0.3825241254193341,
+      "angle_sanity_pass": false,
+      "a2_recorded_window_pass": true,
+      "first_observed_10deg_crossing_bracket_years": [
+        12.083333333333334,
+        12.583333333333334
+      ],
+      "late_trajectory": [
+        [
+          17.583333333333332,
+          27.384433578462154
+        ],
+        [
+          18.083333333333332,
+          27.49207457078015
+        ],
+        [
+          18.583333333333332,
+          27.59521301210564
+        ],
+        [
+          19.083333333333332,
+          27.700210254416977
+        ],
+        [
+          19.583333333333332,
+          27.805098908079138
+        ],
+        [
+          19.999999999999996,
+          27.891794208589218
+        ]
+      ]
+    },
+    {
+      "B_g": 0.3,
+      "k_r": 1.0,
+      "bend_last_deg": 3.4787274584089225,
+      "control_abs_drift_deg": 0.023687625529776712,
+      "permanent_bend_deg": 1.7370391674878511,
+      "ode_kappa_p_unit_corrected_rad_per_m": 0.03689706954441937,
+      "rod_over_ode_unit_corrected": 1.7147803782708286,
+      "rod_kappa_p_mean_rad_per_m": 0.06327037087046451,
+      "angle_sanity_pass": true,
+      "a2_recorded_window_pass": true,
+      "first_observed_10deg_crossing_bracket_years": null,
+      "late_trajectory": [
+        [
+          17.583333333333332,
+          3.4404466717662006
+        ],
+        [
+          18.083333333333332,
+          3.4486007920738624
+        ],
+        [
+          18.583333333333332,
+          3.4563577091311743
+        ],
+        [
+          19.083333333333332,
+          3.464521935763816
+        ],
+        [
+          19.583333333333332,
+          3.4720602039467474
+        ],
+        [
+          19.999999999999996,
+          3.4787274584089225
+        ]
+      ]
+    },
+    {
+      "B_g": 0.5,
+      "k_r": 1.0,
+      "bend_last_deg": 0.953754374767269,
+      "control_abs_drift_deg": 0.0004759641194111708,
+      "permanent_bend_deg": 0.5445001931469748,
+      "ode_kappa_p_unit_corrected_rad_per_m": 0.03689706954441937,
+      "rod_over_ode_unit_corrected": 0.5375228519017484,
+      "rod_kappa_p_mean_rad_per_m": 0.019833018048333446,
+      "angle_sanity_pass": true,
+      "a2_recorded_window_pass": true,
+      "first_observed_10deg_crossing_bracket_years": null,
+      "late_trajectory": [
+        [
+          17.583333333333332,
+          0.9467839560224385
+        ],
+        [
+          18.083333333333332,
+          0.9482307424735332
+        ],
+        [
+          18.583333333333332,
+          0.9497301763043847
+        ],
+        [
+          19.083333333333332,
+          0.951084947612074
+        ],
+        [
+          19.583333333333332,
+          0.9526271880963036
+        ],
+        [
+          19.999999999999996,
+          0.953754374767269
+        ]
+      ]
+    },
+    {
+      "B_g": 0.2,
+      "k_r": 6.0,
+      "bend_last_deg": 3.3392033435357593,
+      "control_abs_drift_deg": 0.3650526231634099,
+      "permanent_bend_deg": 0.8171202301643455,
+      "ode_kappa_p_unit_corrected_rad_per_m": 0.009583735827074408,
+      "rod_over_ode_unit_corrected": 3.1055741119565887,
+      "rod_kappa_p_mean_rad_per_m": 0.029763001880393148,
+      "angle_sanity_pass": true,
+      "a2_recorded_window_pass": true,
+      "first_observed_10deg_crossing_bracket_years": null,
+      "late_trajectory": [
+        [
+          17.583333333333332,
+          3.3238340333599052
+        ],
+        [
+          18.083333333333332,
+          3.327100675504237
+        ],
+        [
+          18.583333333333332,
+          3.3303344264502615
+        ],
+        [
+          19.083333333333332,
+          3.333475993399041
+        ],
+        [
+          19.583333333333332,
+          3.3365850962693124
+        ],
+        [
+          19.999999999999996,
+          3.3392033435357593
+        ]
+      ]
+    },
+    {
+      "B_g": 0.3,
+      "k_r": 6.0,
+      "bend_last_deg": 0.9454606560014003,
+      "control_abs_drift_deg": 0.023687625529776712,
+      "permanent_bend_deg": 0.2700077565185509,
+      "ode_kappa_p_unit_corrected_rad_per_m": 0.009583735827074408,
+      "rod_over_ode_unit_corrected": 1.0262003897551748,
+      "rod_kappa_p_mean_rad_per_m": 0.00983483344105439,
+      "angle_sanity_pass": true,
+      "a2_recorded_window_pass": true,
+      "first_observed_10deg_crossing_bracket_years": null,
+      "late_trajectory": [
+        [
+          17.583333333333332,
+          0.9427576943887526
+        ],
+        [
+          18.083333333333332,
+          0.9432451431525745
+        ],
+        [
+          18.583333333333332,
+          0.9439061419972085
+        ],
+        [
+          19.083333333333332,
+          0.9445675886176224
+        ],
+        [
+          19.583333333333332,
+          0.9450352685396411
+        ],
+        [
+          19.999999999999996,
+          0.9454606560014003
+        ]
+      ]
+    },
+    {
+      "B_g": 0.5,
+      "k_r": 6.0,
+      "bend_last_deg": 0.37253584146963026,
+      "control_abs_drift_deg": 0.0004759641194111708,
+      "permanent_bend_deg": 0.11222300921487728,
+      "ode_kappa_p_unit_corrected_rad_per_m": 0.009583735827074408,
+      "rod_over_ode_unit_corrected": 0.42651847221245787,
+      "rod_kappa_p_mean_rad_per_m": 0.004087640363051573,
+      "angle_sanity_pass": true,
+      "a2_recorded_window_pass": true,
+      "first_observed_10deg_crossing_bracket_years": null,
+      "late_trajectory": [
+        [
+          17.583333333333332,
+          0.3717666299023389
+        ],
+        [
+          18.083333333333332,
+          0.3719845745559305
+        ],
+        [
+          18.583333333333332,
+          0.3720772704126645
+        ],
+        [
+          19.083333333333332,
+          0.37228470208191256
+        ],
+        [
+          19.583333333333332,
+          0.3724379144181449
+        ],
+        [
+          19.999999999999996,
+          0.37253584146963026
+        ]
+      ]
+    }
+  ],
+  "status": "MATCHES_SAVED_READOUT"
+}
