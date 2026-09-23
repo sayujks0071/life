@@ -154,6 +154,24 @@ paper is Lang et al. Muscle Nerve 1985;8:38) and `wolpert1998internal` (right pa
 carried no DOI (added). Result: 57/57 resolve. Printed-provenance `note` fields I had added were
 removed again — `note` prints in the reference list.
 
+### R-9 — Retracted claims survived outside the sections the fixes edited (found 2026-09-23)
+A claim audit of the compiled PDF (manual read of all 458 claim-bearing sentences + TypeSafe Jev
+screen, pre-registered: `~/jupyterlab/scoliosis_publication_strategy/jev_claim_audit/`) found 11
+residues of R-1/R-4/R-6/O-1 plus 9 overstatements in the introduction, captions, conclusion,
+supplementary and Table 5 — copies the earlier fixes to abstract/results missed. Examples: the
+introduction still claimed a unique human "Allometric Trap" at B_g > 0.1; the conclusion credited
+the rejected DDE framework; the clinical figure was titled "Clinical Validation" with p = 1.66e-59
+on a deterministic correlation; Table 5 said the anisotropy gap "does not survive FDR" against
+S2's q = 0.049; results asserted a "supercritical bifurcation" and R > 1 against the
+prefactor-free theory and the graded-progression statement; Fig 2 gave Human-Child B_g = 0.06
+(Table 3: 0.0201 — author ruled 0.0201). Patch list with before/after:
+`scoliosis_publication_strategy/patches/claim_audit_2026-09-23.md`. The clinical figure title
+lives in `correlation_09_clinical_validation.py` (cron-regenerated nightly into
+`manuscript/figures/`), so it was fixed in the script. Verified absent/present in `pdftotext`
+of the recompiled PDF. Still open: the Fig 1 caption describes panels (passive beam, B_g across
+species, Energy Deficit Window) that `fig_gene_to_geometry.pdf` does not contain — caption and
+image do not match; needs an author decision.
+
 ## OPEN — blockers
 
 ### O-1 (was B21, and worse than labelled) — the Demand/Supply anisotropy result does not reproduce
